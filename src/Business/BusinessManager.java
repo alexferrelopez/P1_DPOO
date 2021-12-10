@@ -6,12 +6,12 @@ import java.util.List;
 
 public class BusinessManager {
 
-    public void createTrials (List<Trial> trials) {
-
+    public void createTrials (List<Trial> trials, Trial trial) {
+        trials.add(trial);
     }
 
     public void listTrials (List<Trial> trials) {
-
+        //trials.toString();
     }
 
     public void deleteTrial (List<Trial> trials) {
