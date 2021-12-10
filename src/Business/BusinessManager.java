@@ -5,6 +5,9 @@ import Persistance.ReaderDAO;
 import java.util.List;
 
 public class BusinessManager {
+    ReaderDAO readerDAO = new ReaderDAO();
+    List<Trial> trials = readerDAO.trialFromCSV();
+    List<Edition> editions = readerDAO.editionFromCSV();
 
     public void createTrials (List<Trial> trials, Trial trial) {
         trials.add(trial);
