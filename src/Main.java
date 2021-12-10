@@ -1,5 +1,9 @@
+import Presentation.UIManager;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("ª");
+        UIManager uiManager = new UIManager();
+        uiManager.requestRole();
+
     }
 }
