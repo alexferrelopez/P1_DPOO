@@ -9,6 +9,10 @@ public class Trial {
     private  int rejection;
     private Journal journal;
 
+    public Trial() {
+        journal = new Journal();
+    }
+
     @Override
     public String toString() {
         String type = "Paper publication";          //for now

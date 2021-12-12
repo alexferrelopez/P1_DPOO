@@ -4,6 +4,14 @@ public class Player {
     private String name;
     private int PI_count;
 
+    public Player(String name, int PI_count) {
+        this.name = name;
+        this.PI_count = PI_count;
+    }
+
+    public Player() {
+    }
+
     public String getName() {
         return name;
     }
