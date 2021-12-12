@@ -6,8 +6,10 @@ import java.util.List;
 
 public class BusinessManager {
     ReaderDAO readerDAO = new ReaderDAO();
-    List<Trial> trials = readerDAO.trialFromCSV();
-    List<Edition> editions = readerDAO.editionFromCSV();
+    //List<Trial> trials = readerDAO.trialFromCSV();
+    //List<Edition> editions = readerDAO.editionFromCSV(trials);
+    List<Trial> trials;
+    List<Edition> editions;
 
     public void createTrials (List<Trial> trials, Trial trial) {
         trials.add(trial);

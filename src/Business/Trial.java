@@ -70,7 +70,11 @@ public class Trial {
         return journal.getQuartile();
     }
 
-    public void setJournal(Journal journal) {
-        this.journal = journal;
+    public void setJournalName(String journalName) {
+        journal.setName(journalName);
+    }
+
+    public void setJournalQuartile(String journalQuartile) {
+        journal.setQuartile(journalQuartile);
     }
 }
