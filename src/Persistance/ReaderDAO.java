@@ -132,31 +132,35 @@ public class ReaderDAO {
 
                 List<Player> players = editions.get(i).getPlayers();
 
-                linia.append(players.size());
-                linia.append(",");
+                if (players == null || players.isEmpty()) {
+                    linia.append(0);
+                    linia.append(",");
+                }
+                else {
+                    linia.append(players.size());
+                    linia.append(",");
 
-                for (int j = 0; j < players.size(); j++) {
-                    linia.append(players.get(j).getName());
-                    linia.append(",");
-                    linia.append(players.get(j).getPI_count());
-                    linia.append(",");
+                    for (int j = 0; j < players.size(); j++) {
+                        linia.append(players.get(j).getName());
+                        linia.append(",");
+                        linia.append(players.get(j).getPI_count());
+                        linia.append(",");
+                    }
                 }
                 
                 List<Trial> trials = editions.get(i).getTrials();
 
-                if (trials.isEmpty()) {
+                if (trials == null || trials.isEmpty()) {
                     linia.append(0);
                 }
                 else {
                     linia.append(trials.size());
-                }
-
-
-                for (int j = 0; j < t.size(); j++) {
-                    for (int k = 0; k < trials.size(); k++) {
-                        if (t.get(j).equals(trials.get(k))) {
-                            linia.append(",");
-                            linia.append(j);
+                    for (int j = 0; j < t.size(); j++) {
+                        for (int k = 0; k < trials.size(); k++) {
+                            if (t.get(j).equals(trials.get(k))) {
+                                linia.append(",");
+                                linia.append(j);
+                            }
                         }
                     }
                 }
@@ -170,6 +174,13 @@ public class ReaderDAO {
         }
     }
 
+
+      //////////////////////////////////////////
+     ///            TEST DE LECTURA         ///
+    //////////////////////////////////////////
+
+
+    /*
     public static void main(String[] args) {
         List<Edition> editions = new ArrayList<>();
         List<Trial> trials = new ArrayList<>();
@@ -239,7 +250,7 @@ public class ReaderDAO {
         playerList2.add(new Player("Marti", 3));
         playerList2.add(new Player("Joan", 5));
 
-        //edition2.setPlayers(playerList2);
+        edition2.setPlayers(playerList2);
 
         editions.add(edition2);
 
@@ -250,9 +261,7 @@ public class ReaderDAO {
         List<Edition> editionsList = readerDAO.editionFromCSV(trials);
 
         System.out.println(editionsList);
-
-
-
     }
+     */
 
 }

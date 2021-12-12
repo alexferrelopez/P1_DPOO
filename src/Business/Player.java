@@ -35,4 +35,12 @@ public class Player {
     public boolean isEliminated () {
         return PI_count <= 0;
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", PI_count=" + PI_count +
+                '}';
+    }
 }

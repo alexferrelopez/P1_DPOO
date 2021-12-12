@@ -33,6 +33,9 @@ public class Edition {
 
     @Override
     public String toString() {
+        if (trials == null || trials.isEmpty()) {
+            return "No Trials";
+        }
         String trialsString = 1 + "- " + trials.get(0).getName() + " (Paper publication)\n";
         for (int i = 1; i < trials.size(); i++) {
             trialsString = trialsString.concat(i+1 + "- " + trials.get(i).getName() + " (Paper publication)\n");
