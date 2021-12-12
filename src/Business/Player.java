@@ -1,6 +1,6 @@
 package Business;
 
-public class Player {
+public class Player implements Cloneable {
     private String name;
     private int PI_count;
 
@@ -34,6 +34,11 @@ public class Player {
 
     public boolean isEliminated () {
         return PI_count <= 0;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override

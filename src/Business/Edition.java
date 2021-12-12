@@ -1,11 +1,21 @@
 package Business;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Edition {
+public class Edition implements Cloneable{
     private List<Trial> trials;
     private List<Player> players;
     private int year;
+    private int numPlayers;
+
+    public int getNumPlayers() {
+        return numPlayers;
+    }
+
+    public void setNumPlayers(int numPLayers) {
+        this.numPlayers = numPLayers;
+    }
 
     public List<Trial> getTrials() {
         return trials;
@@ -46,5 +56,28 @@ public class Edition {
                 "Players: " + players + "\n" +
                 "Trials: \n";
         return aux.concat(trialsString);
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Edition clone = (Edition) super.clone();
+
+        List<Trial> clonedTrials = new ArrayList<>();
+
+        for (Trial trial: trials) {
+            clonedTrials.add((Trial) trial.clone());
+        }
+
+        clone.setTrials(clonedTrials);
+
+        List<Player> clonedPlayers = new ArrayList<>();
+
+        for (Player player: players) {
+            clonedPlayers.add((Player) player.clone());
+        }
+
+        clone.setPlayers(clonedPlayers);
+
+        return clone;
     }
 }

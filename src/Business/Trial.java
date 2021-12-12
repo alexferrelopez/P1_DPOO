@@ -2,7 +2,7 @@ package Business;
 
 import java.util.Objects;
 
-public class Trial {
+public class Trial implements Cloneable {
     private String name;
     private int acceptance;
     private int revision;
@@ -11,6 +11,21 @@ public class Trial {
 
     public Trial() {
         journal = new Journal();
+    }
+
+    public Trial(String name, int acceptance, int revision, int rejection, String nameJournal, String quartile) {
+        journal = new Journal();
+        this.name = name;
+        this.acceptance = acceptance;
+        this.revision = revision;
+        this.rejection = rejection;
+        journal.setName(nameJournal);
+        journal.setQuartile(quartile);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 
     @Override

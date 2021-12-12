@@ -20,9 +20,9 @@ public class ReaderDAO {
             List<String> s  = Files.readAllLines(pathTrials);
             List<Trial> trials = new ArrayList<>();
 
-            for (int i = 0; i < s.size(); i++) {
+            for (String value : s) {
                 Trial aux = new Trial();
-                String[] splitTrial = s.get(i).split(",");
+                String[] splitTrial = value.split(",");
                 aux.setName(splitTrial[1]);
                 aux.setAcceptance(Integer.parseInt(splitTrial[2]));
                 aux.setRevision(Integer.parseInt(splitTrial[3]));
@@ -45,13 +45,15 @@ public class ReaderDAO {
             List<String> s  = Files.readAllLines(pathEditions);
             List<Edition> editions = new ArrayList<>();
 
-            for (int i = 0; i < s.size(); i++) {
+            for (String value : s) {
                 Edition aux = new Edition();
 
-                String[] splitEdition = s.get(i).split(",");
+                String[] splitEdition = value.split(",");
                 aux.setYear(Integer.parseInt(splitEdition[0]));
 
-                int numPlayers = Integer.parseInt(splitEdition[1]);
+
+                aux.setNumPlayers(Integer.parseInt(splitEdition[1]));
+                int numPlayers = aux.getNumPlayers();
                 List<Player> playerList = new ArrayList<>();
 
                 int index = 2;
@@ -70,7 +72,7 @@ public class ReaderDAO {
                 int numTrials = Integer.parseInt(splitEdition[index]);
                 index++;
 
-                int[] TrialIndexes  = new int[numTrials];
+                int[] TrialIndexes = new int[numTrials];
 
                 List<Trial> trialList = new ArrayList<>();
 
@@ -97,7 +99,7 @@ public class ReaderDAO {
         try {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("./files/trials.csv")));
             for (int i = 0; i < trials.size(); i++) {
-                StringBuffer linia = new StringBuffer();
+                StringBuilder linia = new StringBuilder();
                 linia.append(i);
                 linia.append(",");
                 linia.append(trials.get(i).getName());
@@ -125,39 +127,37 @@ public class ReaderDAO {
         try {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("./files/editions.csv")));
 
-            for (int i = 0; i < editions.size(); i++) {
-                StringBuffer linia = new StringBuffer();
-                linia.append(editions.get(i).getYear());
+            for (Edition edition : editions) {
+                StringBuilder linia = new StringBuilder();
+                linia.append(edition.getYear());
                 linia.append(",");
 
-                List<Player> players = editions.get(i).getPlayers();
+                List<Player> players = edition.getPlayers();
 
                 if (players == null || players.isEmpty()) {
                     linia.append(0);
                     linia.append(",");
-                }
-                else {
+                } else {
                     linia.append(players.size());
                     linia.append(",");
 
-                    for (int j = 0; j < players.size(); j++) {
-                        linia.append(players.get(j).getName());
+                    for (Player player : players) {
+                        linia.append(player.getName());
                         linia.append(",");
-                        linia.append(players.get(j).getPI_count());
+                        linia.append(player.getPI_count());
                         linia.append(",");
                     }
                 }
-                
-                List<Trial> trials = editions.get(i).getTrials();
+
+                List<Trial> trials = edition.getTrials();
 
                 if (trials == null || trials.isEmpty()) {
                     linia.append(0);
-                }
-                else {
+                } else {
                     linia.append(trials.size());
                     for (int j = 0; j < t.size(); j++) {
-                        for (int k = 0; k < trials.size(); k++) {
-                            if (t.get(j).equals(trials.get(k))) {
+                        for (Trial trial : trials) {
+                            if (t.get(j).equals(trial)) {
                                 linia.append(",");
                                 linia.append(j);
                             }
