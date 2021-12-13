@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 public class UIManager {
     Scanner scanner = new Scanner(System.in);
-
     private static void printTheTrials () {
         System.out.println(" _____ _            _____      _       _     \n" +
                 "/__   \\ |__   ___  /__   \\_ __(_) __ _| |___ \n" +
@@ -22,9 +21,10 @@ public class UIManager {
 
     public int requestRole() {
         printTheTrials();
-        System.out.println("\nWelcome to The Trials. Who are you?\n");
+        System.out.print("\nWelcome to The Trials. ");
 
         do {
+            System.out.println("Who are you?\n");
             System.out.println("\tA) The Composer ");
             System.out.println("\tB) This year’s Conductor");
             System.out.print("\nEnter a role: ");
@@ -39,7 +39,6 @@ public class UIManager {
             System.out.println("\nERROR: The value must be an option on the menu\n");
         } while (true);
     }
-
     public int requestComposerOp() {
         do {
             System.out.println(
@@ -56,7 +55,6 @@ public class UIManager {
             }
         } while (true);
     }
-
     public int requestTrialOp() {
         do {
             System.out.println("""
@@ -78,14 +76,79 @@ public class UIManager {
                     return 3;
                 case "d":
                     return 4;
+                default: System.out.println("ERROR: The letter has to be between a to d\n");
             }
         } while (true);
     }
+    public int requestEditionOp() {
+        do {
+            System.out.println("""
+                            \n\ta) Create Edition
+                            \tb) List Editions\s
+                            \tc) Duplicate Edition\s
+                            \td) Delete Edition\s
 
-    public void requestNewTrial() {
-        // TODO implement here
+                            \te) Back""");
+
+            System.out.print("\nEnter an option: ");
+
+            String input = scanner.nextLine();
+            switch (input) {
+                case "a":
+                    return 1;
+                case "b":
+                    return 2;
+                case "c":
+                    return 3;
+                case "d":
+                    return 4;
+                case "e":
+                    return 5;
+                default: System.out.println("ERROR: The letter has to be between a to e\n");
+            }
+        } while (true);
+    }
+    public int requestTrialType() {
+        do {
+            try {
+                System.out.println("\n\t--- Trial types ---\n");
+                System.out.println("\t 1) Paper publication\n");
+                System.out.print("Enter the trial's type: ");
+                int input = Integer.parseInt(scanner.nextLine());
+
+                switch (input) {
+                    case 1: return 1;
+                    default: System.out.println("\nERROR: Choose between the following options");
+                }
+
+            } catch (Exception e) {
+                System.out.println("\nERROR: You have to put a number");
+            }
+        }while (true);
     }
 
+    public void showMessage (String message) {
+        System.out.println(message);
+    }
+    public void spacing() {
+        System.out.println();
+    }
+
+    public String askForString(String message) {
+        System.out.print(message);
+        return scanner.nextLine();
+    }
+    public int askForInteger(String message) {
+        try {
+            int input = Integer.parseInt(scanner.nextLine());
+            return input;
+        } catch (Exception e) {
+            System.out.println("ERROR: The input has to be an integer");
+        }
+        return 0;
+    }
+
+    // TODO and modificate
     public void showTrialList(List<Trial> trials) {
 
         System.out.println("\nHere are the current trials, do you want to see more details or go back?\n");
@@ -109,6 +172,10 @@ public class UIManager {
                 scanner.nextLine();
             }
         } while (selectTrial != back);
+    }
+
+    public void requestNewTrial() {
+        // TODO implement here
     }
 
     public int requestDeletedTrial(List<Trial> trials) {
@@ -185,31 +252,6 @@ public class UIManager {
         return back;
     }
 
-    public void showMessage (String message) {
-        System.out.println(message);
-    }
-
-    public int requestTrialType() {
-        do {
-            System.out.println("\n\t--- Trial types ---\n");
-            System.out.println("\t 1) Paper publication\n");
-            System.out.print("Enter the trial's type: ");
-            String input = scanner.nextLine();
-            if(input.equals("1")) {
-                System.out.println("");
-                return 1;
-            }
-            else System.out.println("Only 1 type avaliable.");
-        }while (true);
-
-
-    }
-
-    public String askForString(String message) {
-        System.out.print(message);
-        return scanner.nextLine();
-    }
-
     public int requestTrialNumber(String message) {
         do {
             try {
@@ -225,9 +267,5 @@ public class UIManager {
                 scanner.nextLine();
             }
         }while (true);
-    }
-
-    public int askForInteger() {
-        return 0;
     }
 }
