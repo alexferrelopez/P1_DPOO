@@ -11,13 +11,21 @@ import java.util.Scanner;
 public class UIManager {
     Scanner scanner = new Scanner(System.in);
 
+    private static void printTheTrials () {
+        System.out.println(" _____ _            _____      _       _     \n" +
+                "/__   \\ |__   ___  /__   \\_ __(_) __ _| |___ \n" +
+                "  / /\\/ '_ \\ / _ \\   / /\\/ '__| |/ _` | / __|\n" +
+                " / /  | | | |  __/  / /  | |  | | (_| | \\__ \\\n" +
+                " \\/   |_| |_|\\___|  \\/   |_|  |_|\\__,_|_|___/\n" +
+                "                                             ");
+    }
+
     public int requestRole() {
-        //printMenu1();       //small menu
-        printMenu2();       //big cool menu
+        printTheTrials();
+        System.out.println("\nWelcome to The Trials. Who are you?\n");
 
         do {
-            System.out.println("\nWelcome to The Trials. Who are you?");
-            System.out.println("\n\tA) The Composer ");
+            System.out.println("\tA) The Composer ");
             System.out.println("\tB) This year’s Conductor");
             System.out.print("\nEnter a role: ");
 
@@ -28,26 +36,23 @@ public class UIManager {
             else if (input.equals("b") || input.equals("B")) {
                 return 2;
             }
+            System.out.println("\nERROR: The value must be an option on the menu\n");
         } while (true);
     }
 
     public int requestComposerOp() {
         do {
-            System.out.println("\nEntering management mode... \n" +
-                    "\n\t1) Manage Trials " +
+            System.out.println(
+                    "\t1) Manage Trials " +
                     "\n\t2) Manage Editions " +
                     "\n\n\t3) Exit");
             System.out.print("\nEnter an option: ");
 
-            String input = scanner.nextLine();
-            switch (input) {
-                case "1":
-                    return 1;
-                case "2":
-                    return 2;
-                case "3":
-                    System.out.println("\nShutting down...");
-                    return 3;
+            try {
+                int input = Integer.parseInt(scanner.nextLine());
+                return input;
+            } catch (Exception e) {
+                System.out.println("\nERROR: The number has to be between 1 to 3\n");
             }
         } while (true);
     }
@@ -89,7 +94,6 @@ public class UIManager {
 
         int selectTrial = 0;
         do {
-
             back = showList(trials);
 
             System.out.println("\n\t" + (back) + ") Back\n");
@@ -181,32 +185,8 @@ public class UIManager {
         return back;
     }
 
-    private static void printMenu1 () {
-        System.out.println("""
-                   _________ _            _______      _       _
-                  /__   __ \\ |__   ___   /__  __ \\_ __(_) __ _| |___
-                \t / /  \\/  _ \\ / _ \\    / /  \\/ '__| |/ _` | / __|
-                \t/ /    | | | | ___/   / /     | | | | (_| | \\__ \\
-                \t\\/     |_| |_|\\___|   \\/      |_| |_|\\__,_|_|___/""");
-    }
-
     public void showMessage (String message) {
         System.out.println(message);
-    }
-
-    private static void printMenu2 () {
-        System.out.println("""
-
-                __/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\__/\\\\\\___________________________________/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_____________________________________/\\\\\\\\\\\\_________________       \s
-                 _\\///////\\\\\\/////__\\/\\\\\\__________________________________\\///////\\\\\\/////_____________________________________\\////\\\\\\_________________      \s
-                  _______\\/\\\\\\_______\\/\\\\\\________________________________________\\/\\\\\\______________________/\\\\\\___________________\\/\\\\\\_________________     \s
-                   _______\\/\\\\\\_______\\/\\\\\\_____________/\\\\\\\\\\\\\\\\__________________\\/\\\\\\________/\\\\/\\\\\\\\\\\\\\__\\///___/\\\\\\\\\\\\\\\\\\_______\\/\\\\\\_____/\\\\\\\\\\\\\\\\\\\\_    \s
-                    _______\\/\\\\\\_______\\/\\\\\\\\\\\\\\\\\\\\____/\\\\\\/////\\\\\\_________________\\/\\\\\\_______\\/\\\\\\/////\\\\\\__/\\\\\\_\\////////\\\\\\______\\/\\\\\\____\\/\\\\\\//////__   \s
-                     _______\\/\\\\\\_______\\/\\\\\\/////\\\\\\__/\\\\\\\\\\\\\\\\\\\\\\__________________\\/\\\\\\_______\\/\\\\\\___\\///__\\/\\\\\\___/\\\\\\\\\\\\\\\\\\\\_____\\/\\\\\\____\\/\\\\\\\\\\\\\\\\\\\\_  \s
-                      _______\\/\\\\\\_______\\/\\\\\\___\\/\\\\\\_\\//\\\\///////___________________\\/\\\\\\_______\\/\\\\\\_________\\/\\\\\\__/\\\\\\/////\\\\\\_____\\/\\\\\\____\\////////\\\\\\_ \s
-                       _______\\/\\\\\\_______\\/\\\\\\___\\/\\\\\\__\\//\\\\\\\\\\\\\\\\\\\\_________________\\/\\\\\\_______\\/\\\\\\_________\\/\\\\\\_\\//\\\\\\\\\\\\\\\\/\\\\__/\\\\\\\\\\\\\\\\\\__/\\\\\\\\\\\\\\\\\\\\_\s
-                        _______\\///________\\///____\\///____\\//////////__________________\\///________\\///__________\\///___\\////////\\//__\\/////////__\\//////////__
-                """);
     }
 
     public int requestTrialType() {
@@ -225,7 +205,7 @@ public class UIManager {
 
     }
 
-    public String requestTrialString(String message) {
+    public String askForString(String message) {
         System.out.print(message);
         return scanner.nextLine();
     }
@@ -245,5 +225,9 @@ public class UIManager {
                 scanner.nextLine();
             }
         }while (true);
+    }
+
+    public int askForInteger() {
+        return 0;
     }
 }
