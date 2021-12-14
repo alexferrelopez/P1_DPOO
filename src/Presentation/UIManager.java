@@ -215,33 +215,9 @@ public class UIManager {
         return back;
     }
 
-   /* public Edition requestNewEdition() {
-        // TODO implement here
-        return null;
-    }
-
-    public void showEditionList(List<Edition> editions) {
-        // TODO implement here
-    }
-
-    public Edition duplicateEdition() {
-        // TODO implement here
-        return null;
-    }
-
-    public int requestDeletedEdition() {
-        // TODO implement here
-        return 0;
-    } */
-
     public void showTrialTypes() {
         // TODO implement here
     }
-
-    public void showEdition() {
-        // TODO implement here
-    }
-
     public void showConductor() {
         // TODO implement here
     }
