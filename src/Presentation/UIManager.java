@@ -10,14 +10,23 @@ import java.util.Scanner;
 
 public class UIManager {
     Scanner scanner = new Scanner(System.in);
+    private static void printTheTrials () {
+        System.out.println("""
+                 _____ _            _____      _       _    \s
+                /__   \\ |__   ___  /__   \\_ __(_) __ _| |___\s
+                  / /\\/ '_ \\ / _ \\   / /\\/ '__| |/ _` | / __|
+                 / /  | | | |  __/  / /  | |  | | (_| | \\__ \\
+                 \\/   |_| |_|\\___|  \\/   |_|  |_|\\__,_|_|___/
+                                                            \s""");
+    }
 
     public int requestRole() {
-        //printMenu1();       //small menu
-        printMenu2();       //big cool menu
+        printTheTrials();
+        System.out.print("\nWelcome to The Trials. ");
 
         do {
-            System.out.println("\nWelcome to The Trials. Who are you?");
-            System.out.println("\n\tA) The Composer ");
+            System.out.println("Who are you?\n");
+            System.out.println("\tA) The Composer ");
             System.out.println("\tB) This year’s Conductor");
             System.out.print("\nEnter a role: ");
 
@@ -28,38 +37,35 @@ public class UIManager {
             else if (input.equals("b") || input.equals("B")) {
                 return 2;
             }
+            System.out.println("\nERROR: The value must be an option on the menu\n");
         } while (true);
     }
-
     public int requestComposerOp() {
         do {
-            System.out.println("\nEntering management mode... \n" +
-                    "\n\t1) Manage Trials " +
-                    "\n\t2) Manage Editions " +
-                    "\n\n\t3) Exit");
+            System.out.println(
+                    """
+                            \t1) Manage Trials\s
+                            \t2) Manage Editions\s
+
+                            \t3) Exit""");
             System.out.print("\nEnter an option: ");
 
-            String input = scanner.nextLine();
-            switch (input) {
-                case "1":
-                    return 1;
-                case "2":
-                    return 2;
-                case "3":
-                    System.out.println("\nShutting down...");
-                    return 3;
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (Exception e) {
+                System.out.println("\nERROR: The number has to be between 1 to 3\n");
             }
         } while (true);
     }
-
     public int requestTrialOp() {
         do {
             System.out.println("""
-                            \n\ta) Create Trial
-                            \tb) List Trials\s
-                            \tc) Delete Trial Editions\s
+                                                
+                    \ta) Create Trial
+                    \tb) List Trials\s
+                    \tc) Delete Trial Editions\s
 
-                            \td) Back""");
+                    \td) Back""");
 
             System.out.print("\nEnter an option: ");
 
@@ -73,14 +79,83 @@ public class UIManager {
                     return 3;
                 case "d":
                     return 4;
+                default: System.out.println("ERROR: The letter has to be between a to d\n");
             }
         } while (true);
     }
+    public int requestEditionOp() {
+        do {
+            System.out.println("""
+                            \ta) Create Edition
+                            \tb) List Editions\s
+                            \tc) Duplicate Edition\s
+                            \td) Delete Edition\s
 
-    public void requestNewTrial() {
-        // TODO implement here
+                            \te) Back""");
+
+            System.out.print("\nEnter an option: ");
+
+            String input = scanner.nextLine();
+            switch (input) {
+                case "a":
+                    return 1;
+                case "b":
+                    return 2;
+                case "c":
+                    return 3;
+                case "d":
+                    return 4;
+                case "e":
+                    return 5;
+                default: System.out.println("ERROR: The letter has to be between a to e\n");
+            }
+        } while (true);
+    }
+    public int requestTrialType() {
+        do {
+            try {
+                System.out.println("\n\t--- Trial types ---\n");
+                System.out.println("\t 1) Paper publication\n");
+                System.out.print("Enter the trial's type: ");
+                int input = Integer.parseInt(scanner.nextLine());
+
+                switch (input) {
+                    case 1: return 1;
+                    default: System.out.println("\nERROR: Choose between the following options");
+                }
+
+            } catch (Exception e) {
+                System.out.println("\nERROR: You have to put a number");
+            }
+        }while (true);
     }
 
+    public void showMessage (String message) {
+        System.out.println(message);
+    }
+    public void showTabulatedMessage(String message) {
+        System.out.println("\t" + message);
+    }
+    public void spacing() {
+        System.out.println();
+    }
+
+    public String askForString(String message) {
+        System.out.print(message);
+        return scanner.nextLine();
+    }
+    public int askForInteger(String message) {
+        try {
+            System.out.print(message);
+            int input = Integer.parseInt(scanner.nextLine());
+            return input;
+        } catch (Exception e) {
+            System.out.println("ERROR: The input has to be an integer");
+        }
+        return Integer.MIN_VALUE;
+    }
+
+    // TODO and modificate
     public void showTrialList(List<Trial> trials) {
 
         System.out.println("\nHere are the current trials, do you want to see more details or go back?\n");
@@ -89,7 +164,6 @@ public class UIManager {
 
         int selectTrial = 0;
         do {
-
             back = showList(trials);
 
             System.out.println("\n\t" + (back) + ") Back\n");
@@ -106,7 +180,9 @@ public class UIManager {
             }
         } while (selectTrial != back);
     }
-
+    public void requestNewTrial() {
+        // TODO implement here
+    }
     public int requestDeletedTrial(List<Trial> trials) {
 
         System.out.println("\nWhich edition do you want to delete?\n");
@@ -139,33 +215,9 @@ public class UIManager {
         return back;
     }
 
-    public Edition requestNewEdition() {
-        // TODO implement here
-        return null;
-    }
-
-    public void showEditionList(List<Edition> editions) {
-        // TODO implement here
-    }
-
-    public Edition duplicateEdition() {
-        // TODO implement here
-        return null;
-    }
-
-    public int requestDeletedEdition() {
-        // TODO implement here
-        return 0;
-    }
-
     public void showTrialTypes() {
         // TODO implement here
     }
-
-    public void showEdition() {
-        // TODO implement here
-    }
-
     public void showConductor() {
         // TODO implement here
     }
@@ -179,55 +231,6 @@ public class UIManager {
             back = i + 2;
         }
         return back;
-    }
-
-    private static void printMenu1 () {
-        System.out.println("""
-                   _________ _            _______      _       _
-                  /__   __ \\ |__   ___   /__  __ \\_ __(_) __ _| |___
-                \t / /  \\/  _ \\ / _ \\    / /  \\/ '__| |/ _` | / __|
-                \t/ /    | | | | ___/   / /     | | | | (_| | \\__ \\
-                \t\\/     |_| |_|\\___|   \\/      |_| |_|\\__,_|_|___/""");
-    }
-
-    public void showMessage (String message) {
-        System.out.println(message);
-    }
-
-    private static void printMenu2 () {
-        System.out.println("""
-
-                __/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\__/\\\\\\___________________________________/\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\_____________________________________/\\\\\\\\\\\\_________________       \s
-                 _\\///////\\\\\\/////__\\/\\\\\\__________________________________\\///////\\\\\\/////_____________________________________\\////\\\\\\_________________      \s
-                  _______\\/\\\\\\_______\\/\\\\\\________________________________________\\/\\\\\\______________________/\\\\\\___________________\\/\\\\\\_________________     \s
-                   _______\\/\\\\\\_______\\/\\\\\\_____________/\\\\\\\\\\\\\\\\__________________\\/\\\\\\________/\\\\/\\\\\\\\\\\\\\__\\///___/\\\\\\\\\\\\\\\\\\_______\\/\\\\\\_____/\\\\\\\\\\\\\\\\\\\\_    \s
-                    _______\\/\\\\\\_______\\/\\\\\\\\\\\\\\\\\\\\____/\\\\\\/////\\\\\\_________________\\/\\\\\\_______\\/\\\\\\/////\\\\\\__/\\\\\\_\\////////\\\\\\______\\/\\\\\\____\\/\\\\\\//////__   \s
-                     _______\\/\\\\\\_______\\/\\\\\\/////\\\\\\__/\\\\\\\\\\\\\\\\\\\\\\__________________\\/\\\\\\_______\\/\\\\\\___\\///__\\/\\\\\\___/\\\\\\\\\\\\\\\\\\\\_____\\/\\\\\\____\\/\\\\\\\\\\\\\\\\\\\\_  \s
-                      _______\\/\\\\\\_______\\/\\\\\\___\\/\\\\\\_\\//\\\\///////___________________\\/\\\\\\_______\\/\\\\\\_________\\/\\\\\\__/\\\\\\/////\\\\\\_____\\/\\\\\\____\\////////\\\\\\_ \s
-                       _______\\/\\\\\\_______\\/\\\\\\___\\/\\\\\\__\\//\\\\\\\\\\\\\\\\\\\\_________________\\/\\\\\\_______\\/\\\\\\_________\\/\\\\\\_\\//\\\\\\\\\\\\\\\\/\\\\__/\\\\\\\\\\\\\\\\\\__/\\\\\\\\\\\\\\\\\\\\_\s
-                        _______\\///________\\///____\\///____\\//////////__________________\\///________\\///__________\\///___\\////////\\//__\\/////////__\\//////////__
-                """);
-    }
-
-    public int requestTrialType() {
-        do {
-            System.out.println("\n\t--- Trial types ---\n");
-            System.out.println("\t 1) Paper publication\n");
-            System.out.print("Enter the trial's type: ");
-            String input = scanner.nextLine();
-            if(input.equals("1")) {
-                System.out.println("");
-                return 1;
-            }
-            else System.out.println("Only 1 type avaliable.");
-        }while (true);
-
-
-    }
-
-    public String requestTrialString(String message) {
-        System.out.print(message);
-        return scanner.nextLine();
     }
 
     public int requestTrialNumber(String message) {
