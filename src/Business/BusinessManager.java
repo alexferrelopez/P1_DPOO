@@ -61,6 +61,10 @@ public class BusinessManager {
         return false;
     }
 
+    public int editionLength() {
+        return editions.size();
+    }
+
     public void executeTrial () {
         //TODO execute
     }

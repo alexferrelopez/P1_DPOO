@@ -148,21 +148,54 @@ public class Controller {
         uiManager.showMessage("The editions was created successfully!");
 
     }
+    private void listAllEditions() {
+        for (int i = 0; i < bm.editionLength(); i++) {
+            uiManager.showTabulatedMessage((i+1)+") The Trials " + bm.getEditions().get(i).getYear());
+        }
+        uiManager.spacing();
+        uiManager.showTabulatedMessage(bm.editionLength()+1+") Back");
+        uiManager.spacing();
+    }
     public void listEdition() {
-         int length = bm.getEditions().size();
          uiManager.spacing();
          uiManager.showMessage("Here are the current editions, do you want to see more details or go back?");
          uiManager.spacing();
-         for (int i = 0; i < length; i++) {
-             uiManager.showTabulatedMessage((i+1)+") The Trials " + bm.getEditions().get(i).getYear());
-         }
+         listAllEditions();
+
+         int option = uiManager.askForInteger("Enter an option: ");
          uiManager.spacing();
-         uiManager.showMessage("\t"+length+") Back");
+        if (option > 0 && option < bm.editionLength()+1) {
+            int year = uiManager.askForInteger("Enter the new edition's year: ");
+            int players = uiManager.askForInteger("Enter the new edition's initial number of players: ");
+            // TODO touch the business values and the
+            uiManager.spacing();
+            uiManager.showMessage("The edition was successfully deleted.");
+        } else if (option == bm.editionLength()+1) {
+        } else {
+            uiManager.spacing();
+            uiManager.showMessage("ERROR: You must put a value between 1 and "+ (bm.editionLength()+1));
+        }
     }
     public void duplicateEdition() {
 
     }
     public void deleteEdition() {
-        boolean back;
+        uiManager.spacing();
+        uiManager.showMessage("Which edition do you want to delete?");
+        uiManager.spacing();
+        listAllEditions();
+        int option = uiManager.askForInteger("Enter an option: ");
+        uiManager.spacing();
+        if (option > 0 && option < bm.editionLength()+1) {
+            int value = uiManager.askForInteger("Enter the edition's year for confirmation: ");
+            // TODO touch the business values and the dao
+            uiManager.spacing();
+            uiManager.showMessage("The edition was successfully deleted.");
+        } else if (option == bm.editionLength()+1) {
+        } else {
+            uiManager.spacing();
+            uiManager.showMessage("ERROR: You must put a value between 1 and "+ (bm.editionLength()+1));
+        }
+
     }
 }
