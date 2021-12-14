@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Edition implements Cloneable{
     private List<Trial> trials;
-    private List<Player> players;
+    private List<Player> players; //creo que esto aqui sobra (porque empieza a establecerse en la ejecución)
     private int year;
     private int numPlayers;
 

@@ -1,9 +1,9 @@
 package Presentation;
 
 import Business.BusinessManager;
-import Business.Edition;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Controller {
@@ -92,25 +92,26 @@ public class Controller {
         } while (!back);
     }
 
+
+    // TODO cambiar el modo en que pasamos los nombres
     public void executeEdition() {
         do {
             uiManager.spacing();
             switch (uiManager.requestEditionOp()) {
-                case 1:createEdition(); //create
-                    break;
-                case 2: listEdition(); //list
-                    break;
-                case 3: System.out.println(3); //duplicate
-                    break;
-                case 4: System.out.println(4); //delete
-                    break;
-                case 5: uiManager.spacing(); //back
+                case 1 -> createEdition(); //create
+                case 2 -> listEdition(); //list
+                case 3 -> duplicateEdition(); //duplicate
+                case 4 -> deleteEdition(); //delete
+                case 5 -> {
+                    uiManager.spacing(); //back
                     return;
+                }
             }
         }while (true);
     }
     public void createEdition() {
         int year, players, trials;
+        List<Integer> trial; //quiero que sea ArrayList
         Date date = new Date();
         uiManager.spacing();
         do {
@@ -143,6 +144,7 @@ public class Controller {
         }
         uiManager.spacing();
         // TODO pasar todos los datos a persistencia
+
         uiManager.showMessage("The editions was created successfully!");
 
     }
@@ -152,10 +154,15 @@ public class Controller {
          uiManager.showMessage("Here are the current editions, do you want to see more details or go back?");
          uiManager.spacing();
          for (int i = 0; i < length; i++) {
-             uiManager.showMessage("\t"+(i+1)+") The Trials " + bm.getEditions().get(i).getYear());
+             uiManager.showTabulatedMessage((i+1)+") The Trials " + bm.getEditions().get(i).getYear());
          }
          uiManager.spacing();
          uiManager.showMessage("\t"+length+") Back");
     }
+    public void duplicateEdition() {
 
+    }
+    public void deleteEdition() {
+        boolean back;
+    }
 }

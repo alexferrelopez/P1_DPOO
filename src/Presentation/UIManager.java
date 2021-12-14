@@ -133,6 +133,9 @@ public class UIManager {
     public void showMessage (String message) {
         System.out.println(message);
     }
+    public void showTabulatedMessage(String message) {
+        System.out.println("\t" + message);
+    }
     public void spacing() {
         System.out.println();
     }
@@ -177,11 +180,9 @@ public class UIManager {
             }
         } while (selectTrial != back);
     }
-
     public void requestNewTrial() {
         // TODO implement here
     }
-
     public int requestDeletedTrial(List<Trial> trials) {
 
         System.out.println("\nWhich edition do you want to delete?\n");
@@ -214,7 +215,7 @@ public class UIManager {
         return back;
     }
 
-    public Edition requestNewEdition() {
+   /* public Edition requestNewEdition() {
         // TODO implement here
         return null;
     }
@@ -231,7 +232,7 @@ public class UIManager {
     public int requestDeletedEdition() {
         // TODO implement here
         return 0;
-    }
+    } */
 
     public void showTrialTypes() {
         // TODO implement here
