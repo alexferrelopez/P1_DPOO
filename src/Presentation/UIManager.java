@@ -11,12 +11,13 @@ import java.util.Scanner;
 public class UIManager {
     Scanner scanner = new Scanner(System.in);
     private static void printTheTrials () {
-        System.out.println(" _____ _            _____      _       _     \n" +
-                "/__   \\ |__   ___  /__   \\_ __(_) __ _| |___ \n" +
-                "  / /\\/ '_ \\ / _ \\   / /\\/ '__| |/ _` | / __|\n" +
-                " / /  | | | |  __/  / /  | |  | | (_| | \\__ \\\n" +
-                " \\/   |_| |_|\\___|  \\/   |_|  |_|\\__,_|_|___/\n" +
-                "                                             ");
+        System.out.println("""
+                 _____ _            _____      _       _    \s
+                /__   \\ |__   ___  /__   \\_ __(_) __ _| |___\s
+                  / /\\/ '_ \\ / _ \\   / /\\/ '__| |/ _` | / __|
+                 / /  | | | |  __/  / /  | |  | | (_| | \\__ \\
+                 \\/   |_| |_|\\___|  \\/   |_|  |_|\\__,_|_|___/
+                                                            \s""");
     }
 
     public int requestRole() {
@@ -42,14 +43,15 @@ public class UIManager {
     public int requestComposerOp() {
         do {
             System.out.println(
-                    "\t1) Manage Trials " +
-                    "\n\t2) Manage Editions " +
-                    "\n\n\t3) Exit");
+                    """
+                            \t1) Manage Trials\s
+                            \t2) Manage Editions\s
+
+                            \t3) Exit""");
             System.out.print("\nEnter an option: ");
 
             try {
-                int input = Integer.parseInt(scanner.nextLine());
-                return input;
+                return Integer.parseInt(scanner.nextLine());
             } catch (Exception e) {
                 System.out.println("\nERROR: The number has to be between 1 to 3\n");
             }
@@ -58,11 +60,12 @@ public class UIManager {
     public int requestTrialOp() {
         do {
             System.out.println("""
-                            \n\ta) Create Trial
-                            \tb) List Trials\s
-                            \tc) Delete Trial Editions\s
+                                                
+                    \ta) Create Trial
+                    \tb) List Trials\s
+                    \tc) Delete Trial Editions\s
 
-                            \td) Back""");
+                    \td) Back""");
 
             System.out.print("\nEnter an option: ");
 
@@ -83,7 +86,7 @@ public class UIManager {
     public int requestEditionOp() {
         do {
             System.out.println("""
-                            \n\ta) Create Edition
+                            \ta) Create Edition
                             \tb) List Editions\s
                             \tc) Duplicate Edition\s
                             \td) Delete Edition\s
@@ -140,12 +143,13 @@ public class UIManager {
     }
     public int askForInteger(String message) {
         try {
+            System.out.print(message);
             int input = Integer.parseInt(scanner.nextLine());
             return input;
         } catch (Exception e) {
             System.out.println("ERROR: The input has to be an integer");
         }
-        return 0;
+        return Integer.MIN_VALUE;
     }
 
     // TODO and modificate
