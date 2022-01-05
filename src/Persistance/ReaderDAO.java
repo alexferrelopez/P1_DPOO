@@ -72,7 +72,7 @@ public class ReaderDAO {
                 int numTrials = Integer.parseInt(splitEdition[index]);
                 index++;
 
-                int[] TrialIndexes = new int[numTrials];
+                //int[] TrialIndexes = new int[numTrials];
 
                 List<Trial> trialList = new ArrayList<>();
 
@@ -155,8 +155,8 @@ public class ReaderDAO {
                     linia.append(0);
                 } else {
                     linia.append(trials.size());
-                    for (int j = 0; j < t.size(); j++) {
-                        for (Trial trial : trials) {
+                    for (Trial trial : trials) {
+                        for (int j = 0; j < t.size(); j++) {
                             if (t.get(j).equals(trial)) {
                                 linia.append(",");
                                 linia.append(j);
@@ -180,7 +180,7 @@ public class ReaderDAO {
     //////////////////////////////////////////
 
 
-    /*
+/*
     public static void main(String[] args) {
         List<Edition> editions = new ArrayList<>();
         List<Trial> trials = new ArrayList<>();
@@ -261,7 +261,6 @@ public class ReaderDAO {
         List<Edition> editionsList = readerDAO.editionFromCSV(trials);
 
         System.out.println(editionsList);
-    }
-     */
+    }*/
 
 }
