@@ -17,7 +17,7 @@ public class EditionJsonDAO implements EditionDAO{
         Gson gson = new Gson();
 
         try {
-            FileWriter fileWriter = new FileWriter("./files/trials.json");
+            FileWriter fileWriter = new FileWriter("./files/editions.json");
             gson.toJson(editions, fileWriter);
             fileWriter.close();
         } catch (IOException e) {
@@ -39,4 +39,22 @@ public class EditionJsonDAO implements EditionDAO{
         }
         return Collections.emptyList();
     }
+
+      /////////////////////////////////////////
+     //  SAVE AND WRITE JSON TEST (TRIALS)  //
+    /////////////////////////////////////////
+
+    /*
+    public static void main(String[] args) {
+        EditionDAO editionDAO = new EditionCsvDAO();
+        TrialDAO trialDAO = new TrialCsvDAO();
+
+        List<Edition> editions = editionDAO.getAll(trialDAO.getAll());
+
+        EditionDAO editionDAO1 = new EditionJsonDAO();
+        editionDAO1.save(editions, null);
+
+        List<Edition> editions1 = editionDAO1.getAll(null);
+        System.out.println(editions1);
+    }*/
 }

@@ -39,9 +39,9 @@ public class TrialJsonDao implements TrialDAO{
         return Collections.emptyList();
     }
 
-      //////////////////////////////////
-     //   SAVE AND WRITE JSON TEST   //
-    //////////////////////////////////
+      /////////////////////////////////////////
+     //  SAVE AND WRITE JSON TEST (TRIALS)  //
+    /////////////////////////////////////////
 
     /*
     public static void main(String[] args) {
