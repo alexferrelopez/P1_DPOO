@@ -2,6 +2,7 @@ package Presentation;
 
 import Business.BusinessManager;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -111,12 +112,12 @@ public class Controller {
     }
     public void createEdition() {
         int year, players, trials;
-        List<Integer> trial; //quiero que sea ArrayList
+        List<Integer> trialList = new ArrayList<>();
         Date date = new Date();
         uiManager.spacing();
         do {
             year = uiManager.askForInteger("Enter the edition's year: ");
-            if (year < (date.getYear()+1900) && year != Integer.MIN_VALUE) {
+            if (year < (date.getYear()+1900) && year != Integer.MIN_VALUE) { //TODO la segona condicion q busca? Arreglar si no hace falta
                 uiManager.showMessage("ERROR: The year has to be for current or future events");
             }
         } while(year < (date.getYear()+1900));
@@ -140,9 +141,11 @@ public class Controller {
         uiManager.spacing();
 
         for (int i = 0; i < trials; i++) {
-            uiManager.askForInteger("Pick a trial (" + (i+1) + "/" + trials + "): ");
+             trialList.add(uiManager.askForInteger("Pick a trial (" + (i+1) + "/" + trials + "): "));
         }
+
         uiManager.spacing();
+
         // TODO pasar todos los datos a persistencia
 
         uiManager.showMessage("The editions was created successfully!");
@@ -156,6 +159,7 @@ public class Controller {
         uiManager.showTabulatedMessage(bm.editionLength()+1+") Back");
         uiManager.spacing();
     }
+
     public void listEdition() {
          uiManager.spacing();
          uiManager.showMessage("Here are the current editions, do you want to see more details or go back?");

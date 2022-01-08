@@ -1,14 +1,18 @@
 package Business;
 
-import Persistance.ReaderDAO;
+import Persistance.EditionCsvDAO;
+import Persistance.EditionDAO;
+import Persistance.TrialCsvDAO;
+import Persistance.TrialDAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BusinessManager {
-    ReaderDAO readerDAO = new ReaderDAO();
-    List<Trial> trials = readerDAO.trialFromCSV();
-    List<Edition> editions = readerDAO.editionFromCSV(trials);
+    private final EditionDAO editionDAO = new EditionCsvDAO();
+    private final TrialDAO trialDAO = new TrialCsvDAO();
+    private final List<Trial> trials = trialDAO.getAll();
+    private final List<Edition> editions = editionDAO.getAll(trials);
 
     public void createTrial (String name, int acceptance, int revision, int rejection, String nameJournal, String quartile) {
         Trial trial = new Trial(name, acceptance, revision, rejection, nameJournal, quartile);
@@ -70,8 +74,8 @@ public class BusinessManager {
     }
 
     public void saveData () {
-        readerDAO.editionToCSV(editions, trials);
-        readerDAO.trialToCSV(trials);
+        editionDAO.save(editions, trials);
+        trialDAO.save(trials);
     }
 
     public List<Trial> getTrials() {

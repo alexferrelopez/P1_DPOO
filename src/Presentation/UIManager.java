@@ -247,6 +247,6 @@ public class UIManager {
                 System.out.println("Introduce a number please");
                 scanner.nextLine();
             }
-        }while (true);
+        } while (true);
     }
 }

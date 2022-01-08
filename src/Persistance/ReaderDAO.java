@@ -1,3 +1,4 @@
+/*
 package Persistance;
 import Business.Edition;
 import Business.Player;
@@ -36,7 +37,6 @@ public class ReaderDAO {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return null;
     }
     public List<Edition> editionFromCSV (List<Trial> trials) {
@@ -180,7 +180,6 @@ public class ReaderDAO {
     //////////////////////////////////////////
 
 
-/*
     public static void main(String[] args) {
         List<Edition> editions = new ArrayList<>();
         List<Trial> trials = new ArrayList<>();
@@ -261,6 +260,7 @@ public class ReaderDAO {
         List<Edition> editionsList = readerDAO.editionFromCSV(trials);
 
         System.out.println(editionsList);
-    }*/
+    }
 
 }
+*/
