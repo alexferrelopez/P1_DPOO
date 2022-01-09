@@ -6,7 +6,7 @@ public class Trial implements Cloneable {
     private String name;
     private int acceptance;
     private int revision;
-    private  int rejection;
+    private int rejection;
     private Journal journal;
 
     public Trial() {

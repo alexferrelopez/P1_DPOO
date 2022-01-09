@@ -28,5 +28,15 @@
       "name": "Journal Name 2",
       "quartile": "Q4"
     }
+  },
+  {
+    "name": "Arial name 4",
+    "acceptance": 90,
+    "revision": 10,
+    "rejection": 0,
+    "journal": {
+      "name": "Journal Name 3",
+      "quartile": "Q1"
+    }
   }
 ]

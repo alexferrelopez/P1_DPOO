@@ -43,18 +43,21 @@ public class Edition implements Cloneable{
 
     @Override
     public String toString() {
+        String trialsString;
         if (trials == null || trials.isEmpty()) {
-            return "No Trials";
+            trialsString = "\tNo Trials\n";
         }
-        String trialsString = 1 + "- " + trials.get(0).getName() + " (Paper publication)\n";
-        for (int i = 1; i < trials.size(); i++) {
-            trialsString = trialsString.concat(i+1 + "- " + trials.get(i).getName() + " (Paper publication)\n");
+        else {
+            trialsString = "\t" + 1 + "- " + trials.get(0).getName() + " (Paper publication)\n";
+            for (int i = 1; i < trials.size(); i++) {
+                trialsString = trialsString.concat("\t" + (i+1) + "- " + trials.get(i).getName() + " (Paper publication)\n");
+            }
         }
-
-        String aux =  "\n" +
-                "Year:" +  year + "\n" +
-                "Players: " + players + "\n" +
+        String aux =
+                "Year: " + year + "\n" +
+                "Players: " + numPlayers + "\n" +
                 "Trials: \n";
+
         return aux.concat(trialsString);
     }
 
@@ -72,8 +75,10 @@ public class Edition implements Cloneable{
 
         List<Player> clonedPlayers = new ArrayList<>();
 
-        for (Player player: players) {
-            clonedPlayers.add((Player) player.clone());
+        if (players != null && !players.isEmpty()) {
+            for (Player player : players) {
+                clonedPlayers.add((Player) player.clone());
+            }
         }
 
         clone.setPlayers(clonedPlayers);

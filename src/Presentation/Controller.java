@@ -44,7 +44,7 @@ public class Controller {
     }
     public void executeComposer() {
         int optionComposer;
-        uiManager.showMessage("\nEntering management mode...\n");
+        uiManager.showMessage("\nEntering management mode...");
         do {
             optionComposer = uiManager.requestComposerOp();
             switch (optionComposer) {
@@ -104,10 +104,10 @@ public class Controller {
         uiManager.showTrialList(bm.getTrials());
     }
     public void deleteTrial() {
-        boolean back;
+        boolean done;
         do {
-            back = bm.deleteTrial(uiManager.requestDeletedTrial(bm.getTrials()));
-        } while (!back);
+            done = bm.deleteTrial(uiManager.requestDeletedTrial(bm.getTrials()));
+        } while (!done);
     }
 
     // TODO cambiar el modo en que pasamos los nombres
@@ -133,7 +133,7 @@ public class Controller {
         uiManager.spacing();
         do {
             year = uiManager.askForInteger("Enter the edition's year: ");
-            if (year < (date.getYear()+1900) && year != Integer.MIN_VALUE) { //TODO la segona condicion q busca? Arreglar si no hace falta
+            if (year < (date.getYear()+1900) && year != Integer.MIN_VALUE) { //TODO la segunda condicion q busca? Quitar si no hace falta
                 uiManager.showMessage("ERROR: The year has to be for current or future events");
             }
         } while(year < (date.getYear()+1900));
@@ -151,23 +151,31 @@ public class Controller {
         } while(trials < 3 || trials > 12);
 
         uiManager.spacing();
-        uiManager.showMessage("\t--- Trials ----");
+        uiManager.showMessage("\t---- Trials ----");
         uiManager.spacing();
         uiManager.showList(bm.getTrials());
         uiManager.spacing();
 
         for (int i = 0; i < trials; i++) {
-             trialList.add(uiManager.askForInteger("Pick a trial (" + (i+1) + "/" + trials + "): "));
+            int trialNum;
+            do {
+                trialNum = uiManager.askForInteger("Pick a trial (" + (i+1) + "/" + trials + "): ")-1; //le resto 1 para q corresponda con el indice de la lista.
+                if (trialNum < 0 || trialNum > bm.trialLength()-1) {
+                    uiManager.showMessage("Error: Trial number has to be between "+ 1 + " and " + bm.trialLength() + ".");
+                }
+            } while (trialNum < 0 || trialNum > bm.trialLength()-1);
+            trialList.add(trialNum);
         }
 
         uiManager.spacing();
 
-        // TODO pasar todos los datos a persistencia
+        bm.createEdition(trialList,year, players);
 
         uiManager.showMessage("The editions was created successfully!");
-
     }
+
     private void listAllEditions() {
+        bm.sortEditionsByYear();
         for (int i = 0; i < bm.editionLength(); i++) {
             uiManager.showTabulatedMessage((i+1)+") The Trials " + bm.getEditions().get(i).getYear());
         }
@@ -185,10 +193,9 @@ public class Controller {
          int option = uiManager.askForInteger("Enter an option: ");
             if (option > 0 && option < bm.editionLength()+1) {
                 uiManager.spacing();
-                uiManager.showMessage("Here would go info");
-                // TODO touch the business values and the
+                System.out.println(bm.printEdition(option-1));
             } else if (option == bm.editionLength()+1) {
-            } else if (option != Integer.MIN_VALUE){
+            } else {
                 uiManager.spacing();
                 uiManager.showMessage("ERROR: You must put a value between 1 and "+ (bm.editionLength()+1));
             }
@@ -198,13 +205,12 @@ public class Controller {
         uiManager.showMessage("Which edition do you want to clone? ");
         uiManager.spacing();
         listAllEditions();
-        // TODO touch the dao and business
         int option = uiManager.askForInteger("Enter an option: ");
         if (option > 0 && option < bm.editionLength()+1) {
             uiManager.spacing();
             int year = uiManager.askForInteger("Enter the new edition's year: ");
             int players = uiManager.askForInteger("Enter the new edition's initial number of players: ");
-            // TODO touch the business values and the
+            bm.duplicateEdition(option-1,year,players);
             uiManager.spacing();
             uiManager.showMessage("The edition was cloned successfully!");
         } else if (option == bm.editionLength()+1) {
@@ -213,23 +219,29 @@ public class Controller {
             uiManager.showMessage("ERROR: You must put a value between 1 and "+ (bm.editionLength()+1));
         }
     }
+
     public void deleteEdition() {
         uiManager.spacing();
         uiManager.showMessage("Which edition do you want to delete?");
         uiManager.spacing();
         listAllEditions();
         int option = uiManager.askForInteger("Enter an option: ");
+
         if (option > 0 && option < bm.editionLength()+1) {
             uiManager.spacing();
             int value = uiManager.askForInteger("Enter the edition's year for confirmation: ");
-            // TODO touch the business values and the dao
-            uiManager.spacing();
-            uiManager.showMessage("The edition was successfully deleted.");
+
+            if (value == bm.getEditions().get(option-1).getYear()) {
+                bm.deleteEdition(option - 1);
+                uiManager.spacing();
+                uiManager.showMessage("The edition was successfully deleted.");
+            }
+
+            else uiManager.showMessage("The option and the year introduced do not match.");
         } else if (option == bm.editionLength()+1) {
         } else if (option != Integer.MIN_VALUE){
             uiManager.spacing();
             uiManager.showMessage("ERROR: You must put a value between 1 and "+ (bm.editionLength()+1));
         }
-
     }
 }

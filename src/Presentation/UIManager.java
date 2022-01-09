@@ -1,12 +1,8 @@
 package Presentation;
 
-import Business.Edition;
 import Business.Trial;
 
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class UIManager {
     Scanner scanner = new Scanner(System.in);
@@ -63,7 +59,7 @@ public class UIManager {
         do {
             System.out.println(
                     """
-                            \t1) Manage Trials\s
+                            \n\t1) Manage Trials\s
                             \t2) Manage Editions\s
 
                             \t3) Exit""");
@@ -82,7 +78,7 @@ public class UIManager {
                                                 
                     \ta) Create Trial
                     \tb) List Trials\s
-                    \tc) Delete Trial Editions\s
+                    \tc) Delete Trial\s
 
                     \td) Back""");
 
@@ -140,6 +136,8 @@ public class UIManager {
 
                 switch (input) {
                     case 1: return 1;
+                    case 2: return 2;
+                    case 3: return 3;
                     default: System.out.println("\nERROR: Choose between the following options");
                 }
 
@@ -166,8 +164,7 @@ public class UIManager {
     public int askForInteger(String message) {
         try {
             System.out.print(message);
-            int input = Integer.parseInt(scanner.nextLine());
-            return input;
+            return Integer.parseInt(scanner.nextLine());
         } catch (Exception e) {
             System.out.println("ERROR: The input has to be an integer");
         }
@@ -193,15 +190,19 @@ public class UIManager {
                 scanner.nextLine();
                 if (selectTrial > 0 && selectTrial <= trials.size())
                     System.out.println("\n" + trials.get(selectTrial - 1).toString());
+                else if (selectTrial != back)
+                    System.out.println("Trial does not exist.\n");
             } catch (NumberFormatException | InputMismatchException e) {
                 System.out.println("\nIntroduce a number please\n");
                 scanner.nextLine();
             }
         } while (selectTrial != back);
     }
+
     public void requestNewTrial() {
         // TODO implement here
     }
+
     public int requestDeletedTrial(List<Trial> trials) {
 
         System.out.println("\nWhich edition do you want to delete?\n");

@@ -4,6 +4,7 @@ import Persistance.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class BusinessManager {
@@ -34,12 +35,12 @@ public class BusinessManager {
     public boolean deleteTrial (int index) {
         if (index < trials.size() && index >= 0) {
             trials.remove(index);
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
-    public void createEdition (int year, int numTrials, int numPlayers, List<Integer> trialIndexes) {
+    public void createEdition (List<Integer> trialIndexes, int year, int numPlayers) {
         Edition edition = new Edition();
         List<Trial> trialList = new ArrayList<>();
         
@@ -51,7 +52,19 @@ public class BusinessManager {
         }
 
         edition.setTrials(trialList);
-        editions.add(edition);
+
+        boolean yearAlreadyExists = false;
+        for (int i = 0; i < editions.size(); i++) {
+            Edition edition1 = editions.get(i);
+            if (edition1.getYear() == year) {
+                editions.set(i, edition);
+                yearAlreadyExists = true;
+                break;
+            }
+        }
+        if (!yearAlreadyExists) {
+            editions.add(edition);
+        }
     }
 
     public void duplicateEdition (int index, int year, int players) {
@@ -60,25 +73,38 @@ public class BusinessManager {
             duplicate = (Edition) editions.get(index).clone();
             duplicate.getPlayers().clear();
             duplicate.setNumPlayers(players);
-            editions.add(duplicate);
+            duplicate.setYear(year);
+
+            boolean yearAlreadyExists = false;
+            for (int i = 0; i < editions.size(); i++) {
+                Edition edition = editions.get(i);
+                if (edition.getYear() == year) {
+                    editions.set(i,edition);
+                    yearAlreadyExists = true;
+                    break;
+                }
+            }
+            if (!yearAlreadyExists) {
+                editions.add(duplicate);
+            }
+
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-
     }
 
-    public boolean deleteEdition (int index) {
-        if (index < editions.size() && index >= 0) {
-            editions.remove(index);
-            return true;
-        }
-
-        return false;
+    public void deleteEdition (int index) {
+        editions.remove(index);
     }
 
     public int editionLength() {
         return editions.size();
     }
+
+    public int trialLength() {
+        return trials.size();
+    }
+
 
     public void executeTrial () {
         //TODO execute
@@ -124,8 +150,17 @@ public class BusinessManager {
         return clone;
     }
 
+    public String printEdition(int index) {
+        return editions.get(index).toString();
+    }
+
+    public void sortEditionsByYear() {
+        editions.sort(Comparator.comparingInt(Edition::getYear));
+    }
+
+
     //////////////////////////////////////////
-     ///          TEST DE DUPLICAR          ///
+     ///     TEST DE DUPLICAR (EDITIONS)    ///
     //////////////////////////////////////////
 
 /*
