@@ -20,6 +20,24 @@ public class UIManager {
                                                             \s""");
     }
 
+    public int requestFile() {
+        do {
+            System.out.print("\nThe IEEE needs to know where your allegiance lies.\n");
+            System.out.println("\tI) People’s Front of Engineering (CSV)");
+            System.out.println("\tII) Engineering People’s Front (JSON)");
+            System.out.print("\nPick a faction: ");
+
+            String input = scanner.nextLine();
+            if (input.equals("I")) {
+                return 1;
+            }
+            else if (input.equals("II")) {
+                return 2;
+            }
+            System.out.println("\nERROR: The value must be an option on the menu\n");
+        } while (true);
+    }
+
     public int requestRole() {
         printTheTrials();
         System.out.print("\nWelcome to The Trials. ");
@@ -40,6 +58,7 @@ public class UIManager {
             System.out.println("\nERROR: The value must be an option on the menu\n");
         } while (true);
     }
+
     public int requestComposerOp() {
         do {
             System.out.println(
@@ -249,4 +268,6 @@ public class UIManager {
             }
         } while (true);
     }
+
+
 }

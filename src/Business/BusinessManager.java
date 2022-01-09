@@ -1,18 +1,30 @@
 package Business;
 
-import Persistance.EditionCsvDAO;
-import Persistance.EditionDAO;
-import Persistance.TrialCsvDAO;
-import Persistance.TrialDAO;
+import Persistance.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BusinessManager {
-    private final EditionDAO editionDAO = new EditionCsvDAO();
-    private final TrialDAO trialDAO = new TrialCsvDAO();
-    private final List<Trial> trials = trialDAO.getAll();
-    private final List<Edition> editions = editionDAO.getAll(trials);
+    private EditionDAO editionDAO;
+    private TrialDAO trialDAO;
+    private List<Trial> trials = Collections.emptyList();
+    private List<Edition> editions = Collections.emptyList();
+
+    public void loadFromCsv() {
+        trialDAO = new TrialCsvDAO();
+        trials = trialDAO.getAll();
+        editionDAO = new EditionCsvDAO();
+        editions = editionDAO.getAll(trials);
+    }
+
+    public void loadFromJson() {
+        trialDAO = new TrialJsonDao();
+        trials = trialDAO.getAll();
+        editionDAO = new EditionJsonDAO();
+        editions = editionDAO.getAll(trials);
+    }
 
     public void createTrial (String name, int acceptance, int revision, int rejection, String nameJournal, String quartile) {
         Trial trial = new Trial(name, acceptance, revision, rejection, nameJournal, quartile);
@@ -24,7 +36,6 @@ public class BusinessManager {
             trials.remove(index);
             return false;
         }
-
         return true;
     }
 
@@ -73,7 +84,16 @@ public class BusinessManager {
         //TODO execute
     }
 
+    //saveData: guarda en ambos ficheros para que en la siguiente ejecucion los ficheros estén en el mismo estado
     public void saveData () {
+        if (trialDAO instanceof TrialCsvDAO) {
+            new TrialJsonDao().save(trials);
+            new EditionJsonDAO().save(editions,trials);
+        }
+        else {
+            new TrialCsvDAO().save(trials);
+            new EditionCsvDAO().save(editions,trials);
+        }
         editionDAO.save(editions, trials);
         trialDAO.save(trials);
     }
@@ -104,7 +124,7 @@ public class BusinessManager {
         return clone;
     }
 
-      //////////////////////////////////////////
+    //////////////////////////////////////////
      ///          TEST DE DUPLICAR          ///
     //////////////////////////////////////////
 

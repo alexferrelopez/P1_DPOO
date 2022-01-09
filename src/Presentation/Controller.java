@@ -13,10 +13,27 @@ public class Controller {
 
     public void run () {
         //int option = uiManager.requestRole();
+
+        //requestFile (it plays before requesting a role)
+        switch (uiManager.requestFile()) {
+            case 1 -> loadCsv();
+            case 2 -> loadJson();
+        }
+
         switch (uiManager.requestRole()) {
             case 1 -> executeComposer();
             case 2 -> executeConductor();
         }
+
+        bm.saveData();
+    }
+
+    private void loadCsv() {
+        bm.loadFromCsv();
+    }
+
+    private void loadJson() {
+        bm.loadFromJson();
     }
 
     public void executeConductor() {
@@ -92,7 +109,6 @@ public class Controller {
             back = bm.deleteTrial(uiManager.requestDeletedTrial(bm.getTrials()));
         } while (!back);
     }
-
 
     // TODO cambiar el modo en que pasamos los nombres
     public void executeEdition() {
