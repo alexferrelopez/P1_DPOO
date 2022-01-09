@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Trial Name 1",
+    "acceptance": 50,
+    "revision": 20,
+    "rejection": 30,
+    "journal": {
+      "name": "Journal name 1",
+      "quartile": "Q4"
+    }
+  },
+  {
+    "name": "Trial name 2",
+    "acceptance": 50,
+    "revision": 30,
+    "rejection": 20,
+    "journal": {
+      "name": "Trial 1",
+      "quartile": "Q3"
+    }
+  },
+  {
+    "name": "Trial name 3",
+    "acceptance": 50,
+    "revision": 30,
+    "rejection": 20,
+    "journal": {
+      "name": "Journal Name 2",
+      "quartile": "Q4"
+    }
+  }
+]
