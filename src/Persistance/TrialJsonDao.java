@@ -35,7 +35,7 @@ public class TrialJsonDao implements TrialDAO{
             fileReader.close();
             return trials;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("El fitxer no existeix.");
         }
         return Collections.emptyList();
     }

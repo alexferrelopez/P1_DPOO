@@ -36,7 +36,7 @@ public class EditionJsonDAO implements EditionDAO{
             fileReader.close();
             return editions;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("El fitxer no existeix.");
         }
         return Collections.emptyList();
     }

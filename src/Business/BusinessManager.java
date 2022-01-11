@@ -12,6 +12,8 @@ public class BusinessManager {
     private TrialDAO trialDAO;
     private List<Trial> trials = Collections.emptyList();
     private List<Edition> editions = Collections.emptyList();
+    private final ExecutionCheckpointDAO executionCheckpointDAO = new ExecutionCheckpointDAO();
+    private final Integer checkpoint = executionCheckpointDAO.getAll();
 
     public void loadFromCsv() {
         trialDAO = new TrialCsvDAO();
@@ -122,6 +124,7 @@ public class BusinessManager {
         }
         editionDAO.save(editions, trials);
         trialDAO.save(trials);
+        executionCheckpointDAO.save(checkpoint);
     }
 
     public List<Trial> getTrials() {
