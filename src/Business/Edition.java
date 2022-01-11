@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Edition implements Cloneable{
     private List<Trial> trials;
-    private List<Player> players; //creo que esto aqui sobra (porque empieza a establecerse en la ejecución)
+    private List<Player> players;
     private int year;
     private int numPlayers;
 
@@ -18,7 +18,16 @@ public class Edition implements Cloneable{
     }
 
     public List<Trial> getTrials() {
-        return trials;
+        List<Trial> copy = new ArrayList<>();
+
+        for (Trial trial : trials) {
+            try {
+                copy.add((Trial)trial.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+        return copy;
     }
 
     public void setTrials(List<Trial> trials) {

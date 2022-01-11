@@ -151,7 +151,7 @@ public class Controller {
         } while(trials < 3 || trials > 12);
 
         uiManager.spacing();
-        uiManager.showMessage("\t---- Trials ----");
+        uiManager.showMessage("\t--- Trials ---");
         uiManager.spacing();
         uiManager.showList(bm.getTrials());
         uiManager.spacing();

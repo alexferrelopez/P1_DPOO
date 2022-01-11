@@ -2,10 +2,7 @@ package Business;
 
 import Persistance.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class BusinessManager {
     private EditionDAO editionDAO;
@@ -13,7 +10,7 @@ public class BusinessManager {
     private List<Trial> trials = Collections.emptyList();
     private List<Edition> editions = Collections.emptyList();
     private final ExecutionCheckpointDAO executionCheckpointDAO = new ExecutionCheckpointDAO();
-    private final Integer checkpoint = executionCheckpointDAO.getAll();
+    private Integer checkpoint = executionCheckpointDAO.getAll();
 
     public void loadFromCsv() {
         trialDAO = new TrialCsvDAO();
@@ -96,6 +93,7 @@ public class BusinessManager {
     }
 
     public void deleteEdition (int index) {
+        checkpoint = null;
         editions.remove(index);
     }
 
@@ -108,8 +106,23 @@ public class BusinessManager {
     }
 
 
-    public void executeTrial () {
-        //TODO execute
+    public List<Integer> executeTrial () {
+        for (Edition edition : editions) {
+            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) {
+                List<Trial> trials = edition.getTrials();
+                List<Integer> piList = null;
+                for (Trial trial : trials) {
+                    TrialResult trialResult = trial.executeTrial(edition.getNumPlayers());
+                    piList = trial.assignPI(trialResult.getStatusList());
+                    List<Player> players = edition.getPlayers();
+                    for (int i = 0; i < players.size(); i++) {
+                        players.get(i).setPI_count(piList.get(i));
+                    }
+                }
+                return piList;
+            }
+        }
+        return null;
     }
 
     //saveData: guarda en ambos ficheros para que en la siguiente ejecucion los ficheros estén en el mismo estado
@@ -132,7 +145,7 @@ public class BusinessManager {
 
         for (Trial trial : trials) {
             try {
-                copy.add((Trial) trial.clone());
+                copy.add((Trial)trial.clone());
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
