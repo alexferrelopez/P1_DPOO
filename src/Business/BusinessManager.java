@@ -136,6 +136,7 @@ public class BusinessManager {
 
                     String trialHeader = "\nTrial #" + (checkpoint+1) + " - " + trialToPlay.getName() +"\n";
                     String resultTrial = trialToPlay.executeTrial(edition.getPlayerListSize(), trialResult, edition);
+                    //TODO falta ascendir als jugadors
                     result = trialHeader + resultTrial;
 
                     checkpoint++;

@@ -35,7 +35,21 @@ public class Doctor implements Player {
 
     @Override
     public void addPICount(int points) {
-        this.PI_count += points;
+
+        if (points == 100) {
+            points = 3;
+        }
+        else if (points == 1000) {
+            points = 5;
+        }
+        else if (points == 10000) {
+            points = PI_count/2 + PI_count%2;
+        }
+
+        if (points<0) {
+            this.PI_count += points/2;
+        }
+        else this.PI_count += points*2;
     }
 
     @Override

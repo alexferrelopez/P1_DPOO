@@ -27,6 +27,17 @@ public class Master implements Player {
 
     @Override
     public void addPICount(int points) {
+
+        if (points == 100) {
+            points = 3;
+        }
+        else if (points == 1000) {
+            points = 10;
+        }
+        else if (points == 10000) {
+            points = PI_count/2 + PI_count%2;
+        }
+
         if (points<0) {
             this.PI_count += points/2;
         }

@@ -1,6 +1,8 @@
 package Business;
 
+import Business.players.Doctor;
 import Business.players.Enginyer;
+import Business.players.Master;
 import Business.players.Player;
 import Business.trials.Trial;
 
@@ -117,6 +119,28 @@ public class Edition implements Cloneable{
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
             player.addPICount(piByPlayer.get(i));
+
+            if (player.getPI_count() >= 10) {
+                ascendPlayer(player);
+            }
+        }
+    }
+
+    private void ascendPlayer(Player player) {
+        String type = player.getType();
+
+        switch (type) {
+            case Doctor.TYPE -> {
+
+            }
+            case Enginyer.TYPE -> {
+                players.add(new Master(player.getName()));
+                players.remove(player);
+            }
+            case Master.TYPE -> {
+                players.add(new Doctor(player.getName()));
+                players.remove(player);
+            }
         }
     }
 

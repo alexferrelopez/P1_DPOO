@@ -10,11 +10,6 @@ public class Enginyer implements Player {
         this.name = name;
     }
 
-    public Enginyer() {
-
-    }
-
-
     public String getType() {
         return type;
     }
@@ -40,6 +35,17 @@ public class Enginyer implements Player {
 
     @Override
     public void addPICount(int points) {
+
+        if (points == 100) {
+            points = 10;
+        }
+        else if (points == 1000) {
+            points = 5;
+        }
+        else if (points == 10000) {
+            points = PI_count/2 + PI_count%2;
+        }
+
         this.PI_count += points;
     }
 

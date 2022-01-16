@@ -1,7 +1,9 @@
 package Persistance;
 
 import Business.Edition;
+import Business.players.Doctor;
 import Business.players.Enginyer;
+import Business.players.Master;
 import Business.players.Player;
 import Business.trials.Trial;
 
@@ -39,6 +41,8 @@ public class EditionCsvDAO implements EditionDAO{
                         if (players !=null && !players.isEmpty()) {
 
                             for (Player player : players) {
+                                linia.append(player.getType());
+                                linia.append(",");
                                 linia.append(player.getName());
                                 linia.append(",");
                                 linia.append(player.getPI_count());
@@ -47,6 +51,7 @@ public class EditionCsvDAO implements EditionDAO{
                         }
                         else {
                             for (int i = 0; i < edition.getNumPlayers(); i++) {
+                                linia.append(",");
                                 linia.append(",");
                                 linia.append(",");
                             }
@@ -101,16 +106,44 @@ public class EditionCsvDAO implements EditionDAO{
 
                 boolean emptyList = false;
                 for (int j = 0; j < numPlayers; j++) {
-                    Player playerAux = new Enginyer();
-                    playerAux.setName(splitEdition[index]);
-                    index++;
-                    if (splitEdition[index].equals("")) {
-                        emptyList = true;
-                        playerAux.setPI_count(0);
+                    Player playerAux;
+
+                    switch (splitEdition[index]) {
+                        case Doctor.TYPE -> {
+                            index++;
+                            playerAux = new Doctor(splitEdition[index]);
+                            if (splitEdition[index].equals("")) {
+                                emptyList = true;
+                                playerAux.setPI_count(0);
+                            }
+                            else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
+                            index++;
+                            playerList.add(playerAux);
+                        }
+                        case Enginyer.TYPE -> {
+                            index++;
+                            playerAux = new Enginyer(splitEdition[index]);
+                            if (splitEdition[index].equals("")) {
+                                emptyList = true;
+                                playerAux.setPI_count(0);
+                            }
+                            else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
+                            index++;
+                            playerList.add(playerAux);
+                        }
+                        case Master.TYPE -> {
+                            index++;
+                            playerAux = new Master(splitEdition[index]);
+                            if (splitEdition[index].equals("")) {
+                                emptyList = true;
+                                playerAux.setPI_count(0);
+                            }
+                            else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
+                            index++;
+                            playerList.add(playerAux);
+                        }
                     }
-                    else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
                     index++;
-                    playerList.add(playerAux);
                 }
 
                 if (emptyList) {
