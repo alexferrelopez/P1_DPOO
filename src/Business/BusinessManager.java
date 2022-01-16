@@ -7,8 +7,8 @@ import java.util.*;
 public class BusinessManager {
     private EditionDAO editionDAO;
     private TrialDAO trialDAO;
-    private List<Trial> trials = Collections.emptyList();
-    private List<Edition> editions = Collections.emptyList();
+    private List<Trial> trials = new ArrayList<>();
+    private List<Edition> editions = new ArrayList<>();
     private final ExecutionCheckpointDAO executionCheckpointDAO = new ExecutionCheckpointDAO();
     private Integer checkpoint = executionCheckpointDAO.getAll();
 
@@ -86,7 +86,6 @@ public class BusinessManager {
             if (!yearAlreadyExists) {
                 editions.add(duplicate);
             }
-
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -105,25 +104,42 @@ public class BusinessManager {
         return trials.size();
     }
 
-
-    public List<Integer> executeTrial () {
+    public String executeTrial () {
+        int systemYear = Calendar.getInstance().get(Calendar.YEAR);
         for (Edition edition : editions) {
-            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) {
-                List<Trial> trials = edition.getTrials();
-                List<Integer> piList = null;
-                for (Trial trial : trials) {
-                    TrialResult trialResult = trial.executeTrial(edition.getNumPlayers());
-                    piList = trial.assignPI(trialResult.getStatusList());
-                    List<Player> players = edition.getPlayers();
-                    for (int i = 0; i < players.size(); i++) {
-                        players.get(i).setPI_count(piList.get(i));
+            int editionYear = edition.getYear();
+            if (systemYear == editionYear) {
+                List<Trial> trialsEdition = edition.getTrials();
+                if (checkpoint < trialsEdition.size()) {
+                    Trial trialToPlay = trialsEdition.get(checkpoint);
+                    TrialResult trialResult = new TrialResult(edition.getPlayerListSize());
+
+                    String result;
+
+                    String trialHeader = "\nTrial #" + (checkpoint+1) + " - " + trialToPlay.getName() +"\n";
+                    String resultTrial = trialToPlay.executeTrial(edition.getPlayerListSize(), trialResult, edition);
+                    result = trialHeader + resultTrial;
+
+                    checkpoint++;
+                    if (checkpoint == trialsEdition.size() || getRemainingPlayers() == 0) {
+                        checkpoint = 0;
+
+                        if (edition.allPLayersEliminated()) {
+                            edition.clearPlayers();
+                            return result + "\n\nTHE TRIALS " + editionYear + " HAVE ENDED - PLAYERS LOST";
+                        } else {
+                            edition.clearPlayers();
+                            return result + "\n\nTHE TRIALS " + editionYear + " HAVE ENDED - PLAYERS WON";
+                        }
                     }
+                    return result;
                 }
-                return piList;
             }
         }
         return null;
     }
+
+
 
     //saveData: guarda en ambos ficheros para que en la siguiente ejecucion los ficheros estén en el mismo estado
     public void saveData () {
@@ -174,6 +190,43 @@ public class BusinessManager {
         editions.sort(Comparator.comparingInt(Edition::getYear));
     }
 
+    public Integer getCheckpoint() {
+        return checkpoint;
+    }
+
+    public boolean editionYearExists () {
+        for (Edition edition : editions) {
+            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return true;
+        }
+        return false;
+    }
+
+    public int getEditionNumPlayers() {
+        for (Edition edition : editions) {
+            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return edition.getNumPlayers();
+        }
+        return 0;
+    }
+
+    public void addNewPLayer(String playerName) {
+        for (Edition edition : editions) {
+            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) edition.addPlayer(playerName);
+        }
+    }
+
+    public int getEditionNumTrials() {
+        for (Edition edition : editions) {
+            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return edition.getTrials().size();
+        }
+        return 0;
+    }
+
+    public int getRemainingPlayers() {
+        for (Edition edition : editions) {
+            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return edition.getPlayerListSize();
+        }
+        return 0;
+    }
 
     //////////////////////////////////////////
      ///     TEST DE DUPLICAR (EDITIONS)    ///

@@ -17,29 +17,31 @@ public class  TrialCsvDAO implements TrialDAO{
 
     @Override
     public void save(List<Trial> trials) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("./files/trials.csv")));
-            for (int i = 0; i < trials.size(); i++) {
-                String linia = i +
-                        "," +
-                        trials.get(i).getName() +
-                        "," +
-                        trials.get(i).getAcceptance() +
-                        "," +
-                        trials.get(i).getRevision() +
-                        "," +
-                        trials.get(i).getRejection() +
-                        "," +
-                        trials.get(i).getJournalName() +
-                        "," +
-                        trials.get(i).getJorunalQuartile();
-                bw.write(linia);
-                bw.newLine();
+        if (!trials.isEmpty()) {
+            try {
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("./files/trials.csv")));
+                for (int i = 0; i < trials.size(); i++) {
+                    String linia = i +
+                            "," +
+                            trials.get(i).getName() +
+                            "," +
+                            trials.get(i).getAcceptance() +
+                            "," +
+                            trials.get(i).getRevision() +
+                            "," +
+                            trials.get(i).getRejection() +
+                            "," +
+                            trials.get(i).getJournalName() +
+                            "," +
+                            trials.get(i).getJorunalQuartile();
+                    bw.write(linia);
+                    bw.newLine();
+                }
+                bw.flush();
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            bw.flush();
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -64,8 +66,8 @@ public class  TrialCsvDAO implements TrialDAO{
 
             return trials;
         } catch (IOException e) {
-            System.out.println("El fitxer no existeix.");
+            System.out.println("\n\tNo trials have been loaded");
         }
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 }

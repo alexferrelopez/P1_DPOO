@@ -1,11 +1,9 @@
 package Presentation;
 
 import Business.BusinessManager;
+import Business.Edition;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class Controller {
     UIManager uiManager = new UIManager();
@@ -26,6 +24,7 @@ public class Controller {
         }
 
         bm.saveData();
+        uiManager.showMessage("\nShutting down...");
     }
 
     private void loadCsv() {
@@ -38,9 +37,42 @@ public class Controller {
 
     public void executeConductor() {
         uiManager.spacing();
-        uiManager.showMessage("Entering execution mode...");
-        uiManager.spacing();
+        uiManager.showMessage("Entering execution mode...\n");
 
+        if (bm.editionYearExists()) {
+                if (bm.getCheckpoint() == 0) {
+                    for (int i = 0; i < bm.getEditionNumPlayers(); i++) {
+                        String playerName;
+                        do {
+                            playerName = uiManager.askForString("Enter the player’s name (" + (i + 1) + "/" + bm.getEditionNumPlayers() + "): ");
+                        } while (playerName.isEmpty());
+                        bm.addNewPLayer(playerName);
+                    }
+                }
+                boolean stop = false;
+                for (int i = 0; i < bm.getEditionNumTrials() && !stop; i++) {
+
+                    System.out.println(bm.executeTrial());
+
+                    if (bm.getRemainingPlayers() != 0) {
+                        String goNext = uiManager.askForString("\nContinue the execution? [yes/no]: ").toLowerCase(Locale.ROOT).trim();
+                        do {
+                            if (goNext.equals("yes")) {
+                            } else if (goNext.equals("no")) {
+                                stop = true;
+                            } else {
+                                uiManager.showMessage("\nWrong input. Options are: \"yes\" or \"no\"\n");
+                                goNext = uiManager.askForString("Continue the execution? [yes/no]: ").toLowerCase(Locale.ROOT).trim();
+                            }
+                        } while (!goNext.equals("yes") && !(goNext.equals("no")));
+                    } else stop = true;
+                }
+                uiManager.spacing();
+
+            //} else uiManager.showMessage("No players in this edition.");
+        } else {
+            uiManager.showMessage("No edition is defined for the current year ("+ Calendar.getInstance().get(Calendar.YEAR) +").");
+        }
     }
     public void executeComposer() {
         int optionComposer;
@@ -50,7 +82,7 @@ public class Controller {
             switch (optionComposer) {
                 case 1 -> executeTrialTypes();
                 case 2 -> executeEdition();
-                case 3 -> uiManager.showMessage("\nShutting down...");
+                case 3 -> {}
             }
         } while (optionComposer!= 3);
     }
@@ -110,17 +142,20 @@ public class Controller {
         } while (!done);
     }
 
-    // TODO cambiar el modo en que pasamos los nombres
     public void executeEdition() {
         do {
             uiManager.spacing();
             switch (uiManager.requestEditionOp()) {
-                case 1 -> createEdition(); //create
-                case 2 -> listEdition(); //list
-                case 3 -> duplicateEdition(); //duplicate
-                case 4 -> deleteEdition(); //delete
+                case 1 -> {
+                    if (bm.trialLength() != 0)
+                        createEdition();        //create
+                    else uiManager.showMessage("\nNo trials created yet.");
+                }
+                case 2 -> listEdition();        //list
+                case 3 -> duplicateEdition();   //duplicate
+                case 4 -> deleteEdition();      //delete
                 case 5 -> {
-                    uiManager.spacing(); //back
+                    uiManager.spacing();        //back
                     return;
                 }
             }
@@ -133,19 +168,19 @@ public class Controller {
         uiManager.spacing();
         do {
             year = uiManager.askForInteger("Enter the edition's year: ");
-            if (year < (date.getYear()+1900) && year != Integer.MIN_VALUE) { //TODO la segunda condicion q busca? Quitar si no hace falta
+            if (year < (date.getYear()+1900)) {
                 uiManager.showMessage("ERROR: The year has to be for current or future events");
             }
         } while(year < (date.getYear()+1900));
         do {
             players = uiManager.askForInteger("Enter the initial number of players: ");
-            if ((players > 6 || players < 1) && players != Integer.MIN_VALUE) {
+            if ((players > 6 || players < 1)) {
                 uiManager.showMessage("ERROR: The number of players has to be between 1 and 5");
             }
         } while (players > 6 || players < 1);
         do {
             trials = uiManager.askForInteger("Enter the number of trials: ");
-            if ((trials < 3 || trials > 12) && trials != Integer.MIN_VALUE) {
+            if ((trials < 3 || trials > 12)) {
                 uiManager.showMessage("ERROR: The number of trials has to be between 3 and 12");
             }
         } while(trials < 3 || trials > 12);
@@ -189,7 +224,7 @@ public class Controller {
          uiManager.showMessage("Here are the current editions, do you want to see more details or go back?");
          uiManager.spacing();
          listAllEditions();
-         // TODO touch the dao and business
+
          int option = uiManager.askForInteger("Enter an option: ");
             if (option > 0 && option < bm.editionLength()+1) {
                 uiManager.spacing();
@@ -208,13 +243,26 @@ public class Controller {
         int option = uiManager.askForInteger("Enter an option: ");
         if (option > 0 && option < bm.editionLength()+1) {
             uiManager.spacing();
-            int year = uiManager.askForInteger("Enter the new edition's year: ");
-            int players = uiManager.askForInteger("Enter the new edition's initial number of players: ");
+            int year, players;
+            Date date = new Date();
+            do {
+                year = uiManager.askForInteger("Enter the edition's year: ");
+                if (year < (date.getYear()+1900)) {
+                    uiManager.showMessage("ERROR: The year has to be for current or future events");
+                }
+            } while(year < (date.getYear()+1900));
+            do {
+                players = uiManager.askForInteger("Enter the initial number of players: ");
+                if ((players > 6 || players < 1)) {
+                    uiManager.showMessage("ERROR: The number of players has to be between 1 and 5");
+                }
+            } while (players > 6 || players < 1);
+
             bm.duplicateEdition(option-1,year,players);
             uiManager.spacing();
             uiManager.showMessage("The edition was cloned successfully!");
         } else if (option == bm.editionLength()+1) {
-        } else if (option != Integer.MIN_VALUE){
+        } else {
             uiManager.spacing();
             uiManager.showMessage("ERROR: You must put a value between 1 and "+ (bm.editionLength()+1));
         }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ExecutableTrial {
 
-    TrialResult executeTrial(int numPlayers);
+    String executeTrial(int numPlayers, TrialResult trialResult, Edition edition);
 
     List<Integer> assignPI (List<Boolean> statusList);
 }

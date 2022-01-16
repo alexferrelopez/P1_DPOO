@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -17,12 +18,14 @@ public class EditionJsonDAO implements EditionDAO{
     public void save(List<Edition> editions, List<Trial> t) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        try {
-            FileWriter fileWriter = new FileWriter("./files/editions.json");
-            gson.toJson(editions, fileWriter);
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!editions.isEmpty()) {
+            try {
+                FileWriter fileWriter = new FileWriter("./files/editions.json");
+                gson.toJson(editions, fileWriter);
+                fileWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -32,13 +35,13 @@ public class EditionJsonDAO implements EditionDAO{
 
         try {
             FileReader fileReader = new FileReader("./files/editions.json");
-            List<Edition> editions = Arrays.stream(gson.fromJson(fileReader, Edition[].class)).toList();
+            List<Edition> editions = new ArrayList<>(Arrays.stream((gson.fromJson(fileReader, Edition[].class))).toList());
             fileReader.close();
             return editions;
         } catch (IOException e) {
-            System.out.println("El fitxer no existeix.");
+            System.out.println("\tNo editions have been loaded\n");
         }
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 
       /////////////////////////////////////////

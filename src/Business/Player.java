@@ -2,11 +2,10 @@ package Business;
 
 public class Player implements Cloneable {
     private String name;
-    private int PI_count;
+    private int PI_count = 5;
 
-    public Player(String name, int PI_count) {
+    public Player(String name) {
         this.name = name;
-        this.PI_count = PI_count;
     }
 
     public Player() {
@@ -24,12 +23,8 @@ public class Player implements Cloneable {
         return PI_count;
     }
 
-    public void setPI_count(int PI_count) {
-        this.PI_count = PI_count;
-    }
-
-    public void changePI (Player player, Edition edition) {
-
+    public void addPICount(int points) {
+        this.PI_count += points;
     }
 
     public boolean isEliminated () {
@@ -47,5 +42,9 @@ public class Player implements Cloneable {
                 "name='" + name + '\'' +
                 ", PI_count=" + PI_count +
                 '}';
+    }
+
+    public void setPI_count(int parseInt) {
+        this.PI_count = parseInt;
     }
 }

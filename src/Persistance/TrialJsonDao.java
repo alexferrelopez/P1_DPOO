@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -16,12 +17,14 @@ public class TrialJsonDao implements TrialDAO{
     public void save(List<Trial> trials) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-        try {
-            FileWriter fileWriter = new FileWriter("./files/trials.json");
-            gson.toJson(trials, fileWriter);
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!trials.isEmpty()) {
+            try {
+                FileWriter fileWriter = new FileWriter("./files/trials.json");
+                gson.toJson(trials, fileWriter);
+                fileWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -31,13 +34,13 @@ public class TrialJsonDao implements TrialDAO{
 
         try {
             FileReader fileReader = new FileReader("./files/trials.json");
-            List<Trial> trials = Arrays.stream(gson.fromJson(fileReader, Trial[].class)).toList();
+            List<Trial> trials = new ArrayList<>( Arrays.stream(gson.fromJson(fileReader, Trial[].class)).toList());
             fileReader.close();
             return trials;
         } catch (IOException e) {
-            System.out.println("El fitxer no existeix.");
+            System.out.println("\n\tNo trials have been loaded");
         }
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 
       /////////////////////////////////////////

@@ -101,7 +101,7 @@ public class UIManager {
     public int requestEditionOp() {
         do {
             System.out.println("""
-                            \ta) Create Edition
+                            \ta) Create (or edit) Edition
                             \tb) List Editions\s
                             \tc) Duplicate Edition\s
                             \td) Delete Edition\s
@@ -171,13 +171,11 @@ public class UIManager {
         return Integer.MIN_VALUE;
     }
 
-    // TODO and modificate
     public void showTrialList(List<Trial> trials) {
 
         System.out.println("\nHere are the current trials, do you want to see more details or go back?\n");
 
         int back;
-
         int selectTrial = 0;
         do {
             back = showList(trials);

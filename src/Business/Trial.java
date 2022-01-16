@@ -26,10 +26,10 @@ public class Trial implements Cloneable, ExecutableTrial{
     }
 
     @Override
-    public TrialResult executeTrial (int numPlayers) {
-        TrialResult trialResult = new TrialResult(numPlayers);
-        List<Boolean> statusList = trialResult.getStatusList();
+    public String executeTrial(int numPlayers, TrialResult trialResult, Edition edition) {
+        List<Boolean> statusList = new ArrayList<>();
         int[] timesRevisedList = trialResult.getTimesRevisedList();
+
         for (int i = 0; i < numPlayers; i++) {
             boolean processedTrial = false;
             do {
@@ -47,9 +47,46 @@ public class Trial implements Cloneable, ExecutableTrial{
                 }
             } while (!processedTrial);
         }
+
         trialResult.setStatusList(statusList);
         trialResult.setTimesRevisedList(timesRevisedList);
-        return trialResult;
+
+        List<Integer> piByPlayer = assignPI(trialResult.getStatusList());
+        edition.setPis(piByPlayer);
+
+        return trialResultToString(trialResult,edition);
+    }
+
+    private String trialResultToString(TrialResult trialResult, Edition edition) {
+        StringBuilder stringBuilder = new StringBuilder();
+        List<Player> players = edition.getPlayers();
+        List<Boolean> statusList = trialResult.getStatusList();
+        int[] timesRevisedList = trialResult.getTimesRevisedList();
+        List<Player> playersToRemove = new ArrayList<>();
+
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            stringBuilder.append("\n\t").append(player.getName()).append(" is submitting... ");
+            stringBuilder.append("Revisions... ".repeat(Math.max(0, timesRevisedList[i])));
+
+            if (statusList.get(i)) {
+                stringBuilder.append("Accepted! ");
+            }
+            else {
+                stringBuilder.append("Rejected. ");
+            }
+
+            stringBuilder.append("PI count: ");
+
+            if (player.getPI_count() <= 0) {
+                stringBuilder.append(0).append(" - Disqualified!");
+                playersToRemove.add(player);
+            }
+            else stringBuilder.append(player.getPI_count());
+        }
+
+        players.removeAll(playersToRemove);
+        return stringBuilder.toString();
     }
 
     @Override

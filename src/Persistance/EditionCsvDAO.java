@@ -12,59 +12,69 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class EditionCsvDAO implements EditionDAO{
     @Override
     public void save(List<Edition> editions, List<Trial> t) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("./files/editions.csv")));
 
-            for (Edition edition : editions) {
-                StringBuilder linia = new StringBuilder();
-                linia.append(edition.getYear());
-                linia.append(",");
+        if (!editions.isEmpty()) {
+            try {
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("./files/editions.csv")));
 
-                List<Player> players = edition.getPlayers();
-
-                if (players == null || players.isEmpty()) {
-                    linia.append(0);
-                    linia.append(",");
-                } else {
-                    linia.append(players.size());
+                for (Edition edition : editions) {
+                    StringBuilder linia = new StringBuilder();
+                    linia.append(edition.getYear());
                     linia.append(",");
 
-                    for (Player player : players) {
-                        linia.append(player.getName());
-                        linia.append(",");
-                        linia.append(player.getPI_count());
-                        linia.append(",");
-                    }
-                }
+                    List<Player> players = edition.getPlayers();
 
-                List<Trial> trials = edition.getTrials();
+                    if (edition.getNumPlayers() == 0) {
+                        linia.append(0);
+                        linia.append(",");
+                    } else {
+                        linia.append(edition.getNumPlayers());
+                        linia.append(",");
+                        if (players !=null && !players.isEmpty()) {
 
-                if (trials == null || trials.isEmpty()) {
-                    linia.append(0);
-                } else {
-                    linia.append(trials.size());
-                    for (Trial trial : trials) {
-                        for (int j = 0; j < t.size(); j++) {
-                            if (t.get(j).equals(trial)) {
+                            for (Player player : players) {
+                                linia.append(player.getName());
                                 linia.append(",");
-                                linia.append(j);
+                                linia.append(player.getPI_count());
+                                linia.append(",");
+                            }
+                        }
+                        else {
+                            for (int i = 0; i < edition.getNumPlayers(); i++) {
+                                linia.append(",");
+                                linia.append(",");
                             }
                         }
                     }
+
+                    List<Trial> trials = edition.getTrials();
+
+                    if (trials == null || trials.isEmpty()) {
+                        linia.append(0);
+                    } else {
+                        linia.append(trials.size());
+                        for (Trial trial : trials) {
+                            for (int j = 0; j < t.size(); j++) {
+                                if (t.get(j).equals(trial)) {
+                                    linia.append(",");
+                                    linia.append(j);
+                                }
+                            }
+                        }
+                    }
+                    bw.write(linia.toString());
+                    bw.newLine();
                 }
-                bw.write(linia.toString());
-                bw.newLine();
+                bw.flush();
+                bw.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            bw.flush();
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -92,7 +102,10 @@ public class EditionCsvDAO implements EditionDAO{
                     Player playerAux = new Player();
                     playerAux.setName(splitEdition[index]);
                     index++;
-                    playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
+                    if (splitEdition[index].equals("")) {
+                        playerAux.setPI_count(0);
+                    }
+                    else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
                     index++;
                     playerList.add(playerAux);
                 }
@@ -119,9 +132,9 @@ public class EditionCsvDAO implements EditionDAO{
 
             return editions;
         } catch (IOException e) {
-            System.out.println("El fitxer no existeix.");
+            System.out.println("\tNo editions have been loaded\n");
         }
 
-        return Collections.emptyList();
+        return new ArrayList<>();
     }
 }

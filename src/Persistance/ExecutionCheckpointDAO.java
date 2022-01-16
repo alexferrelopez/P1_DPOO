@@ -11,7 +11,11 @@ public class ExecutionCheckpointDAO {
     public void save(Integer checkpoint) {
         try {
             FileWriter fileWriter = new FileWriter("./files/checkpoint.txt");
-            fileWriter.write(checkpoint.toString());
+            if (checkpoint == null) {
+                fileWriter.write("0");
+            } else {
+                fileWriter.write(checkpoint.toString());
+            }
             fileWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -24,7 +28,7 @@ public class ExecutionCheckpointDAO {
             return Integer.parseInt(strings.get(0));
         } catch (IOException ignored) {
         }
-        return null;
+        return 0;
     }
 
     /*

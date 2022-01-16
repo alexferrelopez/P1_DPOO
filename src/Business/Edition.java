@@ -30,6 +30,12 @@ public class Edition implements Cloneable{
         return copy;
     }
 
+    public int getPlayerListSize () {
+        if (players == null || players.isEmpty()) {
+            return 0;
+        } else return players.size();
+    }
+
     public void setTrials(List<Trial> trials) {
         this.trials = trials;
     }
@@ -40,6 +46,14 @@ public class Edition implements Cloneable{
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    public boolean allPLayersEliminated () {
+        return players.isEmpty();
+    }
+
+    public void clearPlayers () {
+        players.clear();
     }
 
     public int getYear() {
@@ -93,5 +107,20 @@ public class Edition implements Cloneable{
         clone.setPlayers(clonedPlayers);
 
         return clone;
+    }
+
+    public void setPis(List<Integer> piByPlayer) {
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            player.addPICount(piByPlayer.get(i));
+        }
+    }
+
+    public void addPlayer(String playerName) {
+        if (players == null || players.isEmpty()) {
+            players = new ArrayList<>();
+        }
+        Player player = new Player(playerName);
+        players.add(player);
     }
 }
