@@ -142,6 +142,7 @@ public class EditionCsvDAO implements EditionDAO{
                             index++;
                             playerList.add(playerAux);
                         }
+                        default -> index+= 2;
                     }
                     index++;
                 }
