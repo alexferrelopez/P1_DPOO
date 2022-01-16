@@ -1,5 +1,9 @@
 package Business;
 
+import Business.players.Enginyer;
+import Business.players.Player;
+import Business.trials.Trial;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,7 +124,7 @@ public class Edition implements Cloneable{
         if (players == null || players.isEmpty()) {
             players = new ArrayList<>();
         }
-        Player player = new Player(playerName);
+        Player player = new Enginyer(playerName);
         players.add(player);
     }
 }

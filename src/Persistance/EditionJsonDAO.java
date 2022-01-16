@@ -1,7 +1,9 @@
 package Persistance;
 
 import Business.Edition;
-import Business.Trial;
+import Business.players.Player;
+import Business.trials.Article;
+import Business.trials.Trial;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -10,13 +12,21 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class EditionJsonDAO implements EditionDAO{
+    private Gson gson;
+
+    public EditionJsonDAO() {
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        builder.registerTypeAdapter(Trial.class, new InterfaceAdapter());
+        builder.registerTypeAdapter(Player.class, new PlayerInterfaceAdapter());
+
+        gson = builder.create();
+    }
+
     @Override
     public void save(List<Edition> editions, List<Trial> t) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         if (!editions.isEmpty()) {
             try {
@@ -31,7 +41,6 @@ public class EditionJsonDAO implements EditionDAO{
 
     @Override
     public List<Edition> getAll(List<Trial> trials) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         try {
             FileReader fileReader = new FileReader("./files/editions.json");

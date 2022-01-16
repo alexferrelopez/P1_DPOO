@@ -1,8 +1,8 @@
 /*
 package Persistance;
 import Business.Edition;
-import Business.Player;
-import Business.Trial;
+import Business.players.Player;
+import Business.trials.Trial;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;

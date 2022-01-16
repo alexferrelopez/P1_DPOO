@@ -1,7 +1,7 @@
 package Persistance;
 
 import Business.Edition;
-import Business.Trial;
+import Business.trials.Trial;
 
 import java.util.List;
 

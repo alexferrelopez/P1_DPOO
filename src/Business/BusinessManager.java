@@ -1,5 +1,6 @@
 package Business;
 
+import Business.trials.*;
 import Persistance.*;
 
 import java.util.*;
@@ -26,9 +27,26 @@ public class BusinessManager {
         editions = editionDAO.getAll(trials);
     }
 
-    public void createTrial (String name, int acceptance, int revision, int rejection, String nameJournal, String quartile) {
-        Trial trial = new Trial(name, acceptance, revision, rejection, nameJournal, quartile);
-        trials.add(trial);
+    public void createTrial(int type, String name, String other, int acceptance, int revision, int rejection, String nameJournal, String quartile, int probabilitat, int credits, int dificulty, int budget) {
+        switch (type) {
+            case 1 -> {
+                Trial trial = new Article(name, acceptance, revision, rejection, nameJournal, quartile);
+                trials.add(trial);
+            }
+            case 2 -> {
+                Trial trial = new Estudi(name,other,credits,probabilitat);
+                trials.add(trial);
+            }
+            case 3 -> {
+                Trial trial = new Defensa(name,other,dificulty);
+                trials.add(trial);
+            }
+            case 4 -> {
+                Trial trial = new Solicitud(name,other,budget);
+                trials.add(trial);
+            }
+        }
+
     }
 
     public boolean deleteTrial (int index) {

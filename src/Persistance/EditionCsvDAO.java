@@ -1,8 +1,9 @@
 package Persistance;
 
 import Business.Edition;
-import Business.Player;
-import Business.Trial;
+import Business.players.Enginyer;
+import Business.players.Player;
+import Business.trials.Trial;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -98,11 +99,13 @@ public class EditionCsvDAO implements EditionDAO{
 
                 int index = 2;
 
+                boolean emptyList = false;
                 for (int j = 0; j < numPlayers; j++) {
-                    Player playerAux = new Player();
+                    Player playerAux = new Enginyer();
                     playerAux.setName(splitEdition[index]);
                     index++;
                     if (splitEdition[index].equals("")) {
+                        emptyList = true;
                         playerAux.setPI_count(0);
                     }
                     else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
@@ -110,7 +113,12 @@ public class EditionCsvDAO implements EditionDAO{
                     playerList.add(playerAux);
                 }
 
-                aux.setPlayers(playerList);
+                if (emptyList) {
+                    aux.setPlayers(new ArrayList<>());
+                }
+                else {
+                    aux.setPlayers(playerList);
+                }
 
                 int numTrials = Integer.parseInt(splitEdition[index]);
                 index++;

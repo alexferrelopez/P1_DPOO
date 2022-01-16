@@ -1,6 +1,6 @@
 package Presentation;
 
-import Business.Trial;
+import Business.trials.Trial;
 
 import java.util.*;
 
@@ -18,7 +18,7 @@ public class UIManager {
 
     public int requestFile() {
         do {
-            System.out.print("\nThe IEEE needs to know where your allegiance lies.\n");
+            System.out.println("\nThe IEEE needs to know where your allegiance lies.\n");
             System.out.println("\tI) People’s Front of Engineering (CSV)");
             System.out.println("\tII) Engineering People’s Front (JSON)");
             System.out.print("\nPick a faction: ");
@@ -130,7 +130,11 @@ public class UIManager {
         do {
             try {
                 System.out.println("\n\t--- Trial types ---\n");
-                System.out.println("\t 1) Paper publication\n");
+                System.out.println("\t 1) Paper publication");
+                System.out.println("\t 2) Master studies");
+                System.out.println("\t 3) Doctoral thesis");
+                System.out.println("\t 4) Budget request\n");
+
                 System.out.print("Enter the trial's type: ");
                 int input = Integer.parseInt(scanner.nextLine());
 
@@ -138,6 +142,7 @@ public class UIManager {
                     case 1: return 1;
                     case 2: return 2;
                     case 3: return 3;
+                    case 4: return 4;
                     default: System.out.println("\nERROR: Choose between the following options");
                 }
 

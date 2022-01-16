@@ -1,7 +1,6 @@
 package Presentation;
 
 import Business.BusinessManager;
-import Business.Edition;
 
 import java.util.*;
 
@@ -10,7 +9,6 @@ public class Controller {
     BusinessManager bm = new BusinessManager();
 
     public void run () {
-        //int option = uiManager.requestRole();
 
         //requestFile (it plays before requesting a role)
         switch (uiManager.requestFile()) {
@@ -104,31 +102,90 @@ public class Controller {
         } while(optionTrial != 4);
     }
     public void manageTrial() {
-        int type;                    //I guess ill use this in a later stage
-        type = uiManager.requestTrialType();
+        int type;
+        do {
+            type = uiManager.requestTrialType();
+        } while (type < 1 || type > 4);
 
-        String trialName = uiManager.askForString("Enter the trial's name: ");
+        int acceptance = 0;
+        int revision = 0;
+        int rejection = 0;
+        String nameJournal = null;
+        String quartile = null;
+        String other = null;
+        int probabilitat = 0;
+        int credits = 0;
+        int dificulty = 0;
+        int budget= 0;
 
-        String nameJournal = uiManager.askForString("Enter the journal's name: ");
-        String quartile = uiManager.askForString("Enter the journal’s quartile: ").toUpperCase(Locale.ROOT);
+        String trialName;
+        do {
+            trialName = uiManager.askForString("Enter the trial's name: ");
+        } while (trialName.isEmpty());
 
-        while (!(quartile.equals("Q1") || quartile.equals("Q2") || quartile.equals("Q3") || quartile.equals("Q4"))) {
-            uiManager.showMessage("Quartile options must be: Q1, Q2, Q3 or Q4.");
-            quartile = uiManager.askForString("Enter the journal’s quartile: ");
+        switch (type) {
+            case 1 -> {
+                nameJournal = uiManager.askForString("Enter the journal's name: ");
+                quartile = uiManager.askForString("Enter the journal’s quartile: ").toUpperCase(Locale.ROOT);
+
+                while (!(quartile.equals("Q1") || quartile.equals("Q2") || quartile.equals("Q3") || quartile.equals("Q4"))) {
+                    uiManager.showMessage("Quartile options must be: Q1, Q2, Q3 or Q4.");
+                    quartile = uiManager.askForString("Enter the journal’s quartile: ").toUpperCase(Locale.ROOT);
+                }
+
+                acceptance = uiManager.requestTrialNumber("Enter the acceptance probability: ");
+                revision = uiManager.requestTrialNumber("Enter the revision probability: ");
+                rejection = uiManager.requestTrialNumber("Enter the rejection probability: ");
+
+                while (acceptance + rejection + revision != 100) {
+                    uiManager.showMessage("Acceptance probability + revision probability + rejection probability must sum up to 100.");
+                    acceptance = uiManager.requestTrialNumber("Enter the acceptance probability: ");
+                    revision = uiManager.requestTrialNumber("Enter the revision probability: ");
+                    rejection = uiManager.requestTrialNumber("Enter the rejection probability: ");
+                }
+            }
+            case 2 -> {
+                do {
+                    other = uiManager.askForString("Enter the master’s name: ");
+                } while (other.isEmpty());
+                do {
+                    credits = uiManager.askForInteger("Enter the master’s ECTS number: ");
+                    if (credits<60 || credits>120) {
+                        uiManager.showMessage("Credits range is: [60, 120].");
+                    }
+                } while (credits<60 || credits>120);
+                do {
+                    probabilitat = uiManager.askForInteger("Enter the credit pass probability: ");
+                    if (probabilitat<0 || probabilitat>100) {
+                        uiManager.showMessage("Probability range is: [0, 100].");
+                    }
+                } while (probabilitat<0 || probabilitat>100);
+            }
+            case 3 -> {
+                do {
+                    other = uiManager.askForString("Enter the thesis field of study: ");
+                } while (other.isEmpty());
+                do {
+                    dificulty = uiManager.askForInteger("Enter the defense difficulty: ");
+                    if (dificulty < 1 || dificulty > 10) {
+                        uiManager.showMessage("Budget range is: [1, 10].");
+                    }
+                } while (dificulty < 1 || dificulty > 10);
+            }
+            case 4 -> {
+                do {
+                    other = uiManager.askForString("Enter the entity’s name: ");
+                } while (other.isEmpty());
+                do {
+                    budget = uiManager.askForInteger("Enter the budget amount: ");
+                    if (budget < 1000 || budget > 2000000000) {
+                        uiManager.showMessage("Budget range is: [1000, 2000000000].");
+                    }
+                } while (budget < 1000 || budget > 2000000000);
+            }
         }
 
-        int acceptance = uiManager.requestTrialNumber("Enter the acceptance probability: ");
-        int revision = uiManager.requestTrialNumber("Enter the revision probability: ");
-        int rejection = uiManager.requestTrialNumber("Enter the rejection probability: ");
-
-        while (acceptance+rejection+revision != 100) {
-            uiManager.showMessage("Acceptance probability + revision probability + rejection probability must sum up to 100.");
-            acceptance = uiManager.requestTrialNumber("Enter the acceptance probability: ");
-            revision = uiManager.requestTrialNumber("Enter the revision probability: ");
-            rejection = uiManager.requestTrialNumber("Enter the rejection probability: ");
-        }
-
-        bm.createTrial(trialName, acceptance, revision, rejection, nameJournal, quartile);
+        bm.createTrial(type, trialName, other, acceptance, revision, rejection, nameJournal, quartile , probabilitat, credits, dificulty,budget);
 
         uiManager.showMessage("\nThe trial was created successfully!");
     }

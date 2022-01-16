@@ -1,21 +1,27 @@
-package Business;
+package Business.trials;
+
+import Business.Edition;
+import Business.Journal;
+import Business.TrialResult;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Trial implements Cloneable, ExecutableTrial{
+public class Article implements Trial {
     private String name;
     private int acceptance;
     private int revision;
     private int rejection;
     private final Journal journal;
+    public static final String TYPE = "Article";
+    private String type = TYPE;
 
-    public Trial() {
+    public Article() {
         journal = new Journal();
     }
 
-    public Trial(String name, int acceptance, int revision, int rejection, String nameJournal, String quartile) {
+    public Article(String name, int acceptance, int revision, int rejection, String nameJournal, String quartile) {
         journal = new Journal();
         this.name = name;
         this.acceptance = acceptance;
@@ -57,37 +63,7 @@ public class Trial implements Cloneable, ExecutableTrial{
         return trialResultToString(trialResult,edition);
     }
 
-    private String trialResultToString(TrialResult trialResult, Edition edition) {
-        StringBuilder stringBuilder = new StringBuilder();
-        List<Player> players = edition.getPlayers();
-        List<Boolean> statusList = trialResult.getStatusList();
-        int[] timesRevisedList = trialResult.getTimesRevisedList();
-        List<Player> playersToRemove = new ArrayList<>();
 
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            stringBuilder.append("\n\t").append(player.getName()).append(" is submitting... ");
-            stringBuilder.append("Revisions... ".repeat(Math.max(0, timesRevisedList[i])));
-
-            if (statusList.get(i)) {
-                stringBuilder.append("Accepted! ");
-            }
-            else {
-                stringBuilder.append("Rejected. ");
-            }
-
-            stringBuilder.append("PI count: ");
-
-            if (player.getPI_count() <= 0) {
-                stringBuilder.append(0).append(" - Disqualified!");
-                playersToRemove.add(player);
-            }
-            else stringBuilder.append(player.getPI_count());
-        }
-
-        players.removeAll(playersToRemove);
-        return stringBuilder.toString();
-    }
 
     @Override
     public List<Integer> assignPI(List<Boolean> statusList) {
@@ -142,7 +118,7 @@ public class Trial implements Cloneable, ExecutableTrial{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Trial trial = (Trial) o;
+        Article trial = (Article) o;
         return acceptance == trial.acceptance && revision == trial.revision && rejection == trial.rejection && name.equals(trial.name) && journal.equals(trial.journal);
     }
 
@@ -151,12 +127,29 @@ public class Trial implements Cloneable, ExecutableTrial{
         return Objects.hash(name, acceptance, revision, rejection, journal);
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toCSV() {
+        return type+ "," +acceptance + "," + revision + "," + rejection + "," + getJournalName() + "," + getJorunalQuartile();
+    }
+
+    @Override
+    public String getType() {
+        return TYPE;
+    }
+
+    @Override
+    public void setType(String s) {
+
     }
 
     public int getAcceptance() {

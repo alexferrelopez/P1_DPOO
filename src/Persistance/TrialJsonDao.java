@@ -1,6 +1,8 @@
 package Persistance;
 
-import Business.Trial;
+import Business.players.Player;
+import Business.trials.Article;
+import Business.trials.Trial;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -9,13 +11,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class TrialJsonDao implements TrialDAO{
+    private Gson gson;
+
+    public TrialJsonDao() {
+        GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
+        builder.registerTypeAdapter(Trial.class, new InterfaceAdapter());
+
+        gson = builder.create();
+    }
+
     @Override
     public void save(List<Trial> trials) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         if (!trials.isEmpty()) {
             try {
@@ -30,8 +39,6 @@ public class TrialJsonDao implements TrialDAO{
 
     @Override
     public List<Trial> getAll() {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-
         try {
             FileReader fileReader = new FileReader("./files/trials.json");
             List<Trial> trials = new ArrayList<>( Arrays.stream(gson.fromJson(fileReader, Trial[].class)).toList());

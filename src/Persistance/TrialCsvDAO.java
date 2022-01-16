@@ -1,6 +1,7 @@
 package Persistance;
 
-import Business.Trial;
+import Business.Edition;
+import Business.trials.*;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
@@ -10,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class  TrialCsvDAO implements TrialDAO{
@@ -25,15 +25,7 @@ public class  TrialCsvDAO implements TrialDAO{
                             "," +
                             trials.get(i).getName() +
                             "," +
-                            trials.get(i).getAcceptance() +
-                            "," +
-                            trials.get(i).getRevision() +
-                            "," +
-                            trials.get(i).getRejection() +
-                            "," +
-                            trials.get(i).getJournalName() +
-                            "," +
-                            trials.get(i).getJorunalQuartile();
+                            trials.get(i).toCSV();
                     bw.write(linia);
                     bw.newLine();
                 }
@@ -53,15 +45,36 @@ public class  TrialCsvDAO implements TrialDAO{
             List<Trial> trials = new ArrayList<>();
 
             for (String value : s) {
-                Trial aux = new Trial();
+                Trial trial = null;
                 String[] splitTrial = value.split(",");
-                aux.setName(splitTrial[1]);
-                aux.setAcceptance(Integer.parseInt(splitTrial[2]));
-                aux.setRevision(Integer.parseInt(splitTrial[3]));
-                aux.setRejection(Integer.parseInt(splitTrial[4]));
-                aux.setJournalName(splitTrial[5]);
-                aux.setJournalQuartile(splitTrial[6]);
-                trials.add(aux);
+                String s1 = splitTrial[2];
+                switch (s1) {
+                    case Article.TYPE -> {
+                        trial = new Article(splitTrial[1],
+                                Integer.parseInt(splitTrial[3]),
+                                Integer.parseInt(splitTrial[4]),
+                                Integer.parseInt(splitTrial[5]),
+                                splitTrial[6],
+                                splitTrial[7]);
+                    }
+                    case Defensa.TYPE -> {
+                        trial = new Defensa(splitTrial[1],
+                                splitTrial[3],
+                                Integer.parseInt(splitTrial[4]));
+                    }
+                    case Estudi.TYPE -> {
+                        trial = new Estudi(splitTrial[1],
+                                splitTrial[3],
+                                Integer.parseInt(splitTrial[4]),
+                                Integer.parseInt(splitTrial[5]));
+                    }
+                    case Solicitud.TYPE -> {
+                        trial = new Solicitud(splitTrial[1],
+                                splitTrial[3],
+                                Integer.parseInt(splitTrial[4]));
+                    }
+                }
+                trials.add(trial);
             }
 
             return trials;
