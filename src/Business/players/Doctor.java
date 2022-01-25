@@ -6,10 +6,19 @@ public class Doctor implements Player {
     public static final String TYPE = "Doctor";
     private String type = TYPE;
 
+
+    /**
+     * Simple constructor
+     * @param name
+     */
     public Doctor(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return type
+     */
     public String getType() {
         return type;
     }

@@ -10,6 +10,14 @@ import java.lang.reflect.Type;
 
 public class PlayerInterfaceAdapter implements JsonDeserializer<Player>, JsonSerializer<Player> {
 
+    /**
+     * deserializes json allowing us to read different types of players from the same interface.
+     * @param jsonElement
+     * @param type
+     * @param jsonDeserializationContext
+     * @return
+     * @throws JsonParseException
+     */
     @Override
     public Player deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -36,6 +44,13 @@ public class PlayerInterfaceAdapter implements JsonDeserializer<Player>, JsonSer
         return null;
     }
 
+    /**
+     * serializes json allowing us to save different types of players from the same interface.
+     * @param player
+     * @param type
+     * @param context
+     * @return
+     */
     @Override
     public JsonElement serialize(Player player, Type type, JsonSerializationContext context) {
 

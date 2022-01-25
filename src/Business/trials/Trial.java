@@ -10,6 +10,12 @@ import java.util.List;
 public interface Trial extends Cloneable {
     String executeTrial(int numPlayers, TrialResult trialResult, Edition edition);
 
+    /**
+     * Passes from results to String in Article, Overridden on every other implementation.
+     * @param trialResult
+     * @param edition
+     * @return
+     */
     default String trialResultToString(TrialResult trialResult, Edition edition) {
         StringBuilder stringBuilder = new StringBuilder();
         List<Player> players = edition.getPlayers();
@@ -40,14 +46,35 @@ public interface Trial extends Cloneable {
         return stringBuilder.toString();
     }
 
+    /**
+     * Assigns PI to players depending on their result, obtained previously in trialResultToString
+     * @param statusList
+     * @return
+     */
     List<Integer> assignPI(List<Boolean> statusList);
 
+    /**
+     * Simple getter of trial name
+     * @return
+     */
     String getName();
 
+    /**
+     * Simple setter of trial name
+     * @param name
+     */
     void setName(String name);
 
+    /**
+     * Used to clone Trials to return a copy of trials to uiManager (to list trials in the end)
+     * @return
+     */
     Object clone() throws CloneNotSupportedException;
 
+    /**
+     * creates a string which includes all necessary atributes to save in trials.csv
+     * @return
+     */
     String toCSV();
 
     String getType();

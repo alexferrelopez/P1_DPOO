@@ -7,6 +7,14 @@ import java.lang.reflect.Type;
 
 public class InterfaceAdapter implements JsonDeserializer<Trial>, JsonSerializer<Trial> {
 
+    /**
+     * deserializes json allowing us to read diferent types of Trials from the same interface.
+     * @param jsonElement
+     * @param type
+     * @param jsonDeserializationContext
+     * @return
+     * @throws JsonParseException
+     */
     @Override
     public Trial deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -36,6 +44,13 @@ public class InterfaceAdapter implements JsonDeserializer<Trial>, JsonSerializer
         return null;
     }
 
+    /**
+     * serializes json allowing us to save diferent types of Trials from the same interface.
+     * @param trial
+     * @param type
+     * @param context
+     * @return
+     */
     @Override
     public JsonElement serialize(Trial trial, Type type, JsonSerializationContext context) {
 

@@ -202,10 +202,6 @@ public class UIManager {
         } while (selectTrial != back);
     }
 
-    public void requestNewTrial() {
-        // TODO implement here
-    }
-
     public int requestDeletedTrial(List<Trial> trials) {
 
         System.out.println("\nWhich edition do you want to delete?\n");
@@ -236,13 +232,6 @@ public class UIManager {
             }
         } while (selectTrial != back);
         return back;
-    }
-
-    public void showTrialTypes() {
-        // TODO implement here
-    }
-    public void showConductor() {
-        // TODO implement here
     }
 
     public int showList(List<Trial> trials) {

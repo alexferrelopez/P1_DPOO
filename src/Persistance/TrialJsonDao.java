@@ -54,6 +54,8 @@ public class TrialJsonDao implements TrialDAO{
      //  SAVE AND WRITE JSON TEST (TRIALS)  //
     /////////////////////////////////////////
 
+
+    // USED IN FASE 1,2. DISCONTINUED //
     /*
     public static void main(String[] args) {
        List<Trial> trials = new ArrayList<>();

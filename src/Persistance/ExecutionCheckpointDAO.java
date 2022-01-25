@@ -8,6 +8,10 @@ import java.util.List;
 
 public class ExecutionCheckpointDAO {
 
+    /**
+     * function made to allow us to save the execution of an edition after closing the executable.
+     * @param checkpoint
+     */
     public void save(Integer checkpoint) {
         try {
             FileWriter fileWriter = new FileWriter("./files/checkpoint.txt");
@@ -22,6 +26,10 @@ public class ExecutionCheckpointDAO {
         }
     }
 
+    /**
+     * function made to allow us to resume the execution of an edition after closing the executable.
+     * @return
+     */
     public Integer getAll() {
         try {
             List<String> strings = Files.readAllLines(Path.of("./files/checkpoint.txt"));

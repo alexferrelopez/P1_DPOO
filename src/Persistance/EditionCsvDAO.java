@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EditionCsvDAO implements EditionDAO{
+    /**
+     * saves line by line of editions saving -> year, number of players, (type of player, name, pi count,)*[number of players], number of trials, trial1 index, trial2 index...
+     * @param editions
+     * @param t
+     */
     @Override
     public void save(List<Edition> editions, List<Trial> t) {
 
@@ -84,6 +89,11 @@ public class EditionCsvDAO implements EditionDAO{
         }
     }
 
+    /**
+     * reads line by line of editions reading -> year, number of players, (type of player, name, pi count,)*[number of players], number of trials, trial1 index, trial2 index...
+     * @param trials
+     * @return
+     */
     @Override
     public List<Edition> getAll(List<Trial> trials) {
         Path pathEditions = Paths.get("./files/editions.csv");
