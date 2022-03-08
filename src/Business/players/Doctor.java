@@ -9,7 +9,7 @@ public class Doctor implements Player {
 
     /**
      * Simple constructor
-     * @param name
+     * @param name name for our player.
      */
     public Doctor(String name) {
         this.name = name;

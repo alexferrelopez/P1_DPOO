@@ -7,6 +7,7 @@ import Business.players.Player;
 import Business.trials.Trial;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Edition implements Cloneable{
@@ -47,7 +48,7 @@ public class Edition implements Cloneable{
     }
 
     public List<Player> getPlayers() {
-        return players;
+        return Collections.unmodifiableList(players);
     }
 
     public void setPlayers(List<Player> players) {

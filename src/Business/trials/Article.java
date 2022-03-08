@@ -10,16 +10,12 @@ import java.util.Objects;
 
 public class Article implements Trial {
     private String name;
-    private int acceptance;
-    private int revision;
-    private int rejection;
+    private final int acceptance;
+    private final int revision;
+    private final int rejection;
     private final Journal journal;
     public static final String TYPE = "Article";
-    private String type = TYPE;
-
-    public Article() {
-        journal = new Journal();
-    }
+    private final String type = TYPE;
 
     public Article(String name, int acceptance, int revision, int rejection, String nameJournal, String quartile) {
         journal = new Journal();
@@ -147,35 +143,6 @@ public class Article implements Trial {
         return TYPE;
     }
 
-    @Override
-    public void setType(String s) {
-
-    }
-
-    public int getAcceptance() {
-        return acceptance;
-    }
-
-    public void setAcceptance(int acceptance) {
-        this.acceptance = acceptance;
-    }
-
-    public int getRevision() {
-        return revision;
-    }
-
-    public void setRevision(int revision) {
-        this.revision = revision;
-    }
-
-    public int getRejection() {
-        return rejection;
-    }
-
-    public void setRejection(int rejection) {
-        this.rejection = rejection;
-    }
-
     public String getJournalName() {
         return journal.getName();
     }
@@ -184,11 +151,5 @@ public class Article implements Trial {
         return journal.getQuartile();
     }
 
-    public void setJournalName(String journalName) {
-        journal.setName(journalName);
-    }
 
-    public void setJournalQuartile(String journalQuartile) {
-        journal.setQuartile(journalQuartile);
-    }
 }

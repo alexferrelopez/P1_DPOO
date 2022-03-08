@@ -2,7 +2,6 @@ package Persistance;
 
 import Business.Edition;
 import Business.players.Player;
-import Business.trials.Article;
 import Business.trials.Trial;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class EditionJsonDAO implements EditionDAO{
-    private Gson gson;
+    private final Gson gson;
 
     public EditionJsonDAO() {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();

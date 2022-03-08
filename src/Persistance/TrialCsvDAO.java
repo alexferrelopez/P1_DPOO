@@ -1,6 +1,5 @@
 package Persistance;
 
-import Business.Edition;
 import Business.trials.*;
 
 import java.io.BufferedWriter;

@@ -5,7 +5,8 @@ import Business.trials.Trial;
 import java.util.*;
 
 public class UIManager {
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
+
     private static void printTheTrials () {
         System.out.println("""
                  _____ _            _____      _       _    \s
@@ -261,6 +262,4 @@ public class UIManager {
             }
         } while (true);
     }
-
-
 }

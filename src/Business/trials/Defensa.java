@@ -10,10 +10,10 @@ import java.util.Objects;
 
 public class Defensa implements Trial{
     private String name;
-    private String campsEstudi;
-    private int dificultat;
+    private final String campsEstudi;
+    private final int dificultat;
     public static final String TYPE = "Defensa";
-    private String type = TYPE;
+    private final String type = TYPE;
 
     public Defensa(String name, String campsEstudi, int dificultat) {
         this.name = name;
@@ -42,7 +42,7 @@ public class Defensa implements Trial{
                 result += 2*i - 1;
             }
             result = (int) Math.sqrt(result);
-            if(edition.getPlayers().get(i).getPI_count() > result) {
+            if(edition.getPlayers().get(i).getPI_count() > result) { //TODO FIX
                 statusList.add(true);
             }
             else statusList.add(false);
@@ -122,16 +122,11 @@ public class Defensa implements Trial{
     }
 
     @Override
-    public void setType(String s) {
-
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Defensa defensa = (Defensa) o;
-        return dificultat == defensa.dificultat && Objects.equals(name, defensa.name) && Objects.equals(campsEstudi, defensa.campsEstudi) && Objects.equals(type, defensa.type);
+        return dificultat == defensa.dificultat && Objects.equals(name, defensa.name) && Objects.equals(campsEstudi, defensa.campsEstudi);
     }
 
     @Override

@@ -10,11 +10,11 @@ import java.util.Objects;
 
 public class Estudi implements Trial{
     private String name;
-    private String master;
-    private int credits;
-    private int probabilitat;
+    private final String master;
+    private final int credits;
+    private final int probabilitat;
     public static final String TYPE = "Estudi";
-    private String type = TYPE;
+    private final String type = TYPE;
 
     public Estudi(String name, String master, int credits, int probabilitat) {
         this.name = name;
@@ -94,7 +94,7 @@ public class Estudi implements Trial{
             } else stringBuilder.append(player.getPI_count());
         }
 
-        players.removeAll(playersToRemove);
+        players.removeAll(playersToRemove); //TODO edition.removeAll implement
         return stringBuilder.toString();
     }
 
@@ -128,16 +128,11 @@ public class Estudi implements Trial{
     }
 
     @Override
-    public void setType(String s) {
-
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Estudi estudi = (Estudi) o;
-        return credits == estudi.credits && probabilitat == estudi.probabilitat && Objects.equals(name, estudi.name) && Objects.equals(master, estudi.master) && Objects.equals(type, estudi.type);
+        return credits == estudi.credits && probabilitat == estudi.probabilitat && Objects.equals(name, estudi.name) && Objects.equals(master, estudi.master);
     }
 
     @Override

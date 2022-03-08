@@ -5,8 +5,8 @@ import Business.BusinessManager;
 import java.util.*;
 
 public class Controller {
-    UIManager uiManager = new UIManager();
-    BusinessManager bm = new BusinessManager();
+    private final UIManager uiManager = new UIManager();
+    private final BusinessManager bm = new BusinessManager();
 
     public void run () {
 
@@ -115,7 +115,7 @@ public class Controller {
         String other = null;
         int probabilitat = 0;
         int credits = 0;
-        int dificulty = 0;
+        int difficulty = 0;
         int budget= 0;
 
         String trialName;
@@ -166,11 +166,11 @@ public class Controller {
                     other = uiManager.askForString("Enter the thesis field of study: ");
                 } while (other.isEmpty());
                 do {
-                    dificulty = uiManager.askForInteger("Enter the defense difficulty: ");
-                    if (dificulty < 1 || dificulty > 10) {
+                    difficulty = uiManager.askForInteger("Enter the defense difficulty: ");
+                    if (difficulty < 1 || difficulty > 10) {
                         uiManager.showMessage("Budget range is: [1, 10].");
                     }
-                } while (dificulty < 1 || dificulty > 10);
+                } while (difficulty < 1 || difficulty > 10);
             }
             case 4 -> {
                 do {
@@ -185,7 +185,7 @@ public class Controller {
             }
         }
 
-        bm.createTrial(type, trialName, other, acceptance, revision, rejection, nameJournal, quartile , probabilitat, credits, dificulty,budget);
+        bm.createTrial(type, trialName, other, acceptance, revision, rejection, nameJournal, quartile , probabilitat, credits, difficulty,budget);
 
         uiManager.showMessage("\nThe trial was created successfully!");
     }
@@ -223,12 +223,7 @@ public class Controller {
         List<Integer> trialList = new ArrayList<>();
         Date date = new Date();
         uiManager.spacing();
-        do {
-            year = uiManager.askForInteger("Enter the edition's year: ");
-            if (year < (date.getYear()+1900)) {
-                uiManager.showMessage("ERROR: The year has to be for current or future events");
-            }
-        } while(year < (date.getYear()+1900));
+        year = getYear(date);
         do {
             players = uiManager.askForInteger("Enter the initial number of players: ");
             if ((players > 6 || players < 1)) {
@@ -264,6 +259,17 @@ public class Controller {
         bm.createEdition(trialList,year, players);
 
         uiManager.showMessage("The editions was created successfully!");
+    }
+
+    private int getYear(Date date) {
+        int year;
+        do {
+            year = uiManager.askForInteger("Enter the edition's year: ");
+            if (year < (date.getYear()+1900)) {
+                uiManager.showMessage("ERROR: The year has to be for current or future events");
+            }
+        } while(year < (date.getYear()+1900));
+        return year;
     }
 
     private void listAllEditions() {
@@ -302,12 +308,7 @@ public class Controller {
             uiManager.spacing();
             int year, players;
             Date date = new Date();
-            do {
-                year = uiManager.askForInteger("Enter the edition's year: ");
-                if (year < (date.getYear()+1900)) {
-                    uiManager.showMessage("ERROR: The year has to be for current or future events");
-                }
-            } while(year < (date.getYear()+1900));
+            year = getYear(date);
             do {
                 players = uiManager.askForInteger("Enter the initial number of players: ");
                 if ((players > 6 || players < 1)) {

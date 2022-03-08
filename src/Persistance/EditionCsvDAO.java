@@ -167,8 +167,6 @@ public class EditionCsvDAO implements EditionDAO{
                 int numTrials = Integer.parseInt(splitEdition[index]);
                 index++;
 
-                //int[] TrialIndexes = new int[numTrials];
-
                 List<Trial> trialList = new ArrayList<>();
 
                 for (int j = 0; j < numTrials; j++) {

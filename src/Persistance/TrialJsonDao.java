@@ -1,7 +1,5 @@
 package Persistance;
 
-import Business.players.Player;
-import Business.trials.Article;
 import Business.trials.Trial;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -14,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TrialJsonDao implements TrialDAO{
-    private Gson gson;
+    private final Gson gson;
 
     public TrialJsonDao() {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();

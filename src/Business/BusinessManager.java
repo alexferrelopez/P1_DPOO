@@ -34,21 +34,21 @@ public class BusinessManager {
     }
 
     /**
-     * Creates a trial depending on the atribute type.
-     * @param type
-     * @param name
-     * @param other
-     * @param acceptance
-     * @param revision
-     * @param rejection
-     * @param nameJournal
-     * @param quartile
-     * @param probabilitat
-     * @param credits
-     * @param dificulty
-     * @param budget
+     * Creates a trial depending on the attribute type.
+     * @param type field to determine the trial type: (Article, Estudi, Defensa, Sol·licitud)
+     * @param name name of the trial
+     * @param other variable field related to some trials: Estudi -> master name, Defensa -> camps d'Estudi, Sol·licitud -> Entitat
+     * @param acceptance acceptance rate for Article type
+     * @param revision revision rate for Article type
+     * @param rejection rejection rate for Article type
+     * @param nameJournal name of the Journal for Article type
+     * @param quartile quartile (Q1,Q2,Q3,Q4) for Article type
+     * @param probabilitat probability to pass for Estudi type
+     * @param credits credits to pass in Estudi type
+     * @param difficulty difficulty of Defensa type
+     * @param budget budget for the Sol·licitud
      */
-    public void createTrial(int type, String name, String other, int acceptance, int revision, int rejection, String nameJournal, String quartile, int probabilitat, int credits, int dificulty, int budget) {
+    public void createTrial(int type, String name, String other, int acceptance, int revision, int rejection, String nameJournal, String quartile, int probabilitat, int credits, int difficulty, int budget) {
         switch (type) {
             case 1 -> {
                 Trial trial = new Article(name, acceptance, revision, rejection, nameJournal, quartile);
@@ -59,7 +59,7 @@ public class BusinessManager {
                 trials.add(trial);
             }
             case 3 -> {
-                Trial trial = new Defensa(name,other,dificulty);
+                Trial trial = new Defensa(name,other,difficulty);
                 trials.add(trial);
             }
             case 4 -> {
@@ -102,18 +102,7 @@ public class BusinessManager {
 
         edition.setTrials(trialList);
 
-        boolean yearAlreadyExists = false;
-        for (int i = 0; i < editions.size(); i++) {
-            Edition edition1 = editions.get(i);
-            if (edition1.getYear() == year) {
-                editions.set(i, edition);
-                yearAlreadyExists = true;
-                break;
-            }
-        }
-        if (!yearAlreadyExists) {
-            editions.add(edition);
-        }
+        processDuplicateEdition(year, edition);
     }
 
     /**
@@ -130,20 +119,24 @@ public class BusinessManager {
             duplicate.setNumPlayers(players);
             duplicate.setYear(year);
 
-            boolean yearAlreadyExists = false;
-            for (int i = 0; i < editions.size(); i++) {
-                Edition edition = editions.get(i);
-                if (edition.getYear() == year) {
-                    editions.set(i,edition);
-                    yearAlreadyExists = true;
-                    break;
-                }
-            }
-            if (!yearAlreadyExists) {
-                editions.add(duplicate);
-            }
+            processDuplicateEdition(year, duplicate);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void processDuplicateEdition(int year, Edition duplicate) {
+        boolean yearAlreadyExists = false;
+        for (int i = 0; i < editions.size(); i++) {
+            Edition edition = editions.get(i);
+            if (edition.getYear() == year) {
+                editions.set(i,duplicate);
+                yearAlreadyExists = true;
+                break;
+            }
+        }
+        if (!yearAlreadyExists) {
+            editions.add(duplicate);
         }
     }
 
@@ -223,8 +216,8 @@ public class BusinessManager {
             new TrialCsvDAO().save(trials);
             new EditionCsvDAO().save(editions,trials);
         }
-        editionDAO.save(editions, trials);
-        trialDAO.save(trials);
+        //editionDAO.save(editions, trials);
+        //trialDAO.save(trials);
         executionCheckpointDAO.save(checkpoint);
     }
 
@@ -331,19 +324,4 @@ public class BusinessManager {
         }
         return 0;
     }
-
-    //////////////////////////////////////////
-     ///     TEST DE DUPLICAR (EDITIONS)    ///
-    //////////////////////////////////////////
-
-/*
-    public static void main(String[] args) {
-        BusinessManager businessManager = new BusinessManager();
-
-        businessManager.duplicateEdition(0 ,2010 , 2);
-
-        System.out.println(businessManager.getEditions());
-    }
-
- */
 }

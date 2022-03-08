@@ -78,6 +78,4 @@ public interface Trial extends Cloneable {
     String toCSV();
 
     String getType();
-
-    void setType(String s);
 }

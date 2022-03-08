@@ -10,10 +10,10 @@ import java.util.Objects;
 
 public class Solicitud implements Trial{
     private String name;
-    private String entitat;
-    private int pressupost;
+    private final String entitat;
+    private final int pressupost;
     public static final String TYPE = "Solicitud";
-    private String type = TYPE;
+    private final String type = TYPE;
 
     public Solicitud(String name, String entitat, int pressupost) {
         this.name = name;
@@ -74,13 +74,11 @@ public class Solicitud implements Trial{
         List<Player> players = edition.getPlayers();
         List<Boolean> statusList = trialResult.getStatusList();
         List<Player> playersToRemove = new ArrayList<>();
-        int[] timesRevisedList = trialResult.getTimesRevisedList();
 
         if (statusList.get(0)) {
             stringBuilder.append("\n\t").append("The research group got the budget!\n");
         }
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
+        for (Player player : players) {
             stringBuilder.append("\n\t").append(player.getName()).append(". ");
 
 
@@ -126,16 +124,11 @@ public class Solicitud implements Trial{
     }
 
     @Override
-    public void setType(String s) {
-
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Solicitud solicitud = (Solicitud) o;
-        return pressupost == solicitud.pressupost && Objects.equals(name, solicitud.name) && Objects.equals(entitat, solicitud.entitat) && Objects.equals(type, solicitud.type);
+        return pressupost == solicitud.pressupost && Objects.equals(name, solicitud.name) && Objects.equals(entitat, solicitud.entitat);
     }
 
     @Override
