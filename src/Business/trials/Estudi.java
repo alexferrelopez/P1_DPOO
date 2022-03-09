@@ -75,4 +75,8 @@ public class Estudi extends Trial {
     public int hashCode() {
         return Objects.hash(getName(), master, credits, probabilitat, type);
     }
+
+    public int getCredits() {
+        return credits;
+    }
 }

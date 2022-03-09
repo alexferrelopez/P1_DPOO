@@ -142,13 +142,26 @@ public class Edition implements Cloneable {
         }
     }^*/
 
-    private void ascendPlayer(Player player, int index) {
-        String type = player.getType();
+    public List<Player> ascendPlayers() {
 
-        switch (type) {
-            case Enginyer.TYPE -> players.set( index ,new Master(player.getName()));
-            case Master.TYPE -> players.set(index, new Doctor(player.getName()));
+        List<Player> evolvedPlayers = new ArrayList<>();
+
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+
+            if (player.getPI_count() >= 10) {
+                String type = player.getType();
+
+                switch (type) {
+                    case Enginyer.TYPE -> players.set(i, new Master(player.getName()));
+
+                    case Master.TYPE -> players.set(i, new Doctor(player.getName()));
+                }
+
+                evolvedPlayers.add(players.get(i));
+            }
         }
+        return evolvedPlayers;
     }
 
     public void addPlayer(String playerName) {
@@ -160,12 +173,12 @@ public class Edition implements Cloneable {
     }
 
     public void removePlayers() {
-        players.removeIf(player -> !player.isAlive());
+        players.removeIf(Player::isEliminated);
     }
 
 
-    public List<Player> incrementPoints(List<Boolean> piByPlayer, String type, String quartile) {
-        List<Player> evolvedPlayers = new ArrayList<>();
+    public void incrementPoints(List<Boolean> piByPlayer, String type, String quartile) {
+
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
 
@@ -175,12 +188,10 @@ public class Edition implements Cloneable {
                 case Defensa.TYPE ->    player.processPIDefensa     (piByPlayer.get(i));
                 case Solicitud.TYPE ->  player.processPISolicitud   (piByPlayer.get(i));
             }
-
-            if (player.getPI_count() >= 10) {
-                ascendPlayer(player, i);
-                evolvedPlayers.add(player);
-            }
         }
-        return evolvedPlayers;
+    }
+
+    public void addPrefixesAndSuffixes() {
+
     }
 }

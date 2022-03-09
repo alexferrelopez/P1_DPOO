@@ -11,7 +11,7 @@ public class Enginyer extends Player {
     @Override
     public void processPIEstudi(Boolean passed) {
         if (passed) {
-            incresePI(10);
+            setPI_count(10);
         } else {
             decreasePI(3);
         }

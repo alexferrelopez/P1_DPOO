@@ -11,7 +11,7 @@ public class Master extends Player {
     @Override
     public void processPIDefensa(Boolean passed) {
         if (passed) {
-            incresePI(10);
+            setPI_count(10);
         } else {
             decreasePI(5);
         }

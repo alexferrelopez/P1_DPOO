@@ -9,7 +9,6 @@ public class Controller {
     private final BusinessManager bm = new BusinessManager();
 
     public void run () {
-
         //requestFile (it plays before requesting a role)
         switch (uiManager.requestFile()) {
             case 1 -> loadCsv();
@@ -38,13 +37,14 @@ public class Controller {
         uiManager.showMessage("Entering execution mode...\n");
 
         if (bm.editionYearExists()) {
+            uiManager.showMessage("--- The Trials 2022 ---\n");
                 if (bm.getCheckpoint() == 0) {
                     requestPlayerNames();
                 }
                 boolean stop = false;
                 for (int i = 0; i < bm.getEditionNumTrials() && !stop; i++) {
 
-                    bm.executeTrial();
+                    System.out.print(bm.executeTrial());
 
                     if (bm.getRemainingPlayers() != 0) {
                         stop = requestContinuation();
@@ -60,7 +60,7 @@ public class Controller {
 
     private boolean requestContinuation() {
         boolean stop = false;
-        String goNext = uiManager.askForString("\nContinue the execution? [yes/no]: ").toLowerCase(Locale.ROOT).trim();
+        String goNext = uiManager.askForString("Continue the execution? [yes/no]: ").toLowerCase(Locale.ROOT).trim();
         do {
             if (!goNext.equals("yes")) {
                 if (goNext.equals("no")) {
@@ -368,6 +368,7 @@ public class Controller {
             uiManager.showMessage("There are no editions to show.");
         }
     }
+
     public void duplicateEdition() {
         uiManager.spacing();
         uiManager.showMessage("Which edition do you want to clone? ");

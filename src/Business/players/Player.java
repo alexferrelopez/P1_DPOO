@@ -1,7 +1,7 @@
 package Business.players;
 
 public abstract class Player implements Cloneable{
-    private String name;
+    private final String name;
     private int PI_count = 5;
 
     public Player(String name) {
@@ -10,10 +10,6 @@ public abstract class Player implements Cloneable{
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getPI_count () {
@@ -83,8 +79,8 @@ public abstract class Player implements Cloneable{
         PI_count += points;
     }
 
-    public boolean isAlive() {
-        return PI_count > 0;
+    public boolean isEliminated() {
+        return PI_count <= 0;
     }
 
     @Override

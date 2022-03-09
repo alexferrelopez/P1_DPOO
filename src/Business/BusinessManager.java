@@ -1,5 +1,7 @@
 package Business;
 
+import Business.players.Doctor;
+import Business.players.Master;
 import Business.players.Player;
 import Business.trials.*;
 import Persistance.*;
@@ -171,48 +173,201 @@ public class BusinessManager {
      * executes trial checkpoint allows us to resume just where we left it last time.
      * @return
      */
-    public void executeTrial () {
+    public String executeTrial () {
         int systemYear = Calendar.getInstance().get(Calendar.YEAR);
 
         Edition edition = findEditionYear(systemYear);
 
         if (edition != null) {
+            
             List<Trial> trialsEdition = edition.getTrials();
+            
             if (checkpoint < trialsEdition.size()) {
+                
                 Trial trialToPlay = trialsEdition.get(checkpoint);
-                List<Player> players = edition.getPlayers();
 
-                TrialResult resultTrial = trialToPlay.executeTrial(edition.getPlayers());
+                TrialResult trialResult = trialToPlay.executeTrial(edition.getPlayers());
 
                 String quartile = null;
-                if (trialToPlay.getType().equals(Article.TYPE)) {
+                String type = trialToPlay.getType();
+
+                if (type.equals(Article.TYPE)) {
                     Article article = (Article) trialToPlay;
                     quartile = article.getJorunalQuartile();
                 }
 
-                List<Player> evolvedPlayers = edition.incrementPoints(resultTrial.getStatusList(), trialToPlay.getType(), quartile);
+                List<Boolean> statusList = trialResult.getStatusList();
 
+                edition.incrementPoints(statusList, type, quartile);
 
+                StringBuilder stringBuilder = new StringBuilder();
 
+                List<Player> players = edition.getPlayers();
+
+                switch (type) {
+                    case Article.TYPE -> {
+
+                        for (int i = 0; i < players.size(); i++) {
+                            Player player = players.get(i);
+                            processArticle(trialResult, statusList, stringBuilder, i, player);
+                        }
+                    }
+                    case Estudi.TYPE -> {
+
+                        Estudi estudi = (Estudi) trialToPlay;
+
+                        for (int i = 0; i < players.size(); i++) {
+                            Player player = players.get(i);
+                            processEstudi(trialResult, statusList, stringBuilder, estudi, i, player);
+                        }
+                    }
+                    case Defensa.TYPE ->{
+
+                        for (int i = 0; i < players.size(); i++) {
+                            Player player = players.get(i);
+                            processDefensa(statusList, stringBuilder, i, player);
+                        }
+                    }
+                    case Solicitud.TYPE ->{
+
+                        if (statusList.get(0)) {
+                            stringBuilder.append("\n\t").append("The research group got the budget!\n");
+                        }
+
+                        for (Player player : players) {
+                            processSolicitud(stringBuilder, player);
+                        }
+                    }
+                }
+
+                List<Player> ascendedPlayers = edition.ascendPlayers();
+
+                stringBuilder.append("\n\n");
+
+                for (Player ascendedPlayer : ascendedPlayers) {
+                    stringBuilder.append(ascendedPlayer.getName()).append(" is now a ");
+
+                    if (ascendedPlayer.getType().equals(Master.TYPE)) {
+                        stringBuilder.append("master");
+                    }else {
+                        stringBuilder.append("doctor");
+                    }
+
+                    stringBuilder.append(" (with ").append(ascendedPlayer.getPI_count()).append(" PI). ");
+                }
+
+                String resultTrial = String.valueOf(stringBuilder);
+
+                String trialHeader = "\nTrial #" + (checkpoint + 1) + " - " + trialToPlay.getName() +"\n";
                 checkpoint++;
 
-                /*
-                result = trialHeader + resultTrial;
-                String trialHeader = "\nTrial #" + (checkpoint + 1) + " - " + trialToPlay.getName() +"\n";
+                String  result = trialHeader + resultTrial;
+
                 if (checkpoint == trialsEdition.size() || getRemainingPlayers() == 0) {
                     checkpoint = 0;
 
                     if (edition.allPLayersEliminated()) {
                         edition.clearPlayers();
-                        return result + "\n\nTHE TRIALS " + editionYear + " HAVE ENDED - PLAYERS LOST";
+                        return result + "\n\nTHE TRIALS " + edition.getYear() + " HAVE ENDED - PLAYERS LOST";
                     } else {
                         edition.clearPlayers();
-                        return result + "\n\nTHE TRIALS " + editionYear + " HAVE ENDED - PLAYERS WON";
+                        return result + "\n\nTHE TRIALS " + edition.getYear() + " HAVE ENDED - PLAYERS WON";
                     }
                 }
-                */
+
+                edition.removePlayers();
+
+                return result;
             }
         }
+        return null;
+    }
+
+    private void addSuffixOrPrefix(StringBuilder stringBuilder, Player player) {
+        if (player.getType().equals(Master.TYPE)) {
+            stringBuilder.append("Master ");
+        }
+
+        stringBuilder.append(player.getName());
+
+        if (player.getType().equals(Doctor.TYPE)) {
+            stringBuilder.append(", Phd");
+        }
+    }
+
+    private void addPointStateMessage(Player player, StringBuilder stringBuilder) {
+        if (player.isEliminated()) {
+            stringBuilder.append("0");
+            stringBuilder.append(" - Disqualified");
+        }
+        else stringBuilder.append(player.getPI_count());
+    }
+
+    private void processArticle(TrialResult resultTrial, List<Boolean> statusList, StringBuilder stringBuilder, int i, Player player) {
+        stringBuilder.append("\n\t");
+
+        addSuffixOrPrefix(stringBuilder, player);
+
+        stringBuilder.append(" is submitting...");
+
+        int timesRejected = resultTrial.getAuxInfo()[i];
+        stringBuilder.append("Revisions...".repeat(Math.max(0, timesRejected)));
+
+        if (statusList.get(i)) {
+            stringBuilder.append("Accepted! ");
+        } else stringBuilder.append("Rejected. ");
+
+        stringBuilder.append("PI count: ");
+
+        addPointStateMessage(player, stringBuilder);
+    }
+
+    private void processEstudi(TrialResult resultTrial, List<Boolean> statusList, StringBuilder stringBuilder, Estudi estudi, int i, Player player) {
+        stringBuilder.append("\n\t");
+
+        addSuffixOrPrefix(stringBuilder, player);
+
+        stringBuilder.append(" passed ").append(resultTrial.getAuxInfo()[i]).append("/").append(estudi.getCredits()).append(" ECTS.");
+
+        if (statusList.get(i)) {
+            stringBuilder.append("Congrats! ");
+        } else {
+            stringBuilder.append("Sorry... ");
+        }
+
+        stringBuilder.append("PI count: ");
+
+        addPointStateMessage(player, stringBuilder);
+    }
+
+    private void processDefensa(List<Boolean> statusList, StringBuilder stringBuilder, int i, Player player) {
+        stringBuilder.append("\n\t");
+
+        addSuffixOrPrefix(stringBuilder, player);
+
+        stringBuilder.append(" was ");
+
+        if (statusList.get(i)) {
+            stringBuilder.append("successful. Congrats! ");
+        } else {
+            stringBuilder.append("unsuccessful. Sorry... ");
+        }
+
+        stringBuilder.append("PI count: ");
+
+        addPointStateMessage(player, stringBuilder);
+    }
+
+    private void processSolicitud(StringBuilder stringBuilder, Player player) {
+        stringBuilder.append("\n\t");
+
+        addSuffixOrPrefix(stringBuilder, player);
+
+        stringBuilder.append(". ");
+
+        stringBuilder.append("PI count: ");
+
+        addPointStateMessage(player, stringBuilder);
     }
 
     private Edition findEditionYear(int systemYear) {
