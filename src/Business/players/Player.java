@@ -1,59 +1,58 @@
 package Business.players;
 
-public interface Player extends Cloneable {
-    /**
-     * gets the name of the player
-     * @return
-     */
-    String getName();
+public abstract class Player implements Cloneable{
+    private String name;
+    private int PI_count = 5;
 
-    /**
-     * Sets the name of the player
-     * @param name
-     */
-    void setName(String name);
+    public Player(String name) {
+        this.name = name;
+    }
 
-    /**
-     * Simple getter of PI from player
-     * @return
-     */
-    int getPI_count();
+    public String getName() {
+        return name;
+    }
 
-    /**
-     * Adds points to PI_count
-     * @param points
-     */
-    void addPICount(int points);
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    /**
-     * Returns true if player is eliminated
-     * @return
-     */
-    boolean isEliminated();
+    public int getPI_count() {
+        return PI_count;
+    }
 
-    /**
-     * toString used to debug
-     * @return
-     */
+    public void  addPICount(int points) {
+
+        if (isAlive()) {
+            if (points == 100) {
+                points = 10;
+            } else if (points == 1000) {
+                points = 5;
+            } else if (points == 10000) {
+                points = PI_count / 2 + PI_count % 2;
+            }
+            this.PI_count += points;
+        }
+    }
+
+    public boolean isAlive() {
+        return PI_count > 0;
+    }
+
     @Override
-    String toString();
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
-    /**
-     * Used to clone players in duplicate Edition
-     * @return
-     * @throws CloneNotSupportedException
-     */
-    Object clone() throws CloneNotSupportedException;
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", PI_count=" + PI_count +
+                '}';
+    }
 
-    /**
-     * Simple setter
-     * @param parseInt
-     */
-    void setPI_count(int parseInt);
+    public abstract String getType();
 
-    /**
-     * Getter to obtain the type of the player, which facilitates reading from files, and makes the json deserialize and serialize possible.
-     * @return
-     */
-    String getType();
+    public void setPI_count(int parseInt) {
+        this.PI_count = parseInt;
+    }
 }

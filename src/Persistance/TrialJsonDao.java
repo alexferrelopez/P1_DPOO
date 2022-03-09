@@ -43,7 +43,7 @@ public class TrialJsonDao implements TrialDAO{
             fileReader.close();
             return trials;
         } catch (IOException e) {
-            System.out.println("\n\tNo trials have been loaded");
+            e.printStackTrace();
         }
         return new ArrayList<>();
     }

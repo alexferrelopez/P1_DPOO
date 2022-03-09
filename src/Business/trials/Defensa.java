@@ -1,6 +1,6 @@
 package Business.trials;
 
-import Business.Edition;
+import Business.EditionWrapper;
 import Business.TrialResult;
 import Business.players.Player;
 
@@ -8,62 +8,68 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Defensa implements Trial{
-    private String name;
+public class Defensa extends Trial {
     private final String campsEstudi;
     private final int dificultat;
     public static final String TYPE = "Defensa";
     private final String type = TYPE;
 
     public Defensa(String name, String campsEstudi, int dificultat) {
-        this.name = name;
+        super(name);
         this.campsEstudi = campsEstudi;
         this.dificultat = dificultat;
     }
 
+    /**
+     * calculates result
+     * status added for every player
+     * piByPlauer ready
+     * points increased
+     *
+     * @param playerList
+     * @return
+     */
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String executeTrial(int numPlayers, TrialResult trialResult, Edition edition) {
+    public TrialResult executeTrial(List<Player> playerList) {
         List<Boolean> statusList = new ArrayList<>();
-        int[] timesRevisedList = trialResult.getTimesRevisedList();
+        int[] timesRevisedList = new int[playerList.size()];
 
-        for (int i = 0; i < numPlayers; i++) {
+        for (int i = 0; i < playerList.size(); i++) {
             int result = 0;
             for (int j = 0; j < dificultat; j++) {
                 result += 2*i - 1;
             }
             result = (int) Math.sqrt(result);
-            if(edition.getPlayers().get(i).getPI_count() > result) { //TODO FIX
+            if(playerList.get(i).getPI_count() > result) {
                 statusList.add(true);
             }
-            else statusList.add(false);
+            else {
+                statusList.add(false);
+            }
             timesRevisedList[i] = result;
         }
-        trialResult.setStatusList(statusList);
-        List<Integer> piByPlayer = assignPI(trialResult.getStatusList());
-        edition.setPis(piByPlayer);
 
-        return trialResultToString(trialResult,edition);
+        List<Integer> piByPlayer = assignPI(statusList);
+
+        return new TrialResult(statusList, timesRevisedList, piByPlayer);
     }
 
+    /**
+     * ready up prints
+     * removes players
+     * returns print
+     * @param trialResult
+     * @param editionWrapper
+     * @param playerList
+     * @return
+     */
     @Override
-    public String trialResultToString(TrialResult trialResult, Edition edition) {
+    public String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList) {
         StringBuilder stringBuilder = new StringBuilder();
-        List<Player> players = edition.getPlayers();
         List<Boolean> statusList = trialResult.getStatusList();
-        List<Player> playersToRemove = new ArrayList<>();
 
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
+        for (int i = 0; i < playerList.size(); i++) {
+            Player player = playerList.get(i);
             stringBuilder.append("\n\t").append(player.getName()).append(" was ");
 
             if (statusList.get(i)) {
@@ -76,11 +82,11 @@ public class Defensa implements Trial{
 
             if (player.getPI_count() <= 0) {
                 stringBuilder.append(0).append(" - Disqualified!");
-                playersToRemove.add(player);
             } else stringBuilder.append(player.getPI_count());
         }
 
-        players.removeAll(playersToRemove);
+        editionWrapper.removePlayers();
+
         return stringBuilder.toString();
     }
 
@@ -99,14 +105,9 @@ public class Defensa implements Trial{
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
     public String toString() {
         String type = "Doctoral thesis defense";
-        return "Trial: " +name + " (" + type + ")\n" +
+        return "Trial: " + getName() + " (" + type + ")\n" +
                 "Enter the entity’s name: " + campsEstudi + "\n" +
                 "Difficulty: " + dificultat+ "\n";
     }
@@ -126,11 +127,11 @@ public class Defensa implements Trial{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Defensa defensa = (Defensa) o;
-        return dificultat == defensa.dificultat && Objects.equals(name, defensa.name) && Objects.equals(campsEstudi, defensa.campsEstudi);
+        return dificultat == defensa.dificultat && Objects.equals(getName(), defensa.getName()) && Objects.equals(campsEstudi, defensa.campsEstudi);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, campsEstudi, dificultat, type);
+        return Objects.hash(getName(), campsEstudi, dificultat, type);
     }
 }

@@ -2,7 +2,10 @@ package Presentation;
 
 import Business.trials.Trial;
 
-import java.util.*;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
 
 public class UIManager {
     private final Scanner scanner = new Scanner(System.in);
@@ -139,16 +142,16 @@ public class UIManager {
                 System.out.print("Enter the trial's type: ");
                 int input = Integer.parseInt(scanner.nextLine());
 
-                switch (input) {
-                    case 1: return 1;
-                    case 2: return 2;
-                    case 3: return 3;
-                    case 4: return 4;
-                    default: System.out.println("\nERROR: Choose between the following options");
-                }
+                return switch (input) {
+                    case 1 -> 1;
+                    case 2 -> 2;
+                    case 3 -> 3;
+                    case 4 -> 4;
+                    default -> 5;
+                };
 
             } catch (Exception e) {
-                System.out.println("\nERROR: You have to put a number");
+                System.out.println("\nERROR: You have to enter a number");
             }
         }while (true);
     }
@@ -205,7 +208,7 @@ public class UIManager {
 
     public int requestDeletedTrial(List<Trial> trials) {
 
-        System.out.println("\nWhich edition do you want to delete?\n");
+        System.out.println("\nWhich trial do you want to delete?\n");
 
         int back;
 
@@ -223,7 +226,6 @@ public class UIManager {
                 if (selectTrial != back) {
                     System.out.print("\nEnter the trial's name for confirmation: ");
                     if (scanner.nextLine().trim().toLowerCase(Locale.ROOT).equals(trials.get(selectTrial - 1).getName().trim().toLowerCase(Locale.ROOT))) {
-                        System.out.println("\nThe trial was successfully deleted.");
                         return selectTrial - 1;
                     } else System.out.println("\nError: the trial was not deleted\n");
                 }

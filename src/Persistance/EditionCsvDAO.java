@@ -102,19 +102,13 @@ public class EditionCsvDAO implements EditionDAO{
             List<Edition> editions = new ArrayList<>();
 
             for (String value : s) {
-                Edition aux = new Edition();
-
                 String[] splitEdition = value.split(",");
-                aux.setYear(Integer.parseInt(splitEdition[0]));
 
-
-                aux.setNumPlayers(Integer.parseInt(splitEdition[1]));
-                int numPlayers = aux.getNumPlayers();
+                int numPlayers = Integer.parseInt(splitEdition[1]);
                 List<Player> playerList = new ArrayList<>();
 
                 int index = 2;
 
-                boolean emptyList = false;
                 for (int j = 0; j < numPlayers; j++) {
                     Player playerAux;
 
@@ -122,8 +116,8 @@ public class EditionCsvDAO implements EditionDAO{
                         case Doctor.TYPE -> {
                             index++;
                             playerAux = new Doctor(splitEdition[index]);
+                            index++;
                             if (splitEdition[index].equals("")) {
-                                emptyList = true;
                                 playerAux.setPI_count(0);
                             }
                             else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
@@ -133,35 +127,26 @@ public class EditionCsvDAO implements EditionDAO{
                         case Enginyer.TYPE -> {
                             index++;
                             playerAux = new Enginyer(splitEdition[index]);
-                            if (splitEdition[index].equals("")) {
-                                emptyList = true;
-                                playerAux.setPI_count(0);
+                            index++;
+                            if (!splitEdition[index].equals("")) {
+                                playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
                             }
-                            else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
                             index++;
                             playerList.add(playerAux);
                         }
                         case Master.TYPE -> {
                             index++;
                             playerAux = new Master(splitEdition[index]);
+                            index++;
                             if (splitEdition[index].equals("")) {
-                                emptyList = true;
                                 playerAux.setPI_count(0);
                             }
                             else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
                             index++;
                             playerList.add(playerAux);
                         }
-                        default -> index+= 2;
+                        default -> index+= 3;
                     }
-                    index++;
-                }
-
-                if (emptyList) {
-                    aux.setPlayers(new ArrayList<>());
-                }
-                else {
-                    aux.setPlayers(playerList);
                 }
 
                 int numTrials = Integer.parseInt(splitEdition[index]);
@@ -175,14 +160,12 @@ public class EditionCsvDAO implements EditionDAO{
                     trialList.add(trialAux);
                 }
 
-                aux.setTrials(trialList);
-
-                editions.add(aux);
+                editions.add(new Edition(trialList, playerList ,Integer.parseInt(splitEdition[0]),Integer.parseInt(splitEdition[1])));
             }
 
             return editions;
         } catch (IOException e) {
-            System.out.println("\tNo editions have been loaded\n");
+            e.printStackTrace();
         }
 
         return new ArrayList<>();

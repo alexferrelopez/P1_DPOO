@@ -1,5 +1,6 @@
 package Business;
 
+import Business.players.Player;
 import Business.trials.*;
 import Persistance.*;
 
@@ -76,11 +77,18 @@ public class BusinessManager {
      * @return
      */
     public boolean deleteTrial (int index) {
-        if (index < trials.size() && index >= 0) {
-            trials.remove(index);
-            return true;
+
+        for (Edition edition : editions) {
+            List<Trial> editionTrials = edition.getTrials();
+            for (Trial trial : editionTrials) {
+                if (trial.getName().equals(trials.get(index).getName())) {
+                    return false;
+                }
+            }
         }
-        return false;
+
+        trials.remove(index);
+        return true;
     }
 
     /**
@@ -90,19 +98,13 @@ public class BusinessManager {
      * @param numPlayers
      */
     public void createEdition (List<Integer> trialIndexes, int year, int numPlayers) {
-        Edition edition = new Edition();
         List<Trial> trialList = new ArrayList<>();
-        
-        edition.setYear(year);
-        edition.setNumPlayers(numPlayers);
 
         for (Integer trialIndex : trialIndexes) {
             trialList.add(trials.get(trialIndex));
         }
 
-        edition.setTrials(trialList);
-
-        processDuplicateEdition(year, edition);
+        processDuplicateEdition(year, new Edition(trialList,new ArrayList<>() ,year,numPlayers));
     }
 
     /**
@@ -169,42 +171,47 @@ public class BusinessManager {
      * executes trial checkpoint allows us to resume just where we left it last time.
      * @return
      */
-    public String executeTrial () {
+    public void executeTrial () {
         int systemYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (Edition edition : editions) {
-            int editionYear = edition.getYear();
-            if (systemYear == editionYear) {
-                List<Trial> trialsEdition = edition.getTrials();
-                if (checkpoint < trialsEdition.size()) {
-                    Trial trialToPlay = trialsEdition.get(checkpoint);
-                    TrialResult trialResult = new TrialResult(edition.getPlayerListSize());
 
-                    String result;
+        Edition edition = findEditionYear(systemYear);
 
-                    String trialHeader = "\nTrial #" + (checkpoint+1) + " - " + trialToPlay.getName() +"\n";
-                    String resultTrial = trialToPlay.executeTrial(edition.getPlayerListSize(), trialResult, edition);
-                    result = trialHeader + resultTrial;
+        if (edition != null) {
+            List<Trial> trialsEdition = edition.getTrials();
+            if (checkpoint < trialsEdition.size()) {
+                Trial trialToPlay = trialsEdition.get(checkpoint);
+                List<Player> players = edition.getPlayers();
+                TrialResult resultTrial = trialToPlay.executeTrial(edition.getPlayers());
 
-                    checkpoint++;
-                    if (checkpoint == trialsEdition.size() || getRemainingPlayers() == 0) {
-                        checkpoint = 0;
+                checkpoint++;
 
-                        if (edition.allPLayersEliminated()) {
-                            edition.clearPlayers();
-                            return result + "\n\nTHE TRIALS " + editionYear + " HAVE ENDED - PLAYERS LOST";
-                        } else {
-                            edition.clearPlayers();
-                            return result + "\n\nTHE TRIALS " + editionYear + " HAVE ENDED - PLAYERS WON";
-                        }
+                //result = trialHeader + resultTrial;
+                //String trialHeader = "\nTrial #" + (checkpoint + 1) + " - " + trialToPlay.getName() +"\n";
+                /*if (checkpoint == trialsEdition.size() || getRemainingPlayers() == 0) {
+                    checkpoint = 0;
+
+                    if (edition.allPLayersEliminated()) {
+                        edition.clearPlayers();
+                        return result + "\n\nTHE TRIALS " + editionYear + " HAVE ENDED - PLAYERS LOST";
+                    } else {
+                        edition.clearPlayers();
+                        return result + "\n\nTHE TRIALS " + editionYear + " HAVE ENDED - PLAYERS WON";
                     }
-                    return result;
                 }
+                */
+            }
+        }
+    }
+
+    private Edition findEditionYear(int systemYear) {
+        for (Edition edition1 : editions) {
+            int editionYear = edition1.getYear();
+            if (systemYear == editionYear) {
+                return edition1;
             }
         }
         return null;
     }
-
-
 
     //saveData: guarda en ambos ficheros para que en la siguiente ejecucion los ficheros estén en el mismo estado
     public void saveData () {
@@ -216,8 +223,8 @@ public class BusinessManager {
             new TrialCsvDAO().save(trials);
             new EditionCsvDAO().save(editions,trials);
         }
-        //editionDAO.save(editions, trials);
-        //trialDAO.save(trials);
+        editionDAO.save(editions, trials);
+        trialDAO.save(trials);
         executionCheckpointDAO.save(checkpoint);
     }
 
@@ -323,5 +330,14 @@ public class BusinessManager {
             if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return edition.getPlayerListSize();
         }
         return 0;
+    }
+
+    public boolean trialNameAlreadyExists(String trialName) {
+        for (Trial trial : trials) {
+            if (Objects.equals(trial.getName(), trialName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

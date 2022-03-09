@@ -1,6 +1,6 @@
 package Business.trials;
 
-import Business.Edition;
+import Business.EditionWrapper;
 import Business.TrialResult;
 import Business.players.Player;
 
@@ -8,77 +8,62 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Solicitud implements Trial{
-    private String name;
+public class Solicitud extends Trial {
     private final String entitat;
     private final int pressupost;
     public static final String TYPE = "Solicitud";
     private final String type = TYPE;
 
     public Solicitud(String name, String entitat, int pressupost) {
-        this.name = name;
+        super(name);
         this.entitat = entitat;
         this.pressupost = pressupost;
     }
 
     @Override
     public String toString() {
-        String type = "Budget request)";          //for now
-        return "Trial: " +name + " (" + type + ")\n" +
+        String type = "Budget request)";
+        return "Trial: " + getName() + " (" + type + ")\n" +
                 "Entity: " + entitat +"\n" +
                 "Budget: "+ pressupost +"\n";
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String executeTrial(int numPlayers, TrialResult trialResult, Edition edition) {
+    public TrialResult executeTrial(List<Player> playerList) {
         List<Boolean> statusList = new ArrayList<>();
-        List<Player> players = edition.getPlayers();
         int result = 0;
-        for (int i = 0; i < numPlayers; i++) {
-            result += players.get(i).getPI_count();
+
+        for (Player player : playerList) {
+            result += player.getPI_count();
         }
 
         int calcul = (int)(Math.log(pressupost) / Math.log(2));
 
         if (result > calcul) {
-            for (int i = 0; i < numPlayers; i++) {
+            for (int i = 0; i < playerList.size(); i++) {
                 statusList.add(true);
             }
         }
         else {
-            for (int i = 0; i < numPlayers; i++) {
+            for (int i = 0; i < playerList.size(); i++) {
                 statusList.add(false);
             }
         }
 
-        trialResult.setStatusList(statusList);
-        List<Integer> piByPlayer = assignPI(trialResult.getStatusList());
-        edition.setPis(piByPlayer);
+        List<Integer> piByPlayer = assignPI(statusList);
 
-        return trialResultToString(trialResult,edition);
+        return new TrialResult(statusList, null, piByPlayer);
     }
 
     @Override
-    public String trialResultToString(TrialResult trialResult, Edition edition) {
+    public String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList) {
         StringBuilder stringBuilder = new StringBuilder();
-        List<Player> players = edition.getPlayers();
         List<Boolean> statusList = trialResult.getStatusList();
-        List<Player> playersToRemove = new ArrayList<>();
 
         if (statusList.get(0)) {
             stringBuilder.append("\n\t").append("The research group got the budget!\n");
         }
-        for (Player player : players) {
+        for (Player player : playerList) {
             stringBuilder.append("\n\t").append(player.getName()).append(". ");
 
 
@@ -86,11 +71,11 @@ public class Solicitud implements Trial{
 
             if (player.getPI_count() <= 0) {
                 stringBuilder.append(0).append(" - Disqualified!");
-                playersToRemove.add(player);
             } else stringBuilder.append(player.getPI_count());
         }
 
-        players.removeAll(playersToRemove);
+        editionWrapper.removePlayers();
+
         return stringBuilder.toString();
     }
 
@@ -109,11 +94,6 @@ public class Solicitud implements Trial{
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
     public String toCSV() {
         return type+ "," + entitat + "," + pressupost;
     }
@@ -128,11 +108,11 @@ public class Solicitud implements Trial{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Solicitud solicitud = (Solicitud) o;
-        return pressupost == solicitud.pressupost && Objects.equals(name, solicitud.name) && Objects.equals(entitat, solicitud.entitat);
+        return pressupost == solicitud.pressupost && Objects.equals(getName(), solicitud.getName()) && Objects.equals(entitat, solicitud.entitat);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, entitat, pressupost, type);
+        return Objects.hash(getName(), entitat, pressupost, type);
     }
 }

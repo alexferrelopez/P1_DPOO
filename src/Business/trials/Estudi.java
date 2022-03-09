@@ -1,6 +1,6 @@
 package Business.trials;
 
-import Business.Edition;
+import Business.EditionWrapper;
 import Business.TrialResult;
 import Business.players.Player;
 
@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Estudi implements Trial{
-    private String name;
+public class Estudi extends Trial {
     private final String master;
     private final int credits;
     private final int probabilitat;
@@ -17,7 +16,7 @@ public class Estudi implements Trial{
     private final String type = TYPE;
 
     public Estudi(String name, String master, int credits, int probabilitat) {
-        this.name = name;
+        super(name);
         this.master = master;
         this.credits = credits;
         this.probabilitat = probabilitat;
@@ -26,27 +25,17 @@ public class Estudi implements Trial{
     @Override
     public String toString() {
         String type = "Master studies";          //for now
-        return "Trial: " +name + " (" + type + ")\n" +
+        return "Trial: " + getName() + " (" + type + ")\n" +
                 "Master: " + master + "\n" +
                 "ECTS: " + credits + ", with a " + probabilitat + "% chance to pass each one\n";
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String executeTrial(int numPlayers, TrialResult trialResult, Edition edition) {
+    public TrialResult executeTrial(List<Player> playerList) {
         List<Boolean> statusList = new ArrayList<>();
-        int[] timesRevisedList = trialResult.getTimesRevisedList();
+        int[] timesRevisedList = new int[playerList.size()];
 
-        for (int i = 0; i < numPlayers; i++) {
+        for (int i = 0; i < playerList.size(); i++) {
             int result = 0;
 
             for (int j = 0; j < credits; j++) {
@@ -61,23 +50,20 @@ public class Estudi implements Trial{
             else statusList.add(false);
             timesRevisedList[i] = result;
         }
-        trialResult.setStatusList(statusList);
-        List<Integer> piByPlayer = assignPI(trialResult.getStatusList());
-        edition.setPis(piByPlayer);
 
-        return trialResultToString(trialResult,edition);
+        List<Integer> piByPlayer = assignPI(statusList);
+
+        return new TrialResult(statusList, timesRevisedList, piByPlayer);
     }
 
     @Override
-    public String trialResultToString(TrialResult trialResult, Edition edition) {
+    public String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList) {
         StringBuilder stringBuilder = new StringBuilder();
-        List<Player> players = edition.getPlayers();
         List<Boolean> statusList = trialResult.getStatusList();
-        List<Player> playersToRemove = new ArrayList<>();
-        int[] timesRevisedList = trialResult.getTimesRevisedList();
+        int[] timesRevisedList = trialResult.getAuxInfo();
 
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
+        for (int i = 0; i < playerList.size(); i++) {
+            Player player = playerList.get(i);
             stringBuilder.append("\n\t").append(player.getName()).append(" passed ").append(timesRevisedList[i]).append("/").append(credits).append(" ECTS.");
 
             if (statusList.get(i)) {
@@ -90,11 +76,11 @@ public class Estudi implements Trial{
 
             if (player.getPI_count() <= 0) {
                 stringBuilder.append(0).append(" - Disqualified!");
-                playersToRemove.add(player);
             } else stringBuilder.append(player.getPI_count());
         }
 
-        players.removeAll(playersToRemove); //TODO edition.removeAll implement
+        editionWrapper.removePlayers();
+
         return stringBuilder.toString();
     }
 
@@ -113,11 +99,6 @@ public class Estudi implements Trial{
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
-    @Override
     public String toCSV() {
         return type+ "," + master + "," + credits + "," + probabilitat;
     }
@@ -132,11 +113,11 @@ public class Estudi implements Trial{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Estudi estudi = (Estudi) o;
-        return credits == estudi.credits && probabilitat == estudi.probabilitat && Objects.equals(name, estudi.name) && Objects.equals(master, estudi.master);
+        return credits == estudi.credits && probabilitat == estudi.probabilitat && Objects.equals(getName(), estudi.getName()) && Objects.equals(master, estudi.master);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, master, credits, probabilitat, type);
+        return Objects.hash(getName(), master, credits, probabilitat, type);
     }
 }

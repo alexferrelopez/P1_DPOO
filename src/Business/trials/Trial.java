@@ -1,81 +1,45 @@
 package Business.trials;
 
-import Business.Edition;
-import Business.players.Player;
+import Business.EditionWrapper;
 import Business.TrialResult;
+import Business.players.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public interface Trial extends Cloneable {
-    String executeTrial(int numPlayers, TrialResult trialResult, Edition edition);
 
-    /**
-     * Passes from results to String in Article, Overridden on every other implementation.
-     * @param trialResult
-     * @param edition
-     * @return
-     */
-    default String trialResultToString(TrialResult trialResult, Edition edition) {
-        StringBuilder stringBuilder = new StringBuilder();
-        List<Player> players = edition.getPlayers();
-        List<Boolean> statusList = trialResult.getStatusList();
-        int[] timesRevisedList = trialResult.getTimesRevisedList();
-        List<Player> playersToRemove = new ArrayList<>();
+public abstract class Trial implements Cloneable {
+    private String name;
 
-        for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            stringBuilder.append("\n\t").append(player.getName()).append(" is submitting... ");
-            stringBuilder.append("Revisions... ".repeat(Math.max(0, timesRevisedList[i])));
-
-            if (statusList.get(i)) {
-                stringBuilder.append("Accepted! ");
-            } else {
-                stringBuilder.append("Rejected. ");
-            }
-
-            stringBuilder.append("PI count: ");
-
-            if (player.getPI_count() <= 0) {
-                stringBuilder.append(0).append(" - Disqualified!");
-                playersToRemove.add(player);
-            } else stringBuilder.append(player.getPI_count());
-        }
-
-        players.removeAll(playersToRemove);
-        return stringBuilder.toString();
+    public Trial(String name){
+        this.name = name;
     }
 
-    /**
-     * Assigns PI to players depending on their result, obtained previously in trialResultToString
-     * @param statusList
-     * @return
-     */
-    List<Integer> assignPI(List<Boolean> statusList);
+    public abstract TrialResult executeTrial(List<Player> playerList);
 
-    /**
-     * Simple getter of trial name
-     * @return
-     */
-    String getName();
+    public abstract String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList);
 
-    /**
-     * Simple setter of trial name
-     * @param name
-     */
-    void setName(String name);
+    public abstract List<Integer> assignPI(List<Boolean> statusList);
 
-    /**
-     * Used to clone Trials to return a copy of trials to uiManager (to list trials in the end)
-     * @return
-     */
-    Object clone() throws CloneNotSupportedException;
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
-    /**
-     * creates a string which includes all necessary atributes to save in trials.csv
-     * @return
-     */
-    String toCSV();
+    public abstract String toString();
 
-    String getType();
+    public abstract boolean equals(Object o);
+
+    public abstract int hashCode();
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public abstract String toCSV();
+
+    public abstract String getType();
+    
 }

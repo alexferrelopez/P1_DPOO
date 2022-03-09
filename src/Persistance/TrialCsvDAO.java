@@ -78,7 +78,7 @@ public class  TrialCsvDAO implements TrialDAO{
 
             return trials;
         } catch (IOException e) {
-            System.out.println("\n\tNo trials have been loaded");
+            e.printStackTrace();
         }
         return new ArrayList<>();
     }

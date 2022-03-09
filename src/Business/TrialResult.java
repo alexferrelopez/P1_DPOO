@@ -1,31 +1,30 @@
 package Business;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 public class TrialResult {
-    private int[] timesRevisedList;
-    private List<Boolean> statusList;
+    private final List<Boolean> statusList;
+    private final int[] auxInfo;
+    private final List<Integer> piByPlayer;
 
-    public TrialResult (int numPlayers) {
-        timesRevisedList = new int[numPlayers];
-        statusList = new ArrayList<>();
-    }
-
-    public int[] getTimesRevisedList() {
-        return timesRevisedList;
-    }
-
-    public void setTimesRevisedList(int[] timesRevisedList) {
-        this.timesRevisedList = timesRevisedList;
+    public TrialResult(List<Boolean> statusList, int[] timesRevisedList, List<Integer> piByPlayer) {
+        this.statusList = statusList;
+        this.auxInfo = timesRevisedList;
+        this.piByPlayer = piByPlayer;
     }
 
     public List<Boolean> getStatusList() {
-        return statusList;
+        return new ArrayList<>(statusList);
     }
 
-    public void setStatusList(List<Boolean> statusList) {
-        this.statusList = statusList;
+    public int[] getAuxInfo() {
+        int[] result = new int[auxInfo.length];
+        System.arraycopy(auxInfo,0,result,0, auxInfo.length);
+        return result;
+    }
+
+    public List<Integer> getPiByPlayer() {
+        return new ArrayList<>(piByPlayer);
     }
 }

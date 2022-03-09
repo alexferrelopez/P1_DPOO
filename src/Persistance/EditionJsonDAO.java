@@ -26,7 +26,6 @@ public class EditionJsonDAO implements EditionDAO{
 
     @Override
     public void save(List<Edition> editions, List<Trial> t) {
-
         if (!editions.isEmpty()) {
             try {
                 FileWriter fileWriter = new FileWriter("./files/editions.json");
@@ -40,14 +39,13 @@ public class EditionJsonDAO implements EditionDAO{
 
     @Override
     public List<Edition> getAll(List<Trial> trials) {
-
         try {
             FileReader fileReader = new FileReader("./files/editions.json");
             List<Edition> editions = new ArrayList<>(Arrays.stream((gson.fromJson(fileReader, Edition[].class))).toList());
             fileReader.close();
             return editions;
         } catch (IOException e) {
-            System.out.println("\tNo editions have been loaded\n");
+            e.printStackTrace();
         }
         return new ArrayList<>();
     }
