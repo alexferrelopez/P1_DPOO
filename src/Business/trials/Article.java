@@ -1,6 +1,7 @@
 package Business.trials;
 
-import Business.*;
+import Business.Journal;
+import Business.TrialResult;
 import Business.players.Player;
 
 import java.util.ArrayList;
