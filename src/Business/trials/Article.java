@@ -48,74 +48,7 @@ public class Article extends Trial {
             } while (!processedTrial);
         }
 
-        List<Integer> piByPlayer = assignPI(statusList);
-
-        return new TrialResult(statusList, timesRevisedList, piByPlayer);
-    }
-
-    public String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList) {
-        StringBuilder stringBuilder = new StringBuilder();
-        List<Boolean> statusList = trialResult.getStatusList();
-        int[] timesRevisedList = trialResult.getAuxInfo();
-
-        for (int i = 0; i < playerList.size(); i++) {
-            Player player = playerList.get(i);
-
-            stringBuilder.append("\n\t").append(player.getName()).append(" is submitting... ");
-            stringBuilder.append("Revisions... ".repeat(Math.max(0, timesRevisedList[i])));
-
-            if (statusList.get(i)) {
-                stringBuilder.append("Accepted! ");
-            } else {
-                stringBuilder.append("Rejected. ");
-            }
-
-            stringBuilder.append("PI count: ");
-
-            if (player.getPI_count() <= 0) {
-                stringBuilder.append(0).append(" - Disqualified!");
-            } else stringBuilder.append(player.getPI_count());
-        }
-
-        editionWrapper.removePlayers();
-
-        return stringBuilder.toString();
-    }
-
-    @Override
-    public List<Integer> assignPI(List<Boolean> statusList) {
-        List<Integer> piList = new ArrayList<>();
-        for (Boolean hasPassed : statusList) {
-            if (hasPassed) {
-                if ("Q1".equals(getJorunalQuartile())) {
-                    piList.add(4);
-                }
-                else if ("Q2".equals(getJorunalQuartile())) {
-                    piList.add(3);
-                }
-                else if ("Q3".equals(getJorunalQuartile())) {
-                    piList.add(2);
-                }
-                else {
-                    piList.add(1);
-                }
-            }
-            else {
-                if ("Q1".equals(getJorunalQuartile())) {
-                    piList.add(-5);
-                }
-                else if ("Q2".equals(getJorunalQuartile())) {
-                    piList.add(-4);
-                }
-                else if ("Q3".equals(getJorunalQuartile())) {
-                    piList.add(-3);
-                }
-                else {
-                    piList.add(-2);
-                }
-            }
-        }
-        return piList;
+        return new TrialResult(statusList, timesRevisedList);
     }
 
     @Override

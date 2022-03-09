@@ -1,6 +1,5 @@
 package Business.trials;
 
-import Business.EditionWrapper;
 import Business.TrialResult;
 import Business.players.Player;
 
@@ -50,47 +49,7 @@ public class Solicitud extends Trial {
             }
         }
 
-        List<Integer> piByPlayer = assignPI(statusList);
-
-        return new TrialResult(statusList, null, piByPlayer);
-    }
-
-    @Override
-    public String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList) {
-        StringBuilder stringBuilder = new StringBuilder();
-        List<Boolean> statusList = trialResult.getStatusList();
-
-        if (statusList.get(0)) {
-            stringBuilder.append("\n\t").append("The research group got the budget!\n");
-        }
-        for (Player player : playerList) {
-            stringBuilder.append("\n\t").append(player.getName()).append(". ");
-
-
-            stringBuilder.append("PI count: ");
-
-            if (player.getPI_count() <= 0) {
-                stringBuilder.append(0).append(" - Disqualified!");
-            } else stringBuilder.append(player.getPI_count());
-        }
-
-        editionWrapper.removePlayers();
-
-        return stringBuilder.toString();
-    }
-
-    @Override
-    public List<Integer> assignPI(List<Boolean> statusList) {
-        List<Integer> piList = new ArrayList<>();
-        for (Boolean hasPassed : statusList) {
-            if (hasPassed) {
-                piList.add(10000);
-            }
-            else {
-                piList.add(-2);
-            }
-        }
-        return piList;
+        return new TrialResult(statusList, null);
     }
 
     @Override

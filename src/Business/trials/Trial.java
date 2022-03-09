@@ -1,11 +1,9 @@
 package Business.trials;
 
-import Business.EditionWrapper;
 import Business.TrialResult;
 import Business.players.Player;
 
 import java.util.List;
-
 
 public abstract class Trial implements Cloneable {
     private String name;
@@ -15,10 +13,6 @@ public abstract class Trial implements Cloneable {
     }
 
     public abstract TrialResult executeTrial(List<Player> playerList);
-
-    public abstract String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList);
-
-    public abstract List<Integer> assignPI(List<Boolean> statusList);
 
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

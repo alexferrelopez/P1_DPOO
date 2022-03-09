@@ -16,22 +16,71 @@ public abstract class Player implements Cloneable{
         this.name = name;
     }
 
-    public int getPI_count() {
+    public int getPI_count () {
         return PI_count;
     }
 
-    public void  addPICount(int points) {
-
-        if (isAlive()) {
-            if (points == 100) {
-                points = 10;
-            } else if (points == 1000) {
-                points = 5;
-            } else if (points == 10000) {
-                points = PI_count / 2 + PI_count % 2;
+    public void processPIArticle(Boolean passed, String quartile) {
+        if (passed) {
+            if ("Q1".equals(quartile)) {
+                incresePI(4);
             }
-            this.PI_count += points;
+            else if ("Q2".equals(quartile)) {
+                incresePI(3);
+            }
+            else if ("Q3".equals(quartile)) {
+                incresePI(2);
+            }
+            else {
+                incresePI(1);
+            }
         }
+        else {
+            if ("Q1".equals(quartile)) {
+                decreasePI(5);
+            }
+            else if ("Q2".equals(quartile)) {
+                decreasePI(4);
+            }
+            else if ("Q3".equals(quartile)) {
+                decreasePI(3);
+            }
+            else {
+                decreasePI(2);
+            }
+        }
+    }
+
+    public void processPIEstudi(Boolean passed) {
+        if (passed) {
+            incresePI(3);
+        } else {
+            decreasePI(3);
+        }
+    }
+
+    public void processPIDefensa(Boolean passed) {
+        if (passed) {
+            incresePI(5);
+        } else {
+            decreasePI(5);
+        }
+    }
+
+    public void processPISolicitud(Boolean passed) {
+        if (passed) {
+            incresePI(PI_count / 2 + PI_count % 2);
+        } else {
+            decreasePI(2);
+        }
+    }
+
+    public void decreasePI(int points) {
+        PI_count -= points;
+    }
+
+    public void incresePI(int points) {
+        PI_count += points;
     }
 
     public boolean isAlive() {
@@ -52,7 +101,7 @@ public abstract class Player implements Cloneable{
 
     public abstract String getType();
 
-    public void setPI_count(int parseInt) {
-        this.PI_count = parseInt;
+    public void setPI_count(int pi) {
+        this.PI_count = pi;
     }
 }

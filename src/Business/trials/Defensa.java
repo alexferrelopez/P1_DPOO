@@ -1,6 +1,5 @@
 package Business.trials;
 
-import Business.EditionWrapper;
 import Business.TrialResult;
 import Business.players.Player;
 
@@ -49,59 +48,7 @@ public class Defensa extends Trial {
             timesRevisedList[i] = result;
         }
 
-        List<Integer> piByPlayer = assignPI(statusList);
-
-        return new TrialResult(statusList, timesRevisedList, piByPlayer);
-    }
-
-    /**
-     * ready up prints
-     * removes players
-     * returns print
-     * @param trialResult
-     * @param editionWrapper
-     * @param playerList
-     * @return
-     */
-    @Override
-    public String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList) {
-        StringBuilder stringBuilder = new StringBuilder();
-        List<Boolean> statusList = trialResult.getStatusList();
-
-        for (int i = 0; i < playerList.size(); i++) {
-            Player player = playerList.get(i);
-            stringBuilder.append("\n\t").append(player.getName()).append(" was ");
-
-            if (statusList.get(i)) {
-                stringBuilder.append("successful. Congrats! ");
-            } else {
-                stringBuilder.append("unsuccessful. Sorry... ");
-            }
-
-            stringBuilder.append("PI count: ");
-
-            if (player.getPI_count() <= 0) {
-                stringBuilder.append(0).append(" - Disqualified!");
-            } else stringBuilder.append(player.getPI_count());
-        }
-
-        editionWrapper.removePlayers();
-
-        return stringBuilder.toString();
-    }
-
-    @Override
-    public List<Integer> assignPI(List<Boolean> statusList) {
-        List<Integer> piList = new ArrayList<>();
-        for (Boolean hasPassed : statusList) {
-            if (hasPassed) {
-                piList.add(1000);
-            }
-            else {
-                piList.add(-5);
-            }
-        }
-        return piList;
+        return new TrialResult(statusList, timesRevisedList);
     }
 
     @Override

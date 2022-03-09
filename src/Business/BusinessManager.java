@@ -181,13 +181,25 @@ public class BusinessManager {
             if (checkpoint < trialsEdition.size()) {
                 Trial trialToPlay = trialsEdition.get(checkpoint);
                 List<Player> players = edition.getPlayers();
+
                 TrialResult resultTrial = trialToPlay.executeTrial(edition.getPlayers());
+
+                String quartile = null;
+                if (trialToPlay.getType().equals(Article.TYPE)) {
+                    Article article = (Article) trialToPlay;
+                    quartile = article.getJorunalQuartile();
+                }
+
+                List<Player> evolvedPlayers = edition.incrementPoints(resultTrial.getStatusList(), trialToPlay.getType(), quartile);
+
+
 
                 checkpoint++;
 
-                //result = trialHeader + resultTrial;
-                //String trialHeader = "\nTrial #" + (checkpoint + 1) + " - " + trialToPlay.getName() +"\n";
-                /*if (checkpoint == trialsEdition.size() || getRemainingPlayers() == 0) {
+                /*
+                result = trialHeader + resultTrial;
+                String trialHeader = "\nTrial #" + (checkpoint + 1) + " - " + trialToPlay.getName() +"\n";
+                if (checkpoint == trialsEdition.size() || getRemainingPlayers() == 0) {
                     checkpoint = 0;
 
                     if (edition.allPLayersEliminated()) {

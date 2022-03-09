@@ -1,6 +1,5 @@
 package Business.trials;
 
-import Business.EditionWrapper;
 import Business.TrialResult;
 import Business.players.Player;
 
@@ -51,51 +50,7 @@ public class Estudi extends Trial {
             timesRevisedList[i] = result;
         }
 
-        List<Integer> piByPlayer = assignPI(statusList);
-
-        return new TrialResult(statusList, timesRevisedList, piByPlayer);
-    }
-
-    @Override
-    public String resultProcessing(TrialResult trialResult, EditionWrapper editionWrapper, List<Player> playerList) {
-        StringBuilder stringBuilder = new StringBuilder();
-        List<Boolean> statusList = trialResult.getStatusList();
-        int[] timesRevisedList = trialResult.getAuxInfo();
-
-        for (int i = 0; i < playerList.size(); i++) {
-            Player player = playerList.get(i);
-            stringBuilder.append("\n\t").append(player.getName()).append(" passed ").append(timesRevisedList[i]).append("/").append(credits).append(" ECTS.");
-
-            if (statusList.get(i)) {
-                stringBuilder.append("Congrats! ");
-            } else {
-                stringBuilder.append("Sorry... ");
-            }
-
-            stringBuilder.append("PI count: ");
-
-            if (player.getPI_count() <= 0) {
-                stringBuilder.append(0).append(" - Disqualified!");
-            } else stringBuilder.append(player.getPI_count());
-        }
-
-        editionWrapper.removePlayers();
-
-        return stringBuilder.toString();
-    }
-
-    @Override
-    public List<Integer> assignPI(List<Boolean> statusList) {
-        List<Integer> piList = new ArrayList<>();
-        for (Boolean hasPassed : statusList) {
-            if (hasPassed) {
-                piList.add(100);
-            }
-            else {
-                piList.add(-3);
-            }
-        }
-        return piList;
+        return new TrialResult(statusList, timesRevisedList);
     }
 
     @Override

@@ -6,12 +6,10 @@ import java.util.List;
 public class TrialResult {
     private final List<Boolean> statusList;
     private final int[] auxInfo;
-    private final List<Integer> piByPlayer;
 
-    public TrialResult(List<Boolean> statusList, int[] timesRevisedList, List<Integer> piByPlayer) {
+    public TrialResult(List<Boolean> statusList, int[] auxInfo) {
         this.statusList = statusList;
-        this.auxInfo = timesRevisedList;
-        this.piByPlayer = piByPlayer;
+        this.auxInfo = auxInfo;
     }
 
     public List<Boolean> getStatusList() {
@@ -24,7 +22,4 @@ public class TrialResult {
         return result;
     }
 
-    public List<Integer> getPiByPlayer() {
-        return new ArrayList<>(piByPlayer);
-    }
 }

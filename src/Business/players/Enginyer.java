@@ -9,8 +9,12 @@ public class Enginyer extends Player {
     }
 
     @Override
-    public void addPICount(int points) {
-        super.addPICount(points);
+    public void processPIEstudi(Boolean passed) {
+        if (passed) {
+            incresePI(10);
+        } else {
+            decreasePI(3);
+        }
     }
 
     public String getType() {

@@ -9,21 +9,13 @@ public class Doctor extends Player {
     }
 
     @Override
-    public void addPICount(int points) {
-        if (isAlive()) {
-            if (points == 100) {
-                points = 3;
-            } else if (points == 1000) {
-                points = 5;
-            } else if (points == 10000) {
-                points = getPI_count() / 2 + getPI_count() % 2;
-            }
+    public void incresePI(int points) {
+        super.incresePI(points*2);
+    }
 
-            if (points < 0) {
-                setPI_count(getPI_count() + points / 2);
-            }
-            else  setPI_count(getPI_count() + points * 2);
-        }
+    @Override
+    public void decreasePI(int points) {
+        super.decreasePI(points/2);
     }
 
     public String getType() {

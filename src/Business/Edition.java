@@ -4,12 +4,12 @@ import Business.players.Doctor;
 import Business.players.Enginyer;
 import Business.players.Master;
 import Business.players.Player;
-import Business.trials.Trial;
+import Business.trials.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Edition implements Cloneable, EditionWrapper {
+public class Edition implements Cloneable {
     private List<Trial> trials;
     private List<Player> players;
     private int year;
@@ -142,18 +142,12 @@ public class Edition implements Cloneable, EditionWrapper {
         }
     }^*/
 
-    private void ascendPlayer(Player player) {
+    private void ascendPlayer(Player player, int index) {
         String type = player.getType();
 
         switch (type) {
-            case Enginyer.TYPE -> {
-                players.add(new Master(player.getName()));
-                players.remove(player);
-            }
-            case Master.TYPE -> {
-                players.add(new Doctor(player.getName()));
-                players.remove(player);
-            }
+            case Enginyer.TYPE -> players.set( index ,new Master(player.getName()));
+            case Master.TYPE -> players.set(index, new Doctor(player.getName()));
         }
     }
 
@@ -169,15 +163,24 @@ public class Edition implements Cloneable, EditionWrapper {
         players.removeIf(player -> !player.isAlive());
     }
 
-    @Override
-    public void incrementPoints(List<Integer> piByPlayer) {
+
+    public List<Player> incrementPoints(List<Boolean> piByPlayer, String type, String quartile) {
+        List<Player> evolvedPlayers = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
-            player.addPICount(piByPlayer.get(i));
+
+            switch (type) {
+                case Article.TYPE ->    player.processPIArticle     (piByPlayer.get(i), quartile);
+                case Estudi.TYPE ->     player.processPIEstudi      (piByPlayer.get(i));
+                case Defensa.TYPE ->    player.processPIDefensa     (piByPlayer.get(i));
+                case Solicitud.TYPE ->  player.processPISolicitud   (piByPlayer.get(i));
+            }
 
             if (player.getPI_count() >= 10) {
-                ascendPlayer(player);
+                ascendPlayer(player, i);
+                evolvedPlayers.add(player);
             }
         }
+        return evolvedPlayers;
     }
 }

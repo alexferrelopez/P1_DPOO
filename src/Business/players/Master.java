@@ -9,21 +9,17 @@ public class Master extends Player {
     }
 
     @Override
-    public void addPICount(int points) {
-        if (isAlive()) {
-            if (points == 100) {
-                points = 3;
-            } else if (points == 1000) {
-                points = 10;
-            } else if (points == 10000) {
-                points = getPI_count() / 2 + getPI_count() % 2;
-            }
-
-            if (points < 0) {
-                setPI_count(getPI_count() + points / 2);
-            }
-            setPI_count(points);
+    public void processPIDefensa(Boolean passed) {
+        if (passed) {
+            incresePI(10);
+        } else {
+            decreasePI(5);
         }
+    }
+
+    @Override
+    public void decreasePI(int points) {
+        super.decreasePI(points/2);
     }
 
     public String getType() {
