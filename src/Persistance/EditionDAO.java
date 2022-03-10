@@ -3,6 +3,7 @@ package Persistance;
 import Business.Edition;
 import Business.trials.Trial;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface EditionDAO {
@@ -20,5 +21,5 @@ public interface EditionDAO {
      * @param trials
      * @return
      */
-    List<Edition> getAll(List<Trial> trials);
+    List<Edition> getAll(List<Trial> trials) throws IOException;
 }

@@ -95,79 +95,73 @@ public class EditionCsvDAO implements EditionDAO{
      * @return
      */
     @Override
-    public List<Edition> getAll(List<Trial> trials) {
+    public List<Edition> getAll(List<Trial> trials) throws IOException {
         Path pathEditions = Paths.get("./files/editions.csv");
-        try {
-            List<String> s  = Files.readAllLines(pathEditions);
-            List<Edition> editions = new ArrayList<>();
+        List<String> s  = Files.readAllLines(pathEditions);
+        List<Edition> editions = new ArrayList<>();
 
-            for (String value : s) {
-                String[] splitEdition = value.split(",");
+        for (String value : s) {
+            String[] splitEdition = value.split(",");
 
-                int numPlayers = Integer.parseInt(splitEdition[1]);
-                List<Player> playerList = new ArrayList<>();
+            int numPlayers = Integer.parseInt(splitEdition[1]);
+            List<Player> playerList = new ArrayList<>();
 
-                int index = 2;
+            int index = 2;
 
-                for (int j = 0; j < numPlayers; j++) {
-                    Player playerAux;
+            for (int j = 0; j < numPlayers; j++) {
+                Player playerAux;
 
-                    switch (splitEdition[index]) {
-                        case Doctor.TYPE -> {
-                            index++;
-                            playerAux = new Doctor(splitEdition[index]);
-                            index++;
-                            if (splitEdition[index].equals("")) {
-                                playerAux.setPI_count(0);
-                            }
-                            else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
-                            index++;
-                            playerList.add(playerAux);
+                switch (splitEdition[index]) {
+                    case Doctor.TYPE -> {
+                        index++;
+                        playerAux = new Doctor(splitEdition[index]);
+                        index++;
+                        if (splitEdition[index].equals("")) {
+                            playerAux.setPI_count(0);
                         }
-                        case Enginyer.TYPE -> {
-                            index++;
-                            playerAux = new Enginyer(splitEdition[index]);
-                            index++;
-                            if (!splitEdition[index].equals("")) {
-                                playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
-                            }
-                            index++;
-                            playerList.add(playerAux);
-                        }
-                        case Master.TYPE -> {
-                            index++;
-                            playerAux = new Master(splitEdition[index]);
-                            index++;
-                            if (splitEdition[index].equals("")) {
-                                playerAux.setPI_count(0);
-                            }
-                            else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
-                            index++;
-                            playerList.add(playerAux);
-                        }
-                        default -> index+= 3;
+                        else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
+                        index++;
+                        playerList.add(playerAux);
                     }
+                    case Enginyer.TYPE -> {
+                        index++;
+                        playerAux = new Enginyer(splitEdition[index]);
+                        index++;
+                        if (!splitEdition[index].equals("")) {
+                            playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
+                        }
+                        index++;
+                        playerList.add(playerAux);
+                    }
+                    case Master.TYPE -> {
+                        index++;
+                        playerAux = new Master(splitEdition[index]);
+                        index++;
+                        if (splitEdition[index].equals("")) {
+                            playerAux.setPI_count(0);
+                        }
+                        else playerAux.setPI_count(Integer.parseInt(splitEdition[index]));
+                        index++;
+                        playerList.add(playerAux);
+                    }
+                    default -> index+= 3;
                 }
-
-                int numTrials = Integer.parseInt(splitEdition[index]);
-                index++;
-
-                List<Trial> trialList = new ArrayList<>();
-
-                for (int j = 0; j < numTrials; j++) {
-                    Trial trialAux = trials.get(Integer.parseInt(splitEdition[index]));
-                    index++;
-                    trialList.add(trialAux);
-                }
-
-                editions.add(new Edition(trialList, playerList ,Integer.parseInt(splitEdition[0]),Integer.parseInt(splitEdition[1])));
             }
 
-            return editions;
-        } catch (IOException e) {
-            e.printStackTrace();
+            int numTrials = Integer.parseInt(splitEdition[index]);
+            index++;
+
+            List<Trial> trialList = new ArrayList<>();
+
+            for (int j = 0; j < numTrials; j++) {
+                Trial trialAux = trials.get(Integer.parseInt(splitEdition[index]));
+                index++;
+                trialList.add(trialAux);
+            }
+
+            editions.add(new Edition(trialList, playerList ,Integer.parseInt(splitEdition[0]),Integer.parseInt(splitEdition[1])));
         }
 
-        return new ArrayList<>();
+        return editions;
     }
 }

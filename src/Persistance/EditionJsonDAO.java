@@ -38,16 +38,11 @@ public class EditionJsonDAO implements EditionDAO{
     }
 
     @Override
-    public List<Edition> getAll(List<Trial> trials) {
-        try {
-            FileReader fileReader = new FileReader("./files/editions.json");
-            List<Edition> editions = new ArrayList<>(Arrays.stream((gson.fromJson(fileReader, Edition[].class))).toList());
-            fileReader.close();
-            return editions;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+    public List<Edition> getAll(List<Trial> trials) throws IOException {
+        FileReader fileReader = new FileReader("./files/editions.json");
+        List<Edition> editions = new ArrayList<>(Arrays.stream((gson.fromJson(fileReader, Edition[].class))).toList());
+        fileReader.close();
+        return editions;
     }
 
       /////////////////////////////////////////

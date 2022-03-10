@@ -6,6 +6,7 @@ import Business.players.Player;
 import Business.trials.*;
 import Persistance.*;
 
+import java.io.IOException;
 import java.util.*;
 
 public class BusinessManager {
@@ -15,11 +16,12 @@ public class BusinessManager {
     private List<Edition> editions = new ArrayList<>();
     private final ExecutionCheckpointDAO executionCheckpointDAO = new ExecutionCheckpointDAO();
     private Integer checkpoint = executionCheckpointDAO.getAll();
+    private final int systemYear = Calendar.getInstance().get(Calendar.YEAR);
 
     /**
      * loads files from CSV.
      */
-    public void loadFromCsv() {
+    public void loadFromCsv() throws IOException {
         trialDAO = new TrialCsvDAO();
         trials = trialDAO.getAll();
         editionDAO = new EditionCsvDAO();
@@ -27,9 +29,10 @@ public class BusinessManager {
     }
 
     /**
-     * loads files from Json
+     *
+     * @throws IOException
      */
-    public void loadFromJson() {
+    public void loadFromJson() throws IOException {
         trialDAO = new TrialJsonDao();
         trials = trialDAO.getAll();
         editionDAO = new EditionJsonDAO();
@@ -136,6 +139,11 @@ public class BusinessManager {
             if (edition.getYear() == year) {
                 editions.set(i,duplicate);
                 yearAlreadyExists = true;
+
+                if (systemYear == year) {
+                    checkpoint = null;
+                }
+
                 break;
             }
         }
@@ -149,7 +157,9 @@ public class BusinessManager {
      * @param index
      */
     public void deleteEdition (int index) {
-        checkpoint = null;
+        if (systemYear == editions.get(index).getYear()) {
+            checkpoint = null;
+        }
         editions.remove(index);
     }
 
@@ -174,16 +184,15 @@ public class BusinessManager {
      * @return
      */
     public String executeTrial () {
-        int systemYear = Calendar.getInstance().get(Calendar.YEAR);
 
         Edition edition = findEditionYear(systemYear);
 
         if (edition != null) {
-            
+
             List<Trial> trialsEdition = edition.getTrials();
-            
+
             if (checkpoint < trialsEdition.size()) {
-                
+
                 Trial trialToPlay = trialsEdition.get(checkpoint);
 
                 TrialResult trialResult = trialToPlay.executeTrial(edition.getPlayers());
@@ -204,41 +213,7 @@ public class BusinessManager {
 
                 List<Player> players = edition.getPlayers();
 
-                switch (type) {
-                    case Article.TYPE -> {
-
-                        for (int i = 0; i < players.size(); i++) {
-                            Player player = players.get(i);
-                            processArticle(trialResult, statusList, stringBuilder, i, player);
-                        }
-                    }
-                    case Estudi.TYPE -> {
-
-                        Estudi estudi = (Estudi) trialToPlay;
-
-                        for (int i = 0; i < players.size(); i++) {
-                            Player player = players.get(i);
-                            processEstudi(trialResult, statusList, stringBuilder, estudi, i, player);
-                        }
-                    }
-                    case Defensa.TYPE ->{
-
-                        for (int i = 0; i < players.size(); i++) {
-                            Player player = players.get(i);
-                            processDefensa(statusList, stringBuilder, i, player);
-                        }
-                    }
-                    case Solicitud.TYPE ->{
-
-                        if (statusList.get(0)) {
-                            stringBuilder.append("\n\t").append("The research group got the budget!\n");
-                        }
-
-                        for (Player player : players) {
-                            processSolicitud(stringBuilder, player);
-                        }
-                    }
-                }
+                processTrial(trialToPlay, trialResult, type, statusList, stringBuilder, players);
 
                 List<Player> ascendedPlayers = edition.ascendPlayers();
 
@@ -281,6 +256,44 @@ public class BusinessManager {
             }
         }
         return null;
+    }
+
+    private void processTrial(Trial trialToPlay, TrialResult trialResult, String type, List<Boolean> statusList, StringBuilder stringBuilder, List<Player> players) {
+        switch (type) {
+            case Article.TYPE -> {
+
+                for (int i = 0; i < players.size(); i++) {
+                    Player player = players.get(i);
+                    processArticle(trialResult, statusList, stringBuilder, i, player);
+                }
+            }
+            case Estudi.TYPE -> {
+
+                Estudi estudi = (Estudi) trialToPlay;
+
+                for (int i = 0; i < players.size(); i++) {
+                    Player player = players.get(i);
+                    processEstudi(trialResult, statusList, stringBuilder, estudi, i, player);
+                }
+            }
+            case Defensa.TYPE ->{
+
+                for (int i = 0; i < players.size(); i++) {
+                    Player player = players.get(i);
+                    processDefensa(statusList, stringBuilder, i, player);
+                }
+            }
+            case Solicitud.TYPE ->{
+
+                if (statusList.get(0)) {
+                    stringBuilder.append("\n\t").append("The research group got the budget!\n");
+                }
+
+                for (Player player : players) {
+                    processSolicitud(stringBuilder, player);
+                }
+            }
+        }
     }
 
     private void addSuffixOrPrefix(StringBuilder stringBuilder, Player player) {
@@ -459,7 +472,7 @@ public class BusinessManager {
      */
     public boolean editionYearExists () {
         for (Edition edition : editions) {
-            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return true;
+            if (edition.getYear() == systemYear) return true;
         }
         return false;
     }
@@ -470,7 +483,7 @@ public class BusinessManager {
      */
     public int getEditionNumPlayers() {
         for (Edition edition : editions) {
-            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return edition.getNumPlayers();
+            if (edition.getYear() == systemYear) return edition.getNumPlayers();
         }
         return 0;
     }
@@ -481,20 +494,20 @@ public class BusinessManager {
      */
     public void addNewPLayer(String playerName) {
         for (Edition edition : editions) {
-            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) edition.addPlayer(playerName);
+            if (edition.getYear() == systemYear) edition.addPlayer(playerName);
         }
     }
 
     public int getEditionNumTrials() {
         for (Edition edition : editions) {
-            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return edition.getTrials().size();
+            if (edition.getYear() == systemYear) return edition.getTrials().size();
         }
         return 0;
     }
 
     public int getRemainingPlayers() {
         for (Edition edition : editions) {
-            if (edition.getYear() == Calendar.getInstance().get(Calendar.YEAR)) return edition.getPlayerListSize();
+            if (edition.getYear() == systemYear) return edition.getPlayerListSize();
         }
         return 0;
     }

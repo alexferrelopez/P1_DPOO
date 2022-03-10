@@ -37,49 +37,44 @@ public class  TrialCsvDAO implements TrialDAO{
     }
 
     @Override
-    public List<Trial> getAll() {
+    public List<Trial> getAll() throws IOException {
         Path pathTrials = Paths.get("./files/trials.csv");
-        try {
-            List<String> s  = Files.readAllLines(pathTrials);
-            List<Trial> trials = new ArrayList<>();
+        List<String> s  = Files.readAllLines(pathTrials);
+        List<Trial> trials = new ArrayList<>();
 
-            for (String value : s) {
-                Trial trial = null;
-                String[] splitTrial = value.split(",");
-                String s1 = splitTrial[2];
-                switch (s1) {
-                    case Article.TYPE -> {
-                        trial = new Article(splitTrial[1],
-                                Integer.parseInt(splitTrial[3]),
-                                Integer.parseInt(splitTrial[4]),
-                                Integer.parseInt(splitTrial[5]),
-                                splitTrial[6],
-                                splitTrial[7]);
-                    }
-                    case Defensa.TYPE -> {
-                        trial = new Defensa(splitTrial[1],
-                                splitTrial[3],
-                                Integer.parseInt(splitTrial[4]));
-                    }
-                    case Estudi.TYPE -> {
-                        trial = new Estudi(splitTrial[1],
-                                splitTrial[3],
-                                Integer.parseInt(splitTrial[4]),
-                                Integer.parseInt(splitTrial[5]));
-                    }
-                    case Solicitud.TYPE -> {
-                        trial = new Solicitud(splitTrial[1],
-                                splitTrial[3],
-                                Integer.parseInt(splitTrial[4]));
-                    }
+        for (String value : s) {
+            Trial trial = null;
+            String[] splitTrial = value.split(",");
+            String s1 = splitTrial[2];
+            switch (s1) {
+                case Article.TYPE -> {
+                    trial = new Article(splitTrial[1],
+                            Integer.parseInt(splitTrial[3]),
+                            Integer.parseInt(splitTrial[4]),
+                            Integer.parseInt(splitTrial[5]),
+                            splitTrial[6],
+                            splitTrial[7]);
                 }
-                trials.add(trial);
+                case Defensa.TYPE -> {
+                    trial = new Defensa(splitTrial[1],
+                            splitTrial[3],
+                            Integer.parseInt(splitTrial[4]));
+                }
+                case Estudi.TYPE -> {
+                    trial = new Estudi(splitTrial[1],
+                            splitTrial[3],
+                            Integer.parseInt(splitTrial[4]),
+                            Integer.parseInt(splitTrial[5]));
+                }
+                case Solicitud.TYPE -> {
+                    trial = new Solicitud(splitTrial[1],
+                            splitTrial[3],
+                            Integer.parseInt(splitTrial[4]));
+                }
             }
-
-            return trials;
-        } catch (IOException e) {
-            e.printStackTrace();
+            trials.add(trial);
         }
-        return new ArrayList<>();
+
+        return trials;
     }
 }

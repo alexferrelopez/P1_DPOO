@@ -2,6 +2,7 @@ package Presentation;
 
 import Business.BusinessManager;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Controller {
@@ -11,8 +12,20 @@ public class Controller {
     public void run () {
         //requestFile (it plays before requesting a role)
         switch (uiManager.requestFile()) {
-            case 1 -> loadCsv();
-            case 2 -> loadJson();
+            case 1 -> {
+                try {
+                    loadCsv();
+                } catch (IOException e) {
+                    uiManager.showMessage("One or more Json files do not exist.");
+                }
+            }
+            case 2 -> {
+                try {
+                    loadJson();
+                } catch (IOException e) {
+                    uiManager.showMessage("One or more Json files do not exist.");
+                }
+            }
         }
 
         switch (uiManager.requestRole()) {
@@ -24,11 +37,11 @@ public class Controller {
         uiManager.showMessage("\nShutting down...");
     }
 
-    private void loadCsv() {
+    private void loadCsv() throws IOException {
         bm.loadFromCsv();
     }
 
-    private void loadJson() {
+    private void loadJson() throws IOException {
         bm.loadFromJson();
     }
 

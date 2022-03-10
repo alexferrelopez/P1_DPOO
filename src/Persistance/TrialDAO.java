@@ -2,6 +2,7 @@ package Persistance;
 
 import Business.trials.Trial;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface TrialDAO {
@@ -16,5 +17,5 @@ public interface TrialDAO {
      * returns list of Trials from a file (JSON or CSV)
      * @return list of trials given to BusinessManager
      */
-    List<Trial> getAll ();
+    List<Trial> getAll () throws IOException;
 }

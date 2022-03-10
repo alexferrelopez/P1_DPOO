@@ -36,16 +36,11 @@ public class TrialJsonDao implements TrialDAO{
     }
 
     @Override
-    public List<Trial> getAll() {
-        try {
-            FileReader fileReader = new FileReader("./files/trials.json");
-            List<Trial> trials = new ArrayList<>( Arrays.stream(gson.fromJson(fileReader, Trial[].class)).toList());
-            fileReader.close();
-            return trials;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<>();
+    public List<Trial> getAll() throws IOException {
+        FileReader fileReader = new FileReader("./files/trials.json");
+        List<Trial> trials = new ArrayList<>( Arrays.stream(gson.fromJson(fileReader, Trial[].class)).toList());
+        fileReader.close();
+        return trials;
     }
 
       /////////////////////////////////////////
