@@ -9,6 +9,11 @@ public class Controller {
     private final UIManager uiManager = new UIManager();
     private final BusinessManager bm = new BusinessManager();
 
+    /**
+     * Method called in Main, loads the files chosen by the user and
+     * executes either the composer option or the conductor.
+     * Saves the data into the files before shutting off.
+     */
     public void run () {
         //requestFile (it plays before requesting a role)
         switch (uiManager.requestFile()) {
@@ -37,14 +42,28 @@ public class Controller {
         uiManager.showMessage("\nShutting down...");
     }
 
+    /**
+     * Calls function on Business Manager to load data from the CSV.
+     * @throws IOException standard IO exception controlled to detect when a file does not exist.
+     */
     private void loadCsv() throws IOException {
         bm.loadFromCsv();
     }
 
+    /**
+     * Calls function on Business Manager to load data from the CSV.
+     * @throws IOException standard IO exception controlled to detect when a file does not exist.
+     */
     private void loadJson() throws IOException {
         bm.loadFromJson();
     }
 
+    /**
+     * Executes conductor mode, executing trial after trial.
+     * Requests player names the first time the edition executes.
+     * Asks for user input when a trial ends to continue.
+     * If no edition exists matching current year, the user is informed.
+     */
     public void executeConductor() {
         uiManager.spacing();
         uiManager.showMessage("Entering execution mode...\n");
@@ -71,6 +90,10 @@ public class Controller {
         }
     }
 
+    /**
+     * Requests the user to continue the execution for following trials.
+     * @return true when user wants the execution to continue.
+     */
     private boolean requestContinuation() {
         boolean stop = false;
         String goNext = uiManager.askForString("Continue the execution? [yes/no]: ").toLowerCase(Locale.ROOT).trim();
@@ -87,6 +110,9 @@ public class Controller {
         return stop;
     }
 
+    /**
+     * Requests the user the name of each player to play in the edition.
+     */
     private void requestPlayerNames() {
         for (int i = 0; i < bm.getEditionNumPlayers(); i++) {
             String playerName;
@@ -97,6 +123,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Executes the composer mode.
+     */
     public void executeComposer() {
         int optionComposer;
         uiManager.showMessage("\nEntering management mode...");
@@ -110,6 +139,9 @@ public class Controller {
         } while (optionComposer!= 3);
     }
 
+    /**
+     * Executes the menu for the trials inside the composer mode.
+     */
     public void executeTrialTypes() {
         int optionTrial;
         do {
@@ -126,6 +158,11 @@ public class Controller {
             }
         } while(optionTrial != 4);
     }
+
+    /**
+     * Creates a trial. An incorrect input works in an interruptive manner.
+     * Quartile accepts lowercase.
+     */
     public void manageTrial() {
         int type;
 
@@ -253,10 +290,17 @@ public class Controller {
 
         uiManager.showMessage("\nThe trial was created successfully!");
     }
+
+    /**
+     * Displays the list of trials.
+     */
     public void listTrial() {
         uiManager.showTrialList(bm.getTrials());
     }
 
+    /**
+     * Deletes a trial chosen by the user.
+     */
     public void deleteTrial() {
 
         int index = uiManager.requestDeletedTrial(bm.getTrials());
@@ -276,6 +320,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Executes the menu for the editions inside the composer mode.
+     */
     public void executeEdition() {
         do {
             uiManager.spacing();
@@ -285,7 +332,7 @@ public class Controller {
                         createEdition();        //create
                     else uiManager.showMessage("\nNo trials created yet.");
                 }
-                case 2 -> listEdition();        //list
+                case 2 -> listEditionsOption();        //list
                 case 3 -> duplicateEdition();   //duplicate
                 case 4 -> deleteEdition();      //delete
                 case 5 -> {
@@ -295,27 +342,35 @@ public class Controller {
             }
         }while (true);
     }
+
+    /**
+     * Creates an Edition. An incorrect input works in an interruptive manner, except when introducing the trial numbers.
+     * If an edition already existed with the same year this option substitutes the content.
+     */
     public void createEdition() {
         int year, players, trials;
         List<Integer> trialList = new ArrayList<>();
-        Date date = new Date();
         uiManager.spacing();
-        year = getYear(date);
-        do {
-            players = uiManager.askForInteger("Enter the initial number of players: ");
-            if ((players > 6 || players < 1)) {
-                uiManager.showMessage("ERROR: The number of players has to be between 1 and 5");
-            }
-        } while (players > 6 || players < 1);
-        do {
-            trials = uiManager.askForInteger("Enter the number of trials: ");
-            if ((trials < 3 || trials > 12)) {
-                uiManager.showMessage("ERROR: The number of trials has to be between 3 and 12");
-            }
-        } while(trials < 3 || trials > 12);
+        year = requestYear();
+
+        players = uiManager.askForInteger("Enter the initial number of players: ");
+
+        if (players > 6 || players < 1) {
+            uiManager.spacing();
+            uiManager.showMessage("ERROR: The number of players has to be between 1 and 5");
+            return;
+        }
+
+        trials = uiManager.askForInteger("Enter the number of trials: ");
+
+        if (trials < 3 || trials > 12) {
+            uiManager.spacing();
+            uiManager.showMessage("ERROR: The number of trials has to be between 3 and 12");
+            return;
+        }
 
         uiManager.spacing();
-        uiManager.showMessage("\t--- Trials ---");
+        uiManager.showTabulatedMessage("--- Trials ---");
         uiManager.spacing();
         uiManager.showList(bm.getTrials());
         uiManager.spacing();
@@ -338,7 +393,11 @@ public class Controller {
         uiManager.showMessage("The editions was created successfully!");
     }
 
-    private int getYear(Date date) {
+    /**
+     * Requests a current or future year to the user.
+     * @return year chosen by the user
+     */
+    private int requestYear() {
         int year;
         do {
             year = uiManager.askForInteger("Enter the edition's year: ");
@@ -349,7 +408,10 @@ public class Controller {
         return year;
     }
 
-    private void listAllEditions() {
+    /**
+     * Lists all editions sorting them by year in ascending order.
+     */
+    private void sortAndListEditions() {
         bm.sortEditionsByYear();
         for (int i = 0; i < bm.editionListLength(); i++) {
             uiManager.showTabulatedMessage((i+1)+") The Trials " + bm.getEditions().get(i).getYear());
@@ -359,12 +421,15 @@ public class Controller {
         uiManager.spacing();
     }
 
-    public void listEdition() {
+    /**
+     * Lists all editions and asks for input for a more detailed view of a single edition in the list.
+     */
+    public void listEditionsOption() {
         if (bm.editionListLength() > 0 ) {
             uiManager.spacing();
             uiManager.showMessage("Here are the current editions, do you want to see more details or go back?");
             uiManager.spacing();
-            listAllEditions();
+            sortAndListEditions();
 
             int option = uiManager.askForInteger("Enter an option: ");
             if (option > 0 && option < bm.editionListLength() + 1) {
@@ -383,23 +448,30 @@ public class Controller {
         }
     }
 
+    /**
+     * Creates a duplicate of an edition already created. Fails If the edition already existed.
+     */
     public void duplicateEdition() {
         uiManager.spacing();
         uiManager.showMessage("Which edition do you want to clone? ");
         uiManager.spacing();
-        listAllEditions();
+        sortAndListEditions();
+
         int option = uiManager.askForInteger("Enter an option: ");
+
         if (option > 0 && option < bm.editionListLength()+1) {
             uiManager.spacing();
             int year, players;
-            Date date = new Date();
-            year = getYear(date);
-            do {
-                players = uiManager.askForInteger("Enter the initial number of players: ");
-                if ((players > 6 || players < 1)) {
-                    uiManager.showMessage("ERROR: The number of players has to be between 1 and 5");
-                }
-            } while (players > 6 || players < 1);
+
+            year = requestYear();
+
+            players = uiManager.askForInteger("Enter the initial number of players: ");
+
+            if (players > 6 || players < 1) {
+                uiManager.spacing();
+                uiManager.showMessage("ERROR: The number of players has to be between 1 and 5");
+                return;
+            }
 
             boolean correctCreation = bm.duplicateEdition(option - 1, year, players);
 
@@ -419,11 +491,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Deletes an edition.
+     */
     public void deleteEdition() {
         uiManager.spacing();
         uiManager.showMessage("Which edition do you want to delete?");
         uiManager.spacing();
-        listAllEditions();
+        sortAndListEditions();
         int option = uiManager.askForInteger("Enter an option: ");
 
         if (option > 0 && option < bm.editionListLength()+1) {

@@ -10,6 +10,9 @@ import java.util.Scanner;
 public class UIManager {
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Prints the title header
+     */
     private static void printTheTrials () {
         System.out.println("""
                  _____ _            _____      _       _    \s
@@ -20,6 +23,10 @@ public class UIManager {
                                                             \s""");
     }
 
+    /**
+     * Requests the file to use to the user.
+     * @return 1 for CSV, 2 for JSON.
+     */
     public int requestFile() {
         do {
             System.out.println("\nThe IEEE needs to know where your allegiance lies.\n");
@@ -38,6 +45,10 @@ public class UIManager {
         } while (true);
     }
 
+    /**
+     * Requests role for the execution.
+     * @return 1 for composer, 2 for conductor.
+     */
     public int requestRole() {
         printTheTrials();
         System.out.print("\nWelcome to The Trials. ");
@@ -59,6 +70,12 @@ public class UIManager {
         } while (true);
     }
 
+    /**
+     * Requests composer option.
+     * @return options: 1 Manage Trials,
+     *                  2 Manage Editions,
+     *                  3 Close.
+     */
     public int requestComposerOp() {
         do {
             System.out.println(
@@ -76,6 +93,14 @@ public class UIManager {
             }
         } while (true);
     }
+
+    /**
+     * Requests Trial option.
+     * @return 1 Create Trial
+     *         2 List Trials,
+     *         3 Delete Trial,
+     *         4 Go back.
+     */
     public int requestTrialOp() {
         do {
             System.out.println("""
@@ -102,6 +127,15 @@ public class UIManager {
             }
         } while (true);
     }
+
+    /**
+     * Requests Edition option.
+     * @return 1 Create (or edit) Edition,
+     *         2 List Editions,
+     *         3 Duplicate Edition,
+     *         4 Delete Edition,
+     *         5 Back.
+     */
     public int requestEditionOp() {
         do {
             System.out.println("""
@@ -130,6 +164,15 @@ public class UIManager {
             }
         } while (true);
     }
+
+    /**
+     * Requests Trial type.
+     * @return 1 Paper publication,
+     *         2 Master studies,
+     *         3 Doctoral thesis,
+     *         4 Budget request,
+     *         5 Incorrect Input.
+     */
     public int requestTrialType() {
         do {
             try {
@@ -156,20 +199,44 @@ public class UIManager {
         }while (true);
     }
 
+    /**
+     * Prints message passed.
+     * @param message message to print.
+     */
     public void showMessage (String message) {
         System.out.println(message);
     }
+
+    /**
+     * Prints message passed tabulated.
+     * @param message message to print.
+     */
     public void showTabulatedMessage(String message) {
         System.out.println("\t" + message);
     }
+
+    /**
+     * Prints spacing.
+     */
     public void spacing() {
         System.out.println();
     }
 
+    /**
+     * Requests for a String to the user.
+     * @param message message to request a specific value.
+     * @return input string by the user (can be empty)
+     */
     public String askForString(String message) {
         System.out.print(message);
         return scanner.nextLine();
     }
+
+    /**
+     * Requests for an integer to the user.
+     * @param message message to request a specific value.
+     * @return number input from the user.
+     */
     public int askForInteger(String message) {
         try {
             System.out.print(message);
@@ -180,6 +247,10 @@ public class UIManager {
         return Integer.MIN_VALUE;
     }
 
+    /**
+     * Lists all trials and asks for input for a more detailed view of a single trial in the list.
+     * @param trials trial list.
+     */
     public void showTrialList(List<Trial> trials) {
 
         System.out.println("\nHere are the current trials, do you want to see more details or go back?\n");
@@ -206,6 +277,11 @@ public class UIManager {
         } while (selectTrial != back);
     }
 
+    /**
+     * Requests a trial to delete.
+     * @param trials list of trials
+     * @return index in trial list of the desired trial.
+     */
     public int requestDeletedTrial(List<Trial> trials) {
 
         System.out.println("\nWhich trial do you want to delete?\n");
@@ -217,13 +293,13 @@ public class UIManager {
 
             back = showList(trials);
 
-            System.out.println("\n\t" + (back) + ") Back\n");
+            System.out.println("\n\t" + (back) + ") Back");
 
             try {
-                System.out.print("Enter an option: ");
+                System.out.print("\nEnter an option: ");
                 selectTrial = scanner.nextInt();
                 scanner.nextLine();
-                if (selectTrial != back) {
+                if (selectTrial != back && selectTrial > 0) {
                     System.out.print("\nEnter the trial's name for confirmation: ");
                     if (scanner.nextLine().trim().toLowerCase(Locale.ROOT).equals(trials.get(selectTrial - 1).getName().trim().toLowerCase(Locale.ROOT))) {
                         return selectTrial - 1;
@@ -237,6 +313,11 @@ public class UIManager {
         return back;
     }
 
+    /**
+     * Shows all trial names.
+     * @param trials list of trials.
+     * @return size of list +1.
+     */
     public int showList(List<Trial> trials) {
         int back = 0;
 
@@ -248,6 +329,11 @@ public class UIManager {
         return back;
     }
 
+    /**
+     * Requests a percentatge (0,100).
+     * @param message message to request a specific value.
+     * @return percentatge.
+     */
     public int requestTrialNumber(String message) {
         do {
             try {
