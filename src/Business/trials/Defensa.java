@@ -13,6 +13,12 @@ public class Defensa extends Trial {
     public static final String TYPE = "Defensa";
     private final String type = TYPE;
 
+    /**
+     * Constructor to create a Defensa.
+     * @param name name of the Defensa.
+     * @param campsEstudi camp d'estudi for Defensa.
+     * @param dificultat difficulty of the Defensa.
+     */
     public Defensa(String name, String campsEstudi, int dificultat) {
         super(name);
         this.campsEstudi = campsEstudi;
@@ -20,37 +26,38 @@ public class Defensa extends Trial {
     }
 
     /**
-     * calculates result
-     * status added for every player
-     * piByPlauer ready
-     * points increased
-     *
-     * @param playerList
-     * @return
+     * Executes Defensa. We use the formula to generate a value, for every player if the number is bigger than
+     * their PI count, the player is added to statusList as passed. If it is lower, the player is added to
+     * statusList as failed.
+     * @param playerList list of players (copy).
+     * @return returns an object to store the statusList and the amount of times the list has been revised for
+     *         each player.
      */
     @Override
     public TrialResult executeTrial(List<Player> playerList) {
         List<Boolean> statusList = new ArrayList<>();
-        int[] timesRevisedList = new int[playerList.size()];
 
-        for (int i = 0; i < playerList.size(); i++) {
-            int result = 0;
-            for (int j = 0; j < dificultat; j++) {
-                result += 2*i - 1;
-            }
-            result = (int) Math.sqrt(result);
-            if(playerList.get(i).getPI_count() > result) {
+        int result = 0;
+        for (int j = 0; j < dificultat; j++) {
+            result += 2*j - 1;
+        }
+        result = (int) Math.sqrt(result);
+
+        for (Player player : playerList) {
+            if (player.getPI_count() > result) {
                 statusList.add(true);
-            }
-            else {
+            } else {
                 statusList.add(false);
             }
-            timesRevisedList[i] = result;
         }
 
-        return new TrialResult(statusList, timesRevisedList);
+        return new TrialResult(statusList, null);
     }
 
+    /**
+     * Custom toString modified to display information about the Defensa.
+     * @return information of the trial in a String.
+     */
     @Override
     public String toString() {
         String type = "Doctoral thesis defense";
@@ -59,16 +66,11 @@ public class Defensa extends Trial {
                 "Difficulty: " + dificultat+ "\n";
     }
 
-    @Override
-    public String toCSV() {
-        return type+ "," + campsEstudi + "," + dificultat;
-    }
-
-    @Override
-    public String getType() {
-        return TYPE;
-    }
-
+    /**
+     * Custom equals for Defensa.
+     * @param o object to compare to
+     * @return true if object has the same reference or attributes.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,8 +79,30 @@ public class Defensa extends Trial {
         return dificultat == defensa.dificultat && Objects.equals(getName(), defensa.getName()) && Objects.equals(campsEstudi, defensa.campsEstudi);
     }
 
+    /**
+     * Custom hashCode for Defensa
+     * @return hash code created from the sequence of attributes for Defensa.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getName(), campsEstudi, dificultat, type);
+    }
+
+    /**
+     * Processes the attributes of a Defensa to save them into a csv.
+     * @return string of attributes
+     */
+    @Override
+    public String toCSV() {
+        return type+ "," + campsEstudi + "," + dificultat;
+    }
+
+    /**
+     * Getter for the type of Trial
+     * @return type of trial (Defensa)
+     */
+    @Override
+    public String getType() {
+        return TYPE;
     }
 }

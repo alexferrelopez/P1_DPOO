@@ -8,10 +8,19 @@ import java.util.List;
 public abstract class Trial implements Cloneable {
     private String name;
 
+    /**
+     * Constructor to create a Trial.
+     * @param name name of the Trial.
+     */
     public Trial(String name){
         this.name = name;
     }
 
+    /**
+     *
+     * @param playerList
+     * @return
+     */
     public abstract TrialResult executeTrial(List<Player> playerList);
 
     public Object clone() throws CloneNotSupportedException {

@@ -13,20 +13,25 @@ public class Solicitud extends Trial {
     public static final String TYPE = "Solicitud";
     private final String type = TYPE;
 
+    /**
+     * Constructor to create a Solicitud.
+     * @param name name of the Solicitud.
+     * @param entitat name of the entitat.
+     * @param pressupost amount of money for Solicitud.
+     */
     public Solicitud(String name, String entitat, int pressupost) {
         super(name);
         this.entitat = entitat;
         this.pressupost = pressupost;
     }
 
-    @Override
-    public String toString() {
-        String type = "Budget request)";
-        return "Trial: " + getName() + " (" + type + ")\n" +
-                "Entity: " + entitat +"\n" +
-                "Budget: "+ pressupost +"\n";
-    }
-
+    /**
+     * Executes Solicitud. We use the formula to generate a value. If this value is bigger than the sum
+     * of all PI count between all players, all players are added to statusList as passed. Else they are added to
+     * statusList as failed.
+     * @param playerList list of players (copy).
+     * @return returns an object to store the statusList.
+     */
     @Override
     public TrialResult executeTrial(List<Player> playerList) {
         List<Boolean> statusList = new ArrayList<>();
@@ -52,16 +57,23 @@ public class Solicitud extends Trial {
         return new TrialResult(statusList, null);
     }
 
+    /**
+     * Custom toString modified to display information about the Solicitud.
+     * @return information of the trial in a String.
+     */
     @Override
-    public String toCSV() {
-        return type+ "," + entitat + "," + pressupost;
+    public String toString() {
+        String type = "Budget request)";
+        return "Trial: " + getName() + " (" + type + ")\n" +
+                "Entity: " + entitat +"\n" +
+                "Budget: "+ pressupost +"\n";
     }
 
-    @Override
-    public String getType() {
-        return TYPE;
-    }
-
+    /**
+     * Custom equals for Solicitud.
+     * @param o object to compare to
+     * @return true if object has the same reference or attributes.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,8 +82,30 @@ public class Solicitud extends Trial {
         return pressupost == solicitud.pressupost && Objects.equals(getName(), solicitud.getName()) && Objects.equals(entitat, solicitud.entitat);
     }
 
+    /**
+     * Custom hashCode for Solicitud
+     * @return hash code created from the sequence of attributes for Solicitud.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getName(), entitat, pressupost, type);
+    }
+
+    /**
+     * Processes the attributes of a Solicitud to save them into a csv.
+     * @return string of attributes
+     */
+    @Override
+    public String toCSV() {
+        return type+ "," + entitat + "," + pressupost;
+    }
+
+    /**
+     * Getter for the type of Trial
+     * @return type of trial (Solicitud)
+     */
+    @Override
+    public String getType() {
+        return TYPE;
     }
 }

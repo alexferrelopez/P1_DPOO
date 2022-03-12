@@ -23,8 +23,8 @@ public class BusinessManager {
      */
     public void loadFromCsv() throws IOException {
         trialDAO = new TrialCsvDAO();
-        trials = trialDAO.getAll();
         editionDAO = new EditionCsvDAO();
+        trials = trialDAO.getAll();
         editions = editionDAO.getAll(trials);
     }
 
@@ -34,8 +34,8 @@ public class BusinessManager {
      */
     public void loadFromJson() throws IOException {
         trialDAO = new TrialJsonDao();
-        trials = trialDAO.getAll();
         editionDAO = new EditionJsonDAO();
+        trials = trialDAO.getAll();
         editions = editionDAO.getAll(trials);
     }
 
@@ -202,17 +202,15 @@ public class BusinessManager {
 
                 if (type.equals(Article.TYPE)) {
                     Article article = (Article) trialToPlay;
-                    quartile = article.getJorunalQuartile();
+                    quartile = article.getJournalQuartile();
                 }
 
                 List<Boolean> statusList = trialResult.getStatusList();
-
                 edition.incrementPoints(statusList, type, quartile);
 
                 StringBuilder stringBuilder = new StringBuilder();
 
                 List<Player> players = edition.getPlayers();
-
                 processTrial(trialToPlay, trialResult, type, statusList, stringBuilder, players);
 
                 List<Player> ascendedPlayers = edition.ascendPlayers();
@@ -395,6 +393,7 @@ public class BusinessManager {
 
     //saveData: guarda en ambos ficheros para que en la siguiente ejecucion los ficheros estén en el mismo estado
     public void saveData () {
+        /*
         if (trialDAO instanceof TrialCsvDAO) {
             new TrialJsonDao().save(trials);
             new EditionJsonDAO().save(editions,trials);
@@ -403,6 +402,7 @@ public class BusinessManager {
             new TrialCsvDAO().save(trials);
             new EditionCsvDAO().save(editions,trials);
         }
+         */
         editionDAO.save(editions, trials);
         trialDAO.save(trials);
         executionCheckpointDAO.save(checkpoint);
