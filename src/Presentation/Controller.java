@@ -256,13 +256,14 @@ public class Controller {
     public void listTrial() {
         uiManager.showTrialList(bm.getTrials());
     }
+
     public void deleteTrial() {
 
         int index = uiManager.requestDeletedTrial(bm.getTrials());
 
         boolean done = false;
 
-        if (index < bm.trialLength()) {
+        if (index < bm.trialListLength()) {
             done = bm.deleteTrial(index);
         }
 
@@ -270,7 +271,7 @@ public class Controller {
         if (done) {
             uiManager.showMessage("The trial was successfully deleted.");
         }
-        else if (index != bm.trialLength()){
+        else if (index != bm.trialListLength()){
             uiManager.showMessage("Trial is being used by one more editions.");
         }
     }
@@ -280,7 +281,7 @@ public class Controller {
             uiManager.spacing();
             switch (uiManager.requestEditionOp()) {
                 case 1 -> {
-                    if (bm.trialLength() != 0)
+                    if (bm.trialListLength() != 0)
                         createEdition();        //create
                     else uiManager.showMessage("\nNo trials created yet.");
                 }
@@ -323,10 +324,10 @@ public class Controller {
             int trialNum;
             do {
                 trialNum = uiManager.askForInteger("Pick a trial (" + (i+1) + "/" + trials + "): ")-1;
-                if (trialNum < 0 || trialNum > bm.trialLength()-1) {
-                    uiManager.showMessage("Error: Trial number has to be between "+ 1 + " and " + bm.trialLength() + ".");
+                if (trialNum < 0 || trialNum > bm.trialListLength()-1) {
+                    uiManager.showMessage("Error: Trial number has to be between "+ 1 + " and " + bm.trialListLength() + ".");
                 }
-            } while (trialNum < 0 || trialNum > bm.trialLength()-1);
+            } while (trialNum < 0 || trialNum > bm.trialListLength()-1);
             trialList.add(trialNum);
         }
 
@@ -341,38 +342,38 @@ public class Controller {
         int year;
         do {
             year = uiManager.askForInteger("Enter the edition's year: ");
-            if (year < (date.getYear()+1900)) {
+            if (year < BusinessManager.systemYear) {
                 uiManager.showMessage("ERROR: The year has to be for current or future events");
             }
-        } while(year < (date.getYear()+1900));
+        } while(year < BusinessManager.systemYear);
         return year;
     }
 
     private void listAllEditions() {
         bm.sortEditionsByYear();
-        for (int i = 0; i < bm.editionLength(); i++) {
+        for (int i = 0; i < bm.editionListLength(); i++) {
             uiManager.showTabulatedMessage((i+1)+") The Trials " + bm.getEditions().get(i).getYear());
         }
         uiManager.spacing();
-        uiManager.showTabulatedMessage(bm.editionLength()+1+") Back");
+        uiManager.showTabulatedMessage(bm.editionListLength()+1+") Back");
         uiManager.spacing();
     }
 
     public void listEdition() {
-        if (bm.editionLength() > 0 ) {
+        if (bm.editionListLength() > 0 ) {
             uiManager.spacing();
             uiManager.showMessage("Here are the current editions, do you want to see more details or go back?");
             uiManager.spacing();
             listAllEditions();
 
             int option = uiManager.askForInteger("Enter an option: ");
-            if (option > 0 && option < bm.editionLength() + 1) {
+            if (option > 0 && option < bm.editionListLength() + 1) {
                 uiManager.spacing();
-                System.out.println(bm.printEdition(option - 1));
+                System.out.println(bm.EditionToString(option - 1));
             } else {
-                if (option != bm.editionLength() + 1) {
+                if (option != bm.editionListLength() + 1) {
                     uiManager.spacing();
-                    uiManager.showMessage("ERROR: You must put a value between 1 and " + (bm.editionLength() + 1));
+                    uiManager.showMessage("ERROR: You must put a value between 1 and " + (bm.editionListLength() + 1));
                 }
             }
         }
@@ -388,7 +389,7 @@ public class Controller {
         uiManager.spacing();
         listAllEditions();
         int option = uiManager.askForInteger("Enter an option: ");
-        if (option > 0 && option < bm.editionLength()+1) {
+        if (option > 0 && option < bm.editionListLength()+1) {
             uiManager.spacing();
             int year, players;
             Date date = new Date();
@@ -400,13 +401,20 @@ public class Controller {
                 }
             } while (players > 6 || players < 1);
 
-            bm.duplicateEdition(option-1,year,players);
+            boolean correctCreation = bm.duplicateEdition(option - 1, year, players);
+
             uiManager.spacing();
-            uiManager.showMessage("The edition was cloned successfully!");
+
+            if (correctCreation) {
+                uiManager.showMessage("The edition was cloned successfully!");
+            } else {
+                uiManager.showMessage("The edition year already existed!");
+            }
+
         } else {
-            if (option != bm.editionLength() + 1) {
+            if (option != bm.editionListLength() + 1) {
                 uiManager.spacing();
-                uiManager.showMessage("ERROR: You must put a value between 1 and "+ (bm.editionLength()+1));
+                uiManager.showMessage("ERROR: You must put a value between 1 and "+ (bm.editionListLength()+1));
             }
         }
     }
@@ -418,7 +426,7 @@ public class Controller {
         listAllEditions();
         int option = uiManager.askForInteger("Enter an option: ");
 
-        if (option > 0 && option < bm.editionLength()+1) {
+        if (option > 0 && option < bm.editionListLength()+1) {
             uiManager.spacing();
             int value = uiManager.askForInteger("Enter the edition's year for confirmation: ");
 
@@ -430,10 +438,10 @@ public class Controller {
 
             else uiManager.showMessage("The option and the year introduced do not match.");
         } else {
-            if (option != bm.editionLength() + 1) {
+            if (option != bm.editionListLength() + 1) {
                 if (option != Integer.MIN_VALUE) {
                     uiManager.spacing();
-                    uiManager.showMessage("ERROR: You must put a value between 1 and " + (bm.editionLength() + 1));
+                    uiManager.showMessage("ERROR: You must put a value between 1 and " + (bm.editionListLength() + 1));
                 }
             }
         }

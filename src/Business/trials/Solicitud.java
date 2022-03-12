@@ -102,7 +102,7 @@ public class Solicitud extends Trial {
 
     /**
      * Getter for the type of Trial
-     * @return type of trial (Solicitud)
+     * @return type of trial (Solicitud).
      */
     @Override
     public String getType() {

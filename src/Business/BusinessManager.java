@@ -16,10 +16,11 @@ public class BusinessManager {
     private List<Edition> editions = new ArrayList<>();
     private final ExecutionCheckpointDAO executionCheckpointDAO = new ExecutionCheckpointDAO();
     private Integer checkpoint = executionCheckpointDAO.getAll();
-    private final int systemYear = Calendar.getInstance().get(Calendar.YEAR);
+    public static final int systemYear = Calendar.getInstance().get(Calendar.YEAR);
 
     /**
-     * loads files from CSV.
+     * Loads files from CSV.
+     * @throws IOException standard IOException, used detect when a file does not exist.
      */
     public void loadFromCsv() throws IOException {
         trialDAO = new TrialCsvDAO();
@@ -29,8 +30,8 @@ public class BusinessManager {
     }
 
     /**
-     *
-     * @throws IOException
+     * Loads files from Json.
+     * @throws IOException standard IOException, used detect when a file does not exist.
      */
     public void loadFromJson() throws IOException {
         trialDAO = new TrialJsonDao();
@@ -77,9 +78,9 @@ public class BusinessManager {
     }
 
     /**
-     * deletes a trial from trials list
-     * @param index
-     * @return
+     * Deletes a trial checking if the trial is being used by any edition.
+     * @param index index of the trial to delete.
+     * @return returns true if trial is not being used by any edition.
      */
     public boolean deleteTrial (int index) {
 
@@ -97,10 +98,10 @@ public class BusinessManager {
     }
 
     /**
-     * Creates an edition
-     * @param trialIndexes
-     * @param year
-     * @param numPlayers
+     * Creates an edition. Checks if Edition already exists, if it does, it substitutes the new Edition for the old.
+     * @param trialIndexes List of trials to add to the edition.
+     * @param year Year of the edition.
+     * @param numPlayers number of players that will play the edition.
      */
     public void createEdition (List<Integer> trialIndexes, int year, int numPlayers) {
         List<Trial> trialList = new ArrayList<>();
@@ -109,41 +110,55 @@ public class BusinessManager {
             trialList.add(trials.get(trialIndex));
         }
 
-        processDuplicateEdition(year, new Edition(trialList,new ArrayList<>() ,year,numPlayers));
+        processAlreadyExistingYear(new Edition(trialList,new ArrayList<>() ,year,numPlayers));
     }
 
     /**
-     * duplicates an edition depending on the index given
-     * @param index
-     * @param year
-     * @param players
+     * Duplicates an edition.
+     * @param index index of the edition to duplicate.
+     * @param year Year of the new edition.
+     * @param numPlayers number of players that will play the edition.
+     * @return true if edition year did not already exist.
      */
-    public void duplicateEdition (int index, int year, int players) {
+    public boolean duplicateEdition (int index, int year, int numPlayers) {
         Edition duplicate;
+
+        for (Edition edition : editions) {
+            if (edition.getYear() == editions.get(index).getYear()) {
+                return false;
+            }
+        }
+
         try {
             duplicate = (Edition) editions.get(index).clone();
             duplicate.getPlayers().clear();
-            duplicate.setNumPlayers(players);
+            duplicate.setNumPlayers(numPlayers);
             duplicate.setYear(year);
+            return true;
 
-            processDuplicateEdition(year, duplicate);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
-    private void processDuplicateEdition(int year, Edition duplicate) {
+    /**
+     * Processes when an edition is created if the year already exists. If it does the edition is substituted for the
+     * newly created one, resetting the checkpoint to ensure no errors if the edition is the same as the one being executed.
+     * @param duplicate new edition to be added.
+     */
+    private void processAlreadyExistingYear(Edition duplicate) {
         boolean yearAlreadyExists = false;
         for (int i = 0; i < editions.size(); i++) {
             Edition edition = editions.get(i);
-            if (edition.getYear() == year) {
-                editions.set(i,duplicate);
+
+            if (edition.getYear() == duplicate.getYear()) {
+                editions.set(i, duplicate);
                 yearAlreadyExists = true;
 
-                if (systemYear == year) {
+                if (systemYear == edition.getYear()) {
                     checkpoint = null;
                 }
-
                 break;
             }
         }
@@ -153,8 +168,8 @@ public class BusinessManager {
     }
 
     /**
-     * deletes edition depending on index
-     * @param index
+     * Deletes an edition. Resetting the checkpoint if the edition is the one to be executed.
+     * @param index index of the edition to delete.
      */
     public void deleteEdition (int index) {
         if (systemYear == editions.get(index).getYear()) {
@@ -164,28 +179,31 @@ public class BusinessManager {
     }
 
     /**
-     * return editions list size
-     * @return
+     * Returns the size of the list of editions.
+     * @return size of list editions.
      */
-    public int editionLength() {
+    public int editionListLength() {
         return editions.size();
     }
 
     /**
-     * returns trials list size
-     * @return
+     * Returns the size of the list of trials.
+     * @return size of list trials.
      */
-    public int trialLength() {
+    public int trialListLength() {
         return trials.size();
     }
 
     /**
-     * executes trial checkpoint allows us to resume just where we left it last time.
-     * @return
+     * Executes a Trial indicated by checkpoint.
+     * Processes the result of the execution into a string.
+     * Ascends the players who passed the 10 point mark (not the doctors).
+     * Removes the players eliminated in the trial.
+     * @return string to be shown to the user to reflect the result of the simulation.
      */
     public String executeTrial () {
 
-        Edition edition = findEditionYear(systemYear);
+        Edition edition = findEditionYear();
 
         if (edition != null) {
 
@@ -256,13 +274,22 @@ public class BusinessManager {
         return null;
     }
 
+    /**
+     * Decides which trial has to be executed. Adding the result to string-builder.
+     * @param trialToPlay trial to play in this execution chosen by checkpoint attribute.
+     * @param trialResult results of the trial after being executed.
+     * @param type type of trial (Article, Estudi, Defensa or Solicitud).
+     * @param statusList list of the boolean that indicate if players passed or failed.
+     * @param stringBuilder string-builder to compose the string to be returned.
+     * @param players list of players (clone)
+     */
     private void processTrial(Trial trialToPlay, TrialResult trialResult, String type, List<Boolean> statusList, StringBuilder stringBuilder, List<Player> players) {
         switch (type) {
             case Article.TYPE -> {
 
                 for (int i = 0; i < players.size(); i++) {
                     Player player = players.get(i);
-                    processArticle(trialResult, statusList, stringBuilder, i, player);
+                    processPlayerArticle(trialResult, statusList, stringBuilder, i, player);
                 }
             }
             case Estudi.TYPE -> {
@@ -271,14 +298,14 @@ public class BusinessManager {
 
                 for (int i = 0; i < players.size(); i++) {
                     Player player = players.get(i);
-                    processEstudi(trialResult, statusList, stringBuilder, estudi, i, player);
+                    processPlayerEstudi(trialResult, statusList, stringBuilder, estudi, i, player);
                 }
             }
             case Defensa.TYPE ->{
 
                 for (int i = 0; i < players.size(); i++) {
                     Player player = players.get(i);
-                    processDefensa(statusList, stringBuilder, i, player);
+                    processPlayerDefensa(statusList, stringBuilder, i, player);
                 }
             }
             case Solicitud.TYPE ->{
@@ -288,12 +315,18 @@ public class BusinessManager {
                 }
 
                 for (Player player : players) {
-                    processSolicitud(stringBuilder, player);
+                    processPlayerSolicitud(stringBuilder, player);
                 }
             }
         }
     }
 
+    /**
+     * Adds the suffix/prefix when executing a trial to those players that match
+     * the title (Master and Doctor) to string-builder.
+     * @param stringBuilder string-builder to compose the string to be returned.
+     * @param player player that is being evaluated to have the suffix/prefix.
+     */
     private void addSuffixOrPrefix(StringBuilder stringBuilder, Player player) {
         if (player.getType().equals(Master.TYPE)) {
             stringBuilder.append("Master ");
@@ -306,6 +339,11 @@ public class BusinessManager {
         }
     }
 
+    /**
+     * Adds PI_count to string-builder. Also adds a message for Disqualified players.
+     * @param player player that is being evaluated to be eliminated.
+     * @param stringBuilder string-builder to compose the string to be returned.
+     */
     private void addPointStateMessage(Player player, StringBuilder stringBuilder) {
         if (player.isEliminated()) {
             stringBuilder.append("0");
@@ -314,7 +352,15 @@ public class BusinessManager {
         else stringBuilder.append(player.getPI_count());
     }
 
-    private void processArticle(TrialResult resultTrial, List<Boolean> statusList, StringBuilder stringBuilder, int i, Player player) {
+    /**
+     * Adds player result to string-builder for Article.
+     * @param resultTrial result trial containing the amount of times being revised.
+     * @param statusList list that indicates if the player passed or failed.
+     * @param stringBuilder string-builder to compose the string to be returned.
+     * @param i index for the lists to find information about the player.
+     * @param player player that is being added to string-builder.
+     */
+    private void processPlayerArticle(TrialResult resultTrial, List<Boolean> statusList, StringBuilder stringBuilder, int i, Player player) {
         stringBuilder.append("\n\t");
 
         addSuffixOrPrefix(stringBuilder, player);
@@ -333,7 +379,16 @@ public class BusinessManager {
         addPointStateMessage(player, stringBuilder);
     }
 
-    private void processEstudi(TrialResult resultTrial, List<Boolean> statusList, StringBuilder stringBuilder, Estudi estudi, int i, Player player) {
+    /**
+     * Adds player result to string-builder for Estudi.
+     * @param resultTrial result trial containing the amount of credits passed.
+     * @param statusList list that indicates if the player passed or failed.
+     * @param estudi trial being played.
+     * @param stringBuilder string-builder to compose the string to be returned.
+     * @param i index for the lists to find information about the player.
+     * @param player player that is being added to string-builder.
+     */
+    private void processPlayerEstudi(TrialResult resultTrial, List<Boolean> statusList, StringBuilder stringBuilder, Estudi estudi, int i, Player player) {
         stringBuilder.append("\n\t");
 
         addSuffixOrPrefix(stringBuilder, player);
@@ -351,7 +406,14 @@ public class BusinessManager {
         addPointStateMessage(player, stringBuilder);
     }
 
-    private void processDefensa(List<Boolean> statusList, StringBuilder stringBuilder, int i, Player player) {
+    /**
+     * Adds player result to string-builder for Defensa.
+     * @param statusList list that indicates if the player passed or failed.
+     * @param stringBuilder string-builder to compose the string to be returned.
+     * @param i index for the lists to find information about the player.
+     * @param player player that is being added to string-builder.
+     */
+    private void processPlayerDefensa(List<Boolean> statusList, StringBuilder stringBuilder, int i, Player player) {
         stringBuilder.append("\n\t");
 
         addSuffixOrPrefix(stringBuilder, player);
@@ -369,7 +431,12 @@ public class BusinessManager {
         addPointStateMessage(player, stringBuilder);
     }
 
-    private void processSolicitud(StringBuilder stringBuilder, Player player) {
+    /**
+     * Adds player result to string-builder for Solicitud.
+     * @param stringBuilder string-builder to compose the string to be returned.
+     * @param player player that is being added to string-builder.
+     */
+    private void processPlayerSolicitud(StringBuilder stringBuilder, Player player) {
         stringBuilder.append("\n\t");
 
         addSuffixOrPrefix(stringBuilder, player);
@@ -381,18 +448,28 @@ public class BusinessManager {
         addPointStateMessage(player, stringBuilder);
     }
 
-    private Edition findEditionYear(int systemYear) {
+    /**
+     * Finds the edition that matches the year introduced.
+     * @return returns the edition found or null if it doesn't exist.
+     */
+    private Edition findEditionYear() {
         for (Edition edition1 : editions) {
             int editionYear = edition1.getYear();
-            if (systemYear == editionYear) {
+            if (BusinessManager.systemYear == editionYear) {
                 return edition1;
             }
         }
         return null;
     }
 
-    //saveData: guarda en ambos ficheros para que en la siguiente ejecucion los ficheros estén en el mismo estado
+
+
+    /**
+     * Saves progress in the same file format as requested at the start of the
+     * execution so that the information can be used in the next execution.
+     */
     public void saveData () {
+        //I wanted to save the state of progress in both files when closing.
         /*
         if (trialDAO instanceof TrialCsvDAO) {
             new TrialJsonDao().save(trials);
@@ -409,8 +486,8 @@ public class BusinessManager {
     }
 
     /**
-     * returns a copy of the list trials
-     * @return
+     * Returns a copy of the list trials.
+     * @return trial list (copy)
      */
     public List<Trial> getTrials() {
         List<Trial> copy = new ArrayList<>();
@@ -426,8 +503,8 @@ public class BusinessManager {
     }
 
     /**
-     * returns a copy of the list editions
-     * @return
+     * Returns a copy of the list editions.
+     * @return editions list (copy)
      */
     public List<Edition> getEditions() {
         List<Edition> clone = new ArrayList<>();
@@ -443,32 +520,32 @@ public class BusinessManager {
     }
 
     /**
-     * prints edition using its own toString (modified by us)
-     * @param index
-     * @return
+     * Prints edition using its own toString (modified by us).
+     * @param index index of the edition to be printed
+     * @return String containing the information about the edition.
      */
-    public String printEdition(int index) {
+    public String EditionToString(int index) {
         return editions.get(index).toString();
     }
 
     /**
-     * sorts edition by year
+     * Sorts edition by year in ascending order.
      */
     public void sortEditionsByYear() {
         editions.sort(Comparator.comparingInt(Edition::getYear));
     }
 
     /**
-     * simple getter of the checkpoint
-     * @return
+     * Getter for the checkpoint.
+     * @return checkpoint value.
      */
     public Integer getCheckpoint() {
         return checkpoint;
     }
 
     /**
-     * checks if edition exists.
-     * @return
+     * Checks if there is one edition corresponding to the current year.
+     * @return true if edition exists.
      */
     public boolean editionYearExists () {
         for (Edition edition : editions) {
@@ -478,8 +555,8 @@ public class BusinessManager {
     }
 
     /**
-     * returns number of players in executable edition
-     * @return
+     * Returns number of players in the edition corresponding to the current year.
+     * @return number of players still playing.
      */
     public int getEditionNumPlayers() {
         for (Edition edition : editions) {
@@ -489,8 +566,8 @@ public class BusinessManager {
     }
 
     /**
-     * adds player in editions
-     * @param playerName
+     * Adds player to the edition corresponding to the current year.
+     * @param playerName name of the player being added.
      */
     public void addNewPLayer(String playerName) {
         for (Edition edition : editions) {
@@ -498,6 +575,10 @@ public class BusinessManager {
         }
     }
 
+    /**
+     * Getter for the number of trials in the edition corresponding to the current year.
+     * @return number of trials.
+     */
     public int getEditionNumTrials() {
         for (Edition edition : editions) {
             if (edition.getYear() == systemYear) return edition.getTrials().size();
@@ -505,6 +586,10 @@ public class BusinessManager {
         return 0;
     }
 
+    /**
+     * Getter for the number of players in the edition corresponding to the current year.
+     * @return number of players.
+     */
     public int getRemainingPlayers() {
         for (Edition edition : editions) {
             if (edition.getYear() == systemYear) return edition.getPlayerListSize();
@@ -512,6 +597,11 @@ public class BusinessManager {
         return 0;
     }
 
+    /**
+     * Checks if a name of a trial exists in the list of trials.
+     * @param trialName name to be checked.
+     * @return true if the name already exists.
+     */
     public boolean trialNameAlreadyExists(String trialName) {
         for (Trial trial : trials) {
             if (Objects.equals(trial.getName(), trialName)) {
