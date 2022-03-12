@@ -16,6 +16,9 @@ import java.util.List;
 public class EditionJsonDAO implements EditionDAO{
     private final Gson gson;
 
+    /**
+     * Constructor to create a EditionJsonDAO.
+     */
     public EditionJsonDAO() {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         builder.registerTypeAdapter(Trial.class, new InterfaceAdapter());
@@ -24,8 +27,13 @@ public class EditionJsonDAO implements EditionDAO{
         gson = builder.create();
     }
 
+    /**
+     * Saves the list of editions in editions.json.
+     * @param editions list of editions.
+     * @param trialList list of trials.
+     */
     @Override
-    public void save(List<Edition> editions, List<Trial> t) {
+    public void save(List<Edition> editions, List<Trial> trialList) {
         if (!editions.isEmpty()) {
             try {
                 FileWriter fileWriter = new FileWriter("./files/editions.json");
@@ -37,6 +45,12 @@ public class EditionJsonDAO implements EditionDAO{
         }
     }
 
+    /**
+     * Reads the list of editions from editions.json.
+     * @param trials list of trials.
+     * @return list of editions.
+     * @throws IOException standard IO exception.
+     */
     @Override
     public List<Edition> getAll(List<Trial> trials) throws IOException {
         FileReader fileReader = new FileReader("./files/editions.json");

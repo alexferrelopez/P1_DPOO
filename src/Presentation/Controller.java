@@ -59,7 +59,7 @@ public class Controller {
 
                     System.out.print(bm.executeTrial());
 
-                    if (bm.getRemainingPlayers() != 0) {
+                    if (!bm.allPlayersEliminated()) {
                         stop = requestContinuation();
                     } else stop = true;
                 }

@@ -145,8 +145,8 @@ public abstract class Player implements Cloneable{
     public abstract String getType();
 
     /**
-     * Sets PI count for the player.
-     * @param pi pi count desired.
+     * Setter for the PI_count for the player.
+     * @param pi PI_count desired.
      */
     public void setPI_count(int pi) {
         this.PI_count = pi;

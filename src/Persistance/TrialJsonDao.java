@@ -14,6 +14,9 @@ import java.util.List;
 public class TrialJsonDao implements TrialDAO{
     private final Gson gson;
 
+    /**
+     * Constructor to create a Trial JsonDAO.
+     */
     public TrialJsonDao() {
         GsonBuilder builder = new GsonBuilder().setPrettyPrinting();
         builder.registerTypeAdapter(Trial.class, new InterfaceAdapter());
@@ -21,6 +24,10 @@ public class TrialJsonDao implements TrialDAO{
         gson = builder.create();
     }
 
+    /**
+     * Saves the list of trials in trials.json.
+     * @param trials list of trials from BusinessManager.
+     */
     @Override
     public void save(List<Trial> trials) {
 
@@ -35,6 +42,11 @@ public class TrialJsonDao implements TrialDAO{
         }
     }
 
+    /**
+     * Reads the list of trials from trials.json.
+     * @return list of trials.
+     * @throws IOException standard IO exception.
+     */
     @Override
     public List<Trial> getAll() throws IOException {
         FileReader fileReader = new FileReader("./files/trials.json");

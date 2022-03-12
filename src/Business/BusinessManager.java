@@ -254,7 +254,9 @@ public class BusinessManager {
 
                 String  result = trialHeader + resultTrial;
 
-                if (checkpoint == trialsEdition.size() || getRemainingPlayers() == 0) {
+                edition.removePlayers();
+
+                if (checkpoint == trialsEdition.size() || edition.allPLayersEliminated()) {
                     checkpoint = 0;
 
                     if (edition.allPLayersEliminated()) {
@@ -265,8 +267,6 @@ public class BusinessManager {
                         return result + "\n\nTHE TRIALS " + edition.getYear() + " HAVE ENDED - PLAYERS WON";
                     }
                 }
-
-                edition.removePlayers();
 
                 return result;
             }
@@ -590,11 +590,11 @@ public class BusinessManager {
      * Getter for the number of players in the edition corresponding to the current year.
      * @return number of players.
      */
-    public int getRemainingPlayers() {
+    public boolean allPlayersEliminated() {
         for (Edition edition : editions) {
-            if (edition.getYear() == systemYear) return edition.getPlayerListSize();
+            if (edition.getYear() == systemYear) return edition.allPLayersEliminated();
         }
-        return 0;
+        return false;
     }
 
     /**

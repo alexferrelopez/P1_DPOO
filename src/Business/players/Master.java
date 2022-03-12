@@ -2,7 +2,7 @@
 
 public class Master extends Player {
     public static final String TYPE = "Master";
-    private String type = TYPE;
+    private final String type = TYPE;
 
     /**
      * Constructor to set name for a Master

@@ -9,8 +9,8 @@ import java.util.List;
 public class ExecutionCheckpointDAO {
 
     /**
-     * function made to allow us to save the execution of an edition after closing the executable.
-     * @param checkpoint
+     * Saves the execution state of an edition.
+     * @param checkpoint last mission done index.
      */
     public void save(Integer checkpoint) {
         try {
@@ -27,8 +27,8 @@ public class ExecutionCheckpointDAO {
     }
 
     /**
-     * function made to allow us to resume the execution of an edition after closing the executable.
-     * @return
+     * Reads the first line to obtain the checkpoint allowing us to resume the execution of an edition.
+     * @return last mission done index.
      */
     public Integer getAll() {
         try {

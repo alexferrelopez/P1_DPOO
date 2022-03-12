@@ -8,18 +8,18 @@ import java.util.List;
 
 public interface EditionDAO {
 
-
     /**
-     * Saves all data to file (JSON or CSV)
-     * @param editions
-     * @param t
+     * Saves all data to file (JSON or CSV).
+     * @param editions list of editions.
+     * @param trialList list of trials.
      */
-    void save(List<Edition> editions, List<Trial> t);
+    void save(List<Edition> editions, List<Trial> trialList);
 
     /**
-     * returns list of Editions from a file (JSON or CSV)
-     * @param trials
-     * @return
+     * Returns list of Editions from a file (JSON or CSV).
+     * @param trials list of trials.
+     * @return list of editions.
+     * @throws IOException standard IO exception.
      */
     List<Edition> getAll(List<Trial> trials) throws IOException;
 }

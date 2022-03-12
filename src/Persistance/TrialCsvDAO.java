@@ -14,6 +14,10 @@ import java.util.List;
 
 public class  TrialCsvDAO implements TrialDAO{
 
+    /**
+     * Saves line by line the file trials.CSV.
+     * @param trials list of trials from BusinessManager.
+     */
     @Override
     public void save(List<Trial> trials) {
         if (!trials.isEmpty()) {
@@ -36,6 +40,11 @@ public class  TrialCsvDAO implements TrialDAO{
         }
     }
 
+    /**
+     * Reads line by line the file editions.CSV.
+     * @return list of trials.
+     * @throws IOException standard IO exception.
+     */
     @Override
     public List<Trial> getAll() throws IOException {
         Path pathTrials = Paths.get("./files/trials.csv");
@@ -47,30 +56,26 @@ public class  TrialCsvDAO implements TrialDAO{
             String[] splitTrial = value.split(",");
             String s1 = splitTrial[2];
             switch (s1) {
-                case Article.TYPE -> {
-                    trial = new Article(splitTrial[1],
-                            Integer.parseInt(splitTrial[3]),
-                            Integer.parseInt(splitTrial[4]),
-                            Integer.parseInt(splitTrial[5]),
-                            splitTrial[6],
-                            splitTrial[7]);
-                }
-                case Defensa.TYPE -> {
-                    trial = new Defensa(splitTrial[1],
-                            splitTrial[3],
-                            Integer.parseInt(splitTrial[4]));
-                }
-                case Estudi.TYPE -> {
-                    trial = new Estudi(splitTrial[1],
-                            splitTrial[3],
-                            Integer.parseInt(splitTrial[4]),
-                            Integer.parseInt(splitTrial[5]));
-                }
-                case Solicitud.TYPE -> {
-                    trial = new Solicitud(splitTrial[1],
-                            splitTrial[3],
-                            Integer.parseInt(splitTrial[4]));
-                }
+                case Article.TYPE ->
+                        trial = new Article(splitTrial[1],
+                        Integer.parseInt(splitTrial[3]),
+                        Integer.parseInt(splitTrial[4]),
+                        Integer.parseInt(splitTrial[5]),
+                        splitTrial[6],
+                        splitTrial[7]);
+                case Defensa.TYPE ->
+                        trial = new Defensa(splitTrial[1],
+                        splitTrial[3],
+                        Integer.parseInt(splitTrial[4]));
+                case Estudi.TYPE ->
+                        trial = new Estudi(splitTrial[1],
+                        splitTrial[3],
+                        Integer.parseInt(splitTrial[4]),
+                        Integer.parseInt(splitTrial[5]));
+                case Solicitud.TYPE ->
+                        trial = new Solicitud(splitTrial[1],
+                        splitTrial[3],
+                        Integer.parseInt(splitTrial[4]));
             }
             trials.add(trial);
         }

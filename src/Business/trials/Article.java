@@ -96,7 +96,7 @@ public class Article extends Trial {
     }
 
     /**
-     * Custom hashCode for Article
+     * Custom hashCode for Article.
      * @return hash code created from the sequence of attributes for Article.
      */
     @Override
@@ -114,7 +114,7 @@ public class Article extends Trial {
     }
 
     /**
-     * Getter for the type of Trial
+     * Getter for the type of Trial.
      * @return type of trial (Article)
      */
     @Override
@@ -123,7 +123,7 @@ public class Article extends Trial {
     }
 
     /**
-     * Getter for the name of the Journal
+     * Getter for the name of the Journal.
      * @return name of the Journal.
      */
     public String getJournalName() {
@@ -131,7 +131,7 @@ public class Article extends Trial {
     }
 
     /**
-     * Getter for the quartile of the Journal
+     * Getter for the quartile of the Journal.
      * @return quartile of the Journal.
      */
     public String getJournalQuartile() {

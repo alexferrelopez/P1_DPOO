@@ -11,12 +11,12 @@ import java.lang.reflect.Type;
 public class PlayerInterfaceAdapter implements JsonDeserializer<Player>, JsonSerializer<Player> {
 
     /**
-     * deserializes json allowing us to read different types of players from the same interface.
-     * @param jsonElement
-     * @param type
-     * @param jsonDeserializationContext
-     * @return
-     * @throws JsonParseException
+     * deserializes json allowing us to read different types of players from the same inheritance.
+     * @param jsonElement node of a json structure.
+     * @param type type of player (Doctor, Enginyer or Master).
+     * @param jsonDeserializationContext context for deserialization that is passed to a custom deserializer.
+     * @return instance of Player
+     * @throws JsonParseException standard exception.
      */
     @Override
     public Player deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
@@ -45,11 +45,11 @@ public class PlayerInterfaceAdapter implements JsonDeserializer<Player>, JsonSer
     }
 
     /**
-     * serializes json allowing us to save different types of players from the same interface.
-     * @param player
-     * @param type
-     * @param context
-     * @return
+     * serializes json allowing us to save different types of players from the same inheritance.
+     * @param player instance of Player.
+     * @param type type of player (Doctor, Enginyer or Master).
+     * @param context context for deserialization that is passed to a custom deserializer.
+     * @return node of a json structure.
      */
     @Override
     public JsonElement serialize(Player player, Type type, JsonSerializationContext context) {

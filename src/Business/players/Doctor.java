@@ -2,7 +2,7 @@
 
 public class Doctor extends Player {
     public static final String TYPE = "Doctor";
-    private String type = TYPE;
+    private final String type = TYPE;
 
     /**
      * Constructor to set name for a Doctor

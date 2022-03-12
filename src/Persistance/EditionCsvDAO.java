@@ -19,12 +19,13 @@ import java.util.List;
 
 public class EditionCsvDAO implements EditionDAO{
     /**
-     * saves line by line of editions saving -> year, number of players, (type of player, name, pi count,)*[number of players], number of trials, trial1 index, trial2 index...
-     * @param editions
-     * @param t
+     * Saves line by line the file editions.CSV. Example -> year, number of players, (type of player, name, pi count,)*[number of players], number of trials, trial1 index, trial2 index...
+     * When the player list is empty, commas are placed anyway.
+     * @param editions list of editions.
+     * @param trialList list of trials.
      */
     @Override
-    public void save(List<Edition> editions, List<Trial> t) {
+    public void save(List<Edition> editions, List<Trial> trialList) {
 
         if (!editions.isEmpty()) {
             try {
@@ -44,7 +45,6 @@ public class EditionCsvDAO implements EditionDAO{
                         linia.append(edition.getNumPlayers());
                         linia.append(",");
                         if (players !=null && !players.isEmpty()) {
-
                             for (Player player : players) {
                                 linia.append(player.getType());
                                 linia.append(",");
@@ -70,8 +70,8 @@ public class EditionCsvDAO implements EditionDAO{
                     } else {
                         linia.append(trials.size());
                         for (Trial trial : trials) {
-                            for (int j = 0; j < t.size(); j++) {
-                                if (t.get(j).equals(trial)) {
+                            for (int j = 0; j < trialList.size(); j++) {
+                                if (trialList.get(j).equals(trial)) {
                                     linia.append(",");
                                     linia.append(j);
                                 }
@@ -90,9 +90,10 @@ public class EditionCsvDAO implements EditionDAO{
     }
 
     /**
-     * reads line by line of editions reading -> year, number of players, (type of player, name, pi count,)*[number of players], number of trials, trial1 index, trial2 index...
-     * @param trials
-     * @return
+     * Reads line by line the file editions.CSV. Example -> year, number of players, (type of player, name, pi count,)*[number of players], number of trials, trial1 index, trial2 index...
+     * @param trials list of trials.
+     * @return list of editions.
+     * @throws IOException standard IO exception.
      */
     @Override
     public List<Edition> getAll(List<Trial> trials) throws IOException {
