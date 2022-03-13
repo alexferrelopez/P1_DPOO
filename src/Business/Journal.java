@@ -2,6 +2,9 @@ package Business;
 
 import java.util.Objects;
 
+/**
+ * Represents a Journal with a name and a quartile.
+ */
 public class Journal {
     private String name;
     private String quartile;

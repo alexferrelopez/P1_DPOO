@@ -9,6 +9,9 @@ import Persistance.*;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Singleton to implement business rules. Handles Trials and Editions.
+ */
 public class BusinessManager {
     private EditionDAO editionDAO;
     private TrialDAO trialDAO;

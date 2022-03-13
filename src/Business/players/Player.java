@@ -1,5 +1,8 @@
 package Business.players;
 
+/**
+ * Abstract class to inherit. Allows construction of a Player with a name and a default number of PI.
+ */
 public abstract class Player implements Cloneable{
     private final String name;
     private int PI_count = 5;

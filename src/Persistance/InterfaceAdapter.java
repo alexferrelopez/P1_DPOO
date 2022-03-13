@@ -5,6 +5,9 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
+/**
+ * Allows serialization and deserialization of a Trial (solving inheritance) for a JSON file.
+ */
 public class InterfaceAdapter implements JsonDeserializer<Trial>, JsonSerializer<Trial> {
 
     /**

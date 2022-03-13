@@ -12,6 +12,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Reads and writes Trials from/to a CSV.
+ */
 public class  TrialCsvDAO implements TrialDAO{
 
     /**

@@ -9,6 +9,9 @@ import Business.trials.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents an Edition with a year, number of players and a list of players and trials.
+ */
 public class Edition implements Cloneable {
     private List<Trial> trials;
     private List<Player> players;

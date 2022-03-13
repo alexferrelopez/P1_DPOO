@@ -1,13 +1,25 @@
 package Presentation;
 
 import Business.BusinessManager;
+import Business.Edition;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
+/**
+ * Singleton to implement controller rules. Holds a UIManager Singleton and a BusinessManager Singleton to coordinate the logic between them.
+ */
 public class Controller {
-    private final UIManager uiManager = new UIManager();
-    private final BusinessManager bm = new BusinessManager();
+    private final UIManager uiManager;
+    private final BusinessManager bm;
+
+    public Controller(UIManager uiManager, BusinessManager bm) {
+        this.uiManager = uiManager;
+        this.bm = bm;
+    }
 
     /**
      * Method called in Main, loads the files chosen by the user and
@@ -332,7 +344,7 @@ public class Controller {
                         createEdition();        //create
                     else uiManager.showMessage("\nNo trials created yet.");
                 }
-                case 2 -> listEditionsOption();        //list
+                case 2 -> listEditions();        //list
                 case 3 -> duplicateEdition();   //duplicate
                 case 4 -> deleteEdition();      //delete
                 case 5 -> {
@@ -413,8 +425,9 @@ public class Controller {
      */
     private void sortAndListEditions() {
         bm.sortEditionsByYear();
+        List<Edition> editions = bm.getEditions();
         for (int i = 0; i < bm.editionListLength(); i++) {
-            uiManager.showTabulatedMessage((i+1)+") The Trials " + bm.getEditions().get(i).getYear());
+            uiManager.showTabulatedMessage((i+1)+") The Trials " + editions.get(i).getYear());
         }
         uiManager.spacing();
         uiManager.showTabulatedMessage(bm.editionListLength()+1+") Back");
@@ -424,7 +437,7 @@ public class Controller {
     /**
      * Lists all editions and asks for input for a more detailed view of a single edition in the list.
      */
-    public void listEditionsOption() {
+    public void listEditions() {
         if (bm.editionListLength() > 0 ) {
             uiManager.spacing();
             uiManager.showMessage("Here are the current editions, do you want to see more details or go back?");

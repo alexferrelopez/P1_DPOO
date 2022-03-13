@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Reads and writes Editions from/to a JSON.
+ */
 public class EditionJsonDAO implements EditionDAO{
     private final Gson gson;
 

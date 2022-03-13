@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class extension of Trial that provides a specific implementation of executeTrial.
+ */
 public class Article extends Trial {
     private final int acceptance;
     private final int revision;

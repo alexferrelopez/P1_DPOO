@@ -17,6 +17,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Reads and writes Editions from/to a CSV.
+ */
 public class EditionCsvDAO implements EditionDAO{
     /**
      * Saves line by line the file editions.CSV. Example -> year, number of players, (type of player, name, pi count,)*[number of players], number of trials, trial1 index, trial2 index...

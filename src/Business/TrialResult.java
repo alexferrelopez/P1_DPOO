@@ -3,6 +3,9 @@ package Business;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Holds the result of a trial for every player.
+ */
 public class TrialResult {
     private final List<Boolean> statusList;
     private final int[] auxInfo;

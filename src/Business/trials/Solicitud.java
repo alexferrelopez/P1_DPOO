@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Class extension of Trial that provides a specific implementation of executeTrial.
+ */
 public class Solicitud extends Trial {
     private final String entitat;
     private final int pressupost;

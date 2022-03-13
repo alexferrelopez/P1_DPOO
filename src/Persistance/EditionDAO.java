@@ -6,6 +6,9 @@ import Business.trials.Trial;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Reads and writes Editions.
+ */
 public interface EditionDAO {
 
     /**

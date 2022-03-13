@@ -6,6 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+/**
+ * Reads and writes a checkpoint from/to a text file.
+ */
 public class ExecutionCheckpointDAO {
 
     /**

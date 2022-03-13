@@ -1,5 +1,9 @@
-    package Business.players;
+package Business.players;
 
+/**
+ * Class extension of Player that provides a specific implementation
+ * to increase and decrease points.
+ */
 public class Doctor extends Player {
     public static final String TYPE = "Doctor";
     private final String type = TYPE;

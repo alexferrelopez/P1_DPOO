@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * Singleton to handle UI into console.
+ */
 public class UIManager {
     private final Scanner scanner = new Scanner(System.in);
 
@@ -299,7 +302,7 @@ public class UIManager {
                 System.out.print("\nEnter an option: ");
                 selectTrial = scanner.nextInt();
                 scanner.nextLine();
-                if (selectTrial != back && selectTrial > 0) {
+                if (selectTrial != back && selectTrial > 0 && selectTrial <= trials.size()) {
                     System.out.print("\nEnter the trial's name for confirmation: ");
                     if (scanner.nextLine().trim().toLowerCase(Locale.ROOT).equals(trials.get(selectTrial - 1).getName().trim().toLowerCase(Locale.ROOT))) {
                         return selectTrial - 1;

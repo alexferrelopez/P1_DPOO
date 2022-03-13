@@ -8,10 +8,13 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
+/**
+ * Allows serialization and deserialization of a Player (solving inheritance) for a JSON file.
+ */
 public class PlayerInterfaceAdapter implements JsonDeserializer<Player>, JsonSerializer<Player> {
 
     /**
-     * deserializes json allowing us to read different types of players from the same inheritance.
+     * Deserializes json allowing us to read different types of players from the same inheritance.
      * @param jsonElement node of a json structure.
      * @param type type of player (Doctor, Enginyer or Master).
      * @param jsonDeserializationContext context for deserialization that is passed to a custom deserializer.
@@ -45,7 +48,7 @@ public class PlayerInterfaceAdapter implements JsonDeserializer<Player>, JsonSer
     }
 
     /**
-     * serializes json allowing us to save different types of players from the same inheritance.
+     * Serializes json allowing us to save different types of players from the same inheritance.
      * @param player instance of Player.
      * @param type type of player (Doctor, Enginyer or Master).
      * @param context context for deserialization that is passed to a custom deserializer.

@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Reads and writes Trials from/to a JSON.
+ */
 public class TrialJsonDao implements TrialDAO{
     private final Gson gson;
 

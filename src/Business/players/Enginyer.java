@@ -1,5 +1,9 @@
 package Business.players;
 
+/**
+ * Class extension of Player that provides a specific implementation
+ * to earn enough PI to evolve after playing an Estudi.
+ */
 public class Enginyer extends Player {
     public static final String TYPE = "Enginyer";
     private final String type = TYPE;

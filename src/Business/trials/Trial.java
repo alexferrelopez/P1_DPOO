@@ -5,6 +5,9 @@ import Business.players.Player;
 
 import java.util.List;
 
+/**
+ * Abstract class to inherit. Allows construction of a Trial with a name.
+ */
 public abstract class Trial implements Cloneable {
     private final String name;
 
