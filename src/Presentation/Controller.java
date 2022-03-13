@@ -16,6 +16,11 @@ public class Controller {
     private final UIManager uiManager;
     private final BusinessManager bm;
 
+    /**
+     * Constructor to create a Controller.
+     * @param uiManager UI manager.
+     * @param bm Business Manger.
+     */
     public Controller(UIManager uiManager, BusinessManager bm) {
         this.uiManager = uiManager;
         this.bm = bm;
